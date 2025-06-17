@@ -3,10 +3,15 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "macos": "xed -b macos && react-native start",
+    "macos": "npm run podInstall && xed -b macos && npm start",
+    "podInstall": "cd macos && pod install && cd ../",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "prepare": "husky",
+    "prerelease": "git checkout develop",
+    "release": "commit-and-tag-version",
+    "postrelease": "git fetch --atomic . develop:main && git push --atomic --follow-tags origin main develop"
   },
   "dependencies": {
     "react": "19.0.0",
@@ -17,6 +22,8 @@
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.3",
     "@babel/runtime": "^7.25.0",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@react-native-community/cli": "15.0.1",
     "@react-native-community/cli-platform-android": "15.0.1",
     "@react-native-community/cli-platform-ios": "15.0.1",
@@ -28,6 +35,7 @@
     "@types/react": "^19.0.0",
     "@types/react-test-renderer": "^19.0.0",
     "eslint": "^8.19.0",
+    "husky": "^9.1.7",
     "jest": "^29.6.3",
     "prettier": "2.8.8",
     "react-test-renderer": "19.0.0",
