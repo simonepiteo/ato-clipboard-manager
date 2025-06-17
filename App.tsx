@@ -8,6 +8,8 @@
 import React from 'react';
 import type {PropsWithChildren} from 'react';
 import {
+  Button,
+  NativeModules,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -23,6 +25,8 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+
+const {WindowManager} = NativeModules;
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -72,16 +76,20 @@ function App(): React.JSX.Element {
    */
   const safePadding = '5%';
 
+  const openNewWindow = () => {
+    WindowManager.openWindow('Settings', 'Patata');
+  };
+
   return (
     <View style={backgroundStyle}>
+      <Button title="Open New Window" onPress={openNewWindow} />
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <ScrollView
-        style={backgroundStyle}>
+      <ScrollView style={backgroundStyle}>
         <View style={{paddingRight: safePadding}}>
-          <Header/>
+          <Header />
         </View>
         <View
           style={{

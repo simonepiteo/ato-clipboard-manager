@@ -6,7 +6,7 @@
 
 @implementation AppDelegate
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+- (void)applicationDidFinishLaunching:(NSNotification *)notification {
   
   self.moduleName = @"clipboardManager";
   self.initialProps = @{};

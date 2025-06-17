@@ -13,6 +13,7 @@
 		514201582437B4B40078DB4F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 514201572437B4B40078DB4F /* main.m */; };
 		52362749C1751F4D3AC9F1E7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 645F98B64EFB30CA6DC3605C /* PrivacyInfo.xcprivacy */; };
 		BBBE179C6B5F943BC7B4D28B /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 645F98B64EFB30CA6DC3605C /* PrivacyInfo.xcprivacy */; };
+		D427DFC22E00B484004461F0 /* WindowManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D427DFC12E00B484004461F0 /* WindowManager.mm */; };
 		EA81EC1DAA7DCA41B1AA1545 /* libPods-clipboardManager-macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2091947FE99DD099B7C16B3E /* libPods-clipboardManager-macOS.a */; };
 /* End PBXBuildFile section */
 
@@ -28,8 +29,9 @@
 		514201562437B4B40078DB4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		514201572437B4B40078DB4F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		514201592437B4B40078DB4F /* clipboardManager.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = clipboardManager.entitlements; sourceTree = "<group>"; };
-		645F98B64EFB30CA6DC3605C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		645F98B64EFB30CA6DC3605C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		6A414629186CB81822762AC1 /* Pods-clipboardManager-macOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-clipboardManager-macOS.release.xcconfig"; path = "Target Support Files/Pods-clipboardManager-macOS/Pods-clipboardManager-macOS.release.xcconfig"; sourceTree = "<group>"; };
+		D427DFC12E00B484004461F0 /* WindowManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WindowManager.mm; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -64,6 +66,7 @@
 		5142014A2437B4B30078DB4F /* clipboardManager-macOS */ = {
 			isa = PBXGroup;
 			children = (
+				D427DFC12E00B484004461F0 /* WindowManager.mm */,
 				5142014B2437B4B30078DB4F /* AppDelegate.h */,
 				5142014C2437B4B30078DB4F /* AppDelegate.mm */,
 				514201512437B4B40078DB4F /* Assets.xcassets */,
@@ -81,7 +84,6 @@
 				277AB74CE8EE708EE3B02F0B /* Pods-clipboardManager-macOS.debug.xcconfig */,
 				6A414629186CB81822762AC1 /* Pods-clipboardManager-macOS.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -309,6 +311,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D427DFC22E00B484004461F0 /* WindowManager.mm in Sources */,
 				514201582437B4B40078DB4F /* main.m in Sources */,
 				5142014D2437B4B30078DB4F /* AppDelegate.mm in Sources */,
 			);
