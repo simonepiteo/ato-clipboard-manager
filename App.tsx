@@ -77,7 +77,7 @@ function App(): React.JSX.Element {
   const safePadding = '5%';
 
   const openNewWindow = () => {
-    WindowManager.openWindow('Settings', 'Patata');
+    WindowManager.openWindow('Settings', null);
   };
 
   return (
