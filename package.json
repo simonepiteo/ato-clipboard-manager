@@ -9,6 +9,7 @@
     "start": "react-native start",
     "test": "jest",
     "prepare": "husky",
+    "clear": "rm -rf node_modules package-lock.json && npm i",
     "prerelease": "git checkout develop",
     "release": "commit-and-tag-version",
     "postrelease": "git fetch --atomic . develop:main && git push --atomic --follow-tags origin main develop"

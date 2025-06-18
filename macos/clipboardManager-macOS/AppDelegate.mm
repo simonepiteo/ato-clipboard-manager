@@ -16,14 +16,14 @@
   NSURL *jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:self.jsBundleURLForBundleRoot];
   RCTBridge *bridge = [[RCTBridge alloc] initWithBundleURL:jsCodeLocation moduleProvider:nil launchOptions:nil];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge moduleName:self.moduleName initialProperties:self.initialProps];
-  rootView.frame =  NSMakeRect(0, 0, 350, 600);
+  rootView.frame =  NSMakeRect(0, 0, 350, 382);
   
   NSViewController *contentViewController = [NSViewController new];
   contentViewController.view = rootView;
   
   self.popover = [[NSPopover alloc] init];
   self.popover.contentViewController = contentViewController;
-  self.popover.behavior = NSPopoverBehaviorSemitransient;
+  self.popover.behavior = NSPopoverBehaviorTransient;
   self.popover.animates = YES;
   
   
@@ -33,11 +33,11 @@
   self.statusItem.button.title = @"📋";
   self.statusItem.button.target = self;
   self.statusItem.button.action = @selector(togglePopover:);
-
+  
   self.eventMonitor = [NSEvent addGlobalMonitorForEventsMatchingMask:NSEventMaskLeftMouseDown handler:^(NSEvent *event) {
-      if (weakSelf.popover.isShown) {
-          [weakSelf.popover performClose:nil];
-      }
+    if (weakSelf.popover.isShown) {
+      [weakSelf.popover performClose:nil];
+    }
   }];
 }
 
@@ -48,6 +48,7 @@
     [self.popover showRelativeToRect:[self.statusItem.button bounds]
                               ofView:self.statusItem.button
                        preferredEdge:NSRectEdgeMinY];
+    [NSApp activateIgnoringOtherApps:YES];
   }
 }
 

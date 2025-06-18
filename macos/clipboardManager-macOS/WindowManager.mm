@@ -45,6 +45,7 @@ RCT_EXPORT_METHOD(openWindow:(NSString *)moduleName
     
     [window setContentView:rootView];
     [window makeKeyAndOrderFront:nil];
+    [NSApp activateIgnoringOtherApps:YES];
     
     [self.openWindows addObject:window];
     
