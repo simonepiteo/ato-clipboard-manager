@@ -16,7 +16,7 @@
   NSURL *jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:self.jsBundleURLForBundleRoot];
   RCTBridge *bridge = [[RCTBridge alloc] initWithBundleURL:jsCodeLocation moduleProvider:nil launchOptions:nil];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge moduleName:self.moduleName initialProperties:self.initialProps];
-  rootView.frame =  NSMakeRect(0, 0, 350, 382);
+  rootView.frame =  NSMakeRect(0, 0, 350, 405);
   
   NSViewController *contentViewController = [NSViewController new];
   contentViewController.view = rootView;

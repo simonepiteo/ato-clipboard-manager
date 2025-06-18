@@ -1,8 +1,13 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native-macos';
 import {useInteractiveElements} from '../../hook/useInteractiveElements';
+import Clipboard from '@react-native-clipboard/clipboard';
 
-const SingleNote = () => {
+type SingleNoteProps = {
+  description: string;
+};
+
+const SingleNote: React.FC<SingleNoteProps> = ({description}) => {
   const {
     isHovered,
     isFocused,
@@ -11,6 +16,13 @@ const SingleNote = () => {
     handleTouchStart,
     handleTouchEnd,
   } = useInteractiveElements();
+
+  const handleSaveToClipboard = () => {
+    handleTouchStart();
+    if (description) {
+      Clipboard.setString(description.trim());
+    }
+  };
 
   return (
     <View
@@ -21,9 +33,9 @@ const SingleNote = () => {
       ]}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      onTouchStart={handleTouchStart}
+      onTouchStart={handleSaveToClipboard}
       onTouchEnd={handleTouchEnd}>
-      <Text>Lorem ipsum dolor sit amet...</Text>
+      <Text>{description.trim()}</Text>
     </View>
   );
 };

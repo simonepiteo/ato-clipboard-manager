@@ -1,11 +1,47 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {ScrollView, StyleSheet} from 'react-native-macos';
 import MenuItem from './components/MenuItem/MenuItem';
 import Search from './components/Search/Search';
 import SingleNote from './components/SingleNote/SingleNote';
+import {NativeEventEmitter, NativeModules} from 'react-native';
 
 function App(): React.JSX.Element {
+  const {ClipboardWatcher, WindowManager} = NativeModules;
+  const clipboardEvents = new NativeEventEmitter(ClipboardWatcher);
+
+  const [clipboardHistory, setClipboardHistory] = useState<string[]>([]);
+
+  const openNewWindow = () => {
+    WindowManager.openWindow('Settings', 'Clipboard Manager - Settings');
+  };
+
+  useEffect(() => {
+    ClipboardWatcher.startWatching();
+    const sub = clipboardEvents.addListener('ClipboardChanged', event => {
+      /* console.log('Clipboard changed:', event.content); */
+      setClipboardHistory((prev: string[]) => {
+        const idx = prev.indexOf(event.content);
+        if (idx === 0) {
+          return prev;
+        }
+        if (idx > 0) {
+          return [
+            event.content,
+            ...prev.slice(0, idx),
+            ...prev.slice(idx + 1),
+          ].slice(0, 20);
+        } else {
+          return [event.content, ...prev].slice(0, 20);
+        }
+      });
+    });
+    return () => {
+      ClipboardWatcher.stopWatching();
+      sub.remove();
+    };
+  }, []);
+
   return (
     <View style={styles.container}>
       <Search />
@@ -15,12 +51,21 @@ function App(): React.JSX.Element {
         horizontal={false}
         showsVerticalScrollIndicator={true}>
         <View style={styles.notesGrid}>
-          {Array.from({length: 11}).map((_, idx) => (
-            <SingleNote key={idx} />
+          {clipboardHistory.map((item, idx) => (
+            <SingleNote key={idx} description={item} />
           ))}
+          {/* {Array.from({length: 11}).map((_, idx) => (
+            <SingleNote key={idx} />
+          ))} */}
         </View>
       </ScrollView>
-      <MenuItem />
+      <View style={styles.menuSection}>
+        <MenuItem
+          description="Clear history"
+          onClick={() => setClipboardHistory([])}
+        />
+        <MenuItem description="Settings..." onClick={openNewWindow} />
+      </View>
     </View>
   );
 }
@@ -44,6 +89,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
+  },
+  menuSection: {
+    marginTop: 5,
   },
 });
 

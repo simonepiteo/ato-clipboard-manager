@@ -1,14 +1,13 @@
 import React from 'react';
-import {NativeModules, StyleSheet, View, Text} from 'react-native-macos';
+import {StyleSheet, Text, View} from 'react-native-macos';
 import {useInteractiveElements} from '../../hook/useInteractiveElements';
 
-const MenuItem = () => {
-  const {WindowManager} = NativeModules;
+type MenuItemProps = {
+  description: string;
+  onClick?: () => void;
+};
 
-  const openNewWindow = () => {
-    WindowManager.openWindow('Settings', null);
-  };
-
+const MenuItem: React.FC<MenuItemProps> = ({description, onClick}) => {
   const {
     isHovered,
     isFocused,
@@ -29,7 +28,9 @@ const MenuItem = () => {
       onMouseLeave={handleMouseLeave}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}>
-      <Text onPress={openNewWindow}>Settings</Text>
+      <Text style={style.menuItemText} onPress={onClick}>
+        {description}
+      </Text>
     </View>
   );
 };
@@ -38,8 +39,7 @@ const style = StyleSheet.create({
   menuItem: {
     marginStart: 5,
     marginEnd: 5,
-    marginTop: 5,
-    marginBottom: 5,
+    marginBottom: 1,
     paddingTop: 3,
     paddingBottom: 3,
     paddingStart: 10,
@@ -52,6 +52,9 @@ const style = StyleSheet.create({
   },
   menuItemFocused: {
     backgroundColor: '#007AFF',
+  },
+  menuItemText: {
+    fontSize: 13,
   },
 });
 export default MenuItem;
