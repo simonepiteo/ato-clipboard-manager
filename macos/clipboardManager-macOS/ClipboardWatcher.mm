@@ -35,11 +35,35 @@ RCT_EXPORT_METHOD(stopWatching) {
 
 - (void)checkClipboard {
   /* NSLog(@"Checking clipboard..."); */
-  NSString *current = [[NSPasteboard generalPasteboard] stringForType:NSPasteboardTypeString];
-  if (current && ![current isEqualToString:self.lastPasteboardString]) {
-    self.lastPasteboardString = current;
-    [self sendEventWithName:@"ClipboardChanged" body:@{@"content": current}];
+  NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+  NSString *currentText = [pasteboard stringForType:NSPasteboardTypeString];
+  NSData *currentImageData = nil;
+  NSString *base64Image = nil;
+
+  // Check for image
+  NSImage *image = [[NSImage alloc] initWithPasteboard:pasteboard];
+  if (image != nil && [image isValid]) {
+    // Convert NSImage to PNG data
+    CGImageRef cgRef = [image CGImageForProposedRect:NULL context:nil hints:nil];
+    if (cgRef) {
+      NSBitmapImageRep *newRep = [[NSBitmapImageRep alloc] initWithCGImage:cgRef];
+      [newRep setSize:[image size]];   // if you want the same resolution
+      currentImageData = [newRep representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
+      base64Image = [currentImageData base64EncodedStringWithOptions:0];
+    }
   }
+
+  // Only send event if text or image changed
+  BOOL textChanged = currentText && ![currentText isEqualToString:self.lastPasteboardString];
+  BOOL imageChanged = base64Image && ![base64Image isEqualToString:self.lastPasteboardString];
+
+if (textChanged) {
+  self.lastPasteboardString = currentText;
+  [self sendEventWithName:@"ClipboardChanged" body:@{@"type": @"text", @"content": currentText ?: @""}];
+} else if (imageChanged) {
+  self.lastPasteboardString = base64Image;
+  [self sendEventWithName:@"ClipboardChanged" body:@{@"type": @"image", @"content": base64Image ?: @""}];
+}
 }
 
 - (void)invalidate {

@@ -95,4 +95,11 @@ RCT_EXPORT_METHOD(closePopover)
   });
 }
 
+RCT_EXPORT_METHOD(quitApp)
+{
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [NSApp terminate:nil];
+  });
+}
+
 @end

@@ -15,7 +15,6 @@
     "postrelease": "git fetch --atomic . develop:main && git push --atomic --follow-tags origin main develop"
   },
   "dependencies": {
-    "@react-native-clipboard/clipboard": "^1.16.2",
     "react": "19.0.0",
     "react-native": "0.78.2",
     "react-native-macos": "^0.78.3"

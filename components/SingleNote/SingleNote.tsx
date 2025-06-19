@@ -1,14 +1,10 @@
-import Clipboard from '@react-native-clipboard/clipboard';
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native-macos';
+import {Image, StyleSheet, Text, View} from 'react-native-macos';
 import {useInteractiveElements} from '../../hook/useInteractiveElements';
+import {SingleNoteProps} from './SingleNote.model';
+import {CopyItem} from '../../utils/CopyItem';
 
-type SingleNoteProps = {
-  description: string;
-  id?: number;
-};
-
-const SingleNote: React.FC<SingleNoteProps> = ({description, id}) => {
+const SingleNote: React.FC<SingleNoteProps> = ({item, id}) => {
   const {
     isHovered,
     isFocused,
@@ -20,8 +16,8 @@ const SingleNote: React.FC<SingleNoteProps> = ({description, id}) => {
 
   const handleSaveToClipboard = () => {
     handleTouchStart();
-    if (description) {
-      Clipboard.setString(description);
+    if (item) {
+      CopyItem(item);
     }
   };
 
@@ -36,8 +32,21 @@ const SingleNote: React.FC<SingleNoteProps> = ({description, id}) => {
       onMouseLeave={handleMouseLeave}
       onTouchStart={handleSaveToClipboard}
       onTouchEnd={handleTouchEnd}>
-      <Text>{description.trim()}</Text>
-      {id && id <= 9 && <Text style={style.shortcut}>⌘{id}</Text>}
+      {item.type === 'text' ? (
+        <Text style={style.textItem}>{item.content.trim()}</Text>
+      ) : item.type === 'image' ? (
+        <View style={style.imageContainer}>
+          <Image
+            source={{uri: `data:image/png;base64,${item.content}`}}
+            style={style.imageItem}
+          />
+        </View>
+      ) : null}
+      {id && id <= 9 && (
+        <View style={style.shortcutBadge}>
+          <Text style={style.shortcutText}>⌘{id}</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -53,7 +62,7 @@ const style = StyleSheet.create({
     borderColor: 'rgba(204,204,204,.3)',
     backgroundColor: 'rgba(0, 0, 0, 0.1)',
     borderStyle: 'solid',
-    padding: 7,
+    padding: 4,
     cursor: 'pointer',
   },
   singleNoteHovered: {
@@ -62,12 +71,32 @@ const style = StyleSheet.create({
   singleNoteFocused: {
     backgroundColor: '#007AFF',
   },
-  shortcut: {
+  shortcutBadge: {
     position: 'absolute',
     bottom: 5,
     right: 5,
-    fontSize: 10,
-    color: '#888',
+    borderRadius: 3,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    padding: 2,
+    paddingEnd: 4,
+    paddingStart: 4,
+  },
+  shortcutText: {
+    fontSize: 9,
+    color: 'rgba(255,255,255,.7)',
+  },
+  textItem: {margin: 3},
+  imageContainer: {
+    flex: 1,
+    alignSelf: 'stretch',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imageItem: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 3,
+    resizeMode: 'contain',
   },
 });
 

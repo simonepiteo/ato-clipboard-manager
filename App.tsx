@@ -1,11 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {View} from 'react-native';
+import {NativeEventEmitter, NativeModules, View} from 'react-native';
 import {ScrollView, StyleSheet} from 'react-native-macos';
 import MenuItem from './components/MenuItem/MenuItem';
 import Search from './components/Search/Search';
 import SingleNote from './components/SingleNote/SingleNote';
-import {NativeEventEmitter, NativeModules} from 'react-native';
-import Clipboard from '@react-native-clipboard/clipboard';
+import {CopiedItem} from './types/CopiedItem.model';
+import {CopyItem} from './utils/CopyItem';
 
 function App(): React.JSX.Element {
   const {ClipboardWatcher, WindowManager, KeyboardShortcutManager} =
@@ -14,29 +14,42 @@ function App(): React.JSX.Element {
   const clipboardEvents = new NativeEventEmitter(ClipboardWatcher);
   const shortcutEvents = new NativeEventEmitter(KeyboardShortcutManager);
 
-  const defaultClipboardHistory: string[] = [
-    'Welcome to Clipboard Manager!',
-    'This is a sample note.',
-    'You can add more notes here.',
-    'Remember to save your important notes.',
-    'Clipboard Manager helps you keep track of your clipboard history.',
-    'You can clear your history anytime.',
-    'Feel free to customize your notes.',
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip',
-  ];
+  /* const defaultClipboardHistory: CopiedItem[] = [
+    {type: 'text', content: 'Welcome to Clipboard Manager!'},
+    {type: 'text', content: 'This is a sample note.'},
+    {type: 'text', content: 'You can add more notes here.'},
+    {type: 'text', content: 'Remember to save your important notes.'},
+    {
+      type: 'text',
+      content:
+        'Clipboard Manager helps you keep track of your clipboard history.',
+    },
+    {type: 'text', content: 'You can clear your history anytime.'},
+    {type: 'text', content: 'Feel free to customize your notes.'},
+    {
+      type: 'text',
+      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    },
+    {
+      type: 'text',
+      content:
+        'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    },
+    {
+      type: 'text',
+      content:
+        'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip',
+    },
+  ]; */
 
-  const [clipboardHistory, setClipboardHistory] = useState<string[]>(
-    defaultClipboardHistory,
-  );
+  const [clipboardHistory, setClipboardHistory] = useState<CopiedItem[]>([]);
   const clipboardHistoryRef = useRef(clipboardHistory);
 
   useEffect(() => {
     clipboardHistoryRef.current = clipboardHistory;
   }, [clipboardHistory]);
 
-  const openNewWindow = () => {
+  const openSettingsWindow = () => {
     WindowManager.openWindow('Settings', 'Clipboard Manager - Settings');
   };
 
@@ -44,7 +57,8 @@ function App(): React.JSX.Element {
     const sub = shortcutEvents.addListener('CommandNumberPressed', event => {
       const history = clipboardHistoryRef.current;
       if (history.length >= event.number) {
-        Clipboard.setString(history[event.number - 1]);
+        const currentItem = history[event.number - 1];
+        CopyItem(currentItem);
         WindowManager.closePopover();
       }
     });
@@ -56,20 +70,22 @@ function App(): React.JSX.Element {
     ClipboardWatcher.startWatching();
     const sub = clipboardEvents.addListener('ClipboardChanged', event => {
       /* console.log('Clipboard changed:', event.content); */
-      setClipboardHistory((prev: string[]) => {
-        const idx = prev.indexOf(event.content);
-        if (idx === 0) {
+      /* console.log(event); */
+
+      const maxLength = 20;
+
+      setClipboardHistory((prev: CopiedItem[]) => {
+        if (
+          prev.length > 0 &&
+          prev[0].type === event.type &&
+          prev[0].content === event.content
+        ) {
           return prev;
         }
-        if (idx > 0) {
-          return [
-            event.content,
-            ...prev.slice(0, idx),
-            ...prev.slice(idx + 1),
-          ].slice(0, 20);
-        } else {
-          return [event.content, ...prev].slice(0, 20);
-        }
+        const filtered = prev.filter(
+          item => !(item.type === event.type && item.content === event.content),
+        );
+        return [event, ...filtered].slice(0, maxLength);
       });
     });
     return () => {
@@ -89,7 +105,7 @@ function App(): React.JSX.Element {
         showsVerticalScrollIndicator={true}>
         <View style={styles.notesGrid}>
           {clipboardHistory.map((item, idx) => (
-            <SingleNote key={`note-${idx}`} description={item} id={idx + 1} />
+            <SingleNote key={`note-${idx}`} item={item} id={idx + 1} />
           ))}
         </View>
       </ScrollView>
@@ -98,7 +114,12 @@ function App(): React.JSX.Element {
           description="Clear history"
           onClick={() => setClipboardHistory([])}
         />
-        <MenuItem description="Settings..." onClick={openNewWindow} />
+        <MenuItem description="Settings..." onClick={openSettingsWindow} />
+        <MenuItem
+          description="Quit"
+          separator
+          onClick={() => WindowManager.quitApp()}
+        />
       </View>
     </View>
   );
