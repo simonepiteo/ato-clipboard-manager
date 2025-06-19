@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native-macos';
-import {useInteractiveElements} from '../../hook/useInteractiveElements';
 import {MenuItemProps} from './MenuItem.model';
+import {useInteractiveElements} from '../../hooks/useInteractiveElements';
 
 const MenuItem: React.FC<MenuItemProps> = ({
   description,

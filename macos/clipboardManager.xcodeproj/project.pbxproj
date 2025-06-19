@@ -13,11 +13,11 @@
 		514201582437B4B40078DB4F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 514201572437B4B40078DB4F /* main.m */; };
 		52362749C1751F4D3AC9F1E7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 645F98B64EFB30CA6DC3605C /* PrivacyInfo.xcprivacy */; };
 		BBBE179C6B5F943BC7B4D28B /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 645F98B64EFB30CA6DC3605C /* PrivacyInfo.xcprivacy */; };
-		D427CE9F2E04555A007B5EF7 /* HotKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D427CE9E2E04555A007B5EF7 /* HotKeyManager.swift */; };
-		D427CEA62E047176007B5EF7 /* ClipboardHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = D427CEA52E047176007B5EF7 /* ClipboardHandler.mm */; };
-		D427DFC22E00B484004461F0 /* WindowManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D427DFC12E00B484004461F0 /* WindowManager.mm */; };
-		D47A86202E03085700B7E569 /* ClipboardWatcher.mm in Sources */ = {isa = PBXBuildFile; fileRef = D47A861F2E03085700B7E569 /* ClipboardWatcher.mm */; };
-		D4E79B762E0448BA008107B6 /* KeyboardShortcutManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D4E79B752E0448BA008107B6 /* KeyboardShortcutManager.mm */; };
+		D427CEAD2E049791007B5EF7 /* ClipboardHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = D427CEA72E049791007B5EF7 /* ClipboardHandler.mm */; };
+		D427CEAE2E049791007B5EF7 /* ClipboardWatcher.mm in Sources */ = {isa = PBXBuildFile; fileRef = D427CEA82E049791007B5EF7 /* ClipboardWatcher.mm */; };
+		D427CEAF2E049791007B5EF7 /* WindowManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D427CEAB2E049791007B5EF7 /* WindowManager.mm */; };
+		D427CEB02E049791007B5EF7 /* HotKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D427CEA92E049791007B5EF7 /* HotKeyManager.swift */; };
+		D427CEB12E049791007B5EF7 /* KeyboardShortcutManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D427CEAA2E049791007B5EF7 /* KeyboardShortcutManager.mm */; };
 		EA81EC1DAA7DCA41B1AA1545 /* libPods-clipboardManager-macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2091947FE99DD099B7C16B3E /* libPods-clipboardManager-macOS.a */; };
 /* End PBXBuildFile section */
 
@@ -35,12 +35,11 @@
 		514201592437B4B40078DB4F /* clipboardManager.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = clipboardManager.entitlements; sourceTree = "<group>"; };
 		645F98B64EFB30CA6DC3605C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		6A414629186CB81822762AC1 /* Pods-clipboardManager-macOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-clipboardManager-macOS.release.xcconfig"; path = "Target Support Files/Pods-clipboardManager-macOS/Pods-clipboardManager-macOS.release.xcconfig"; sourceTree = "<group>"; };
-		D427CE9E2E04555A007B5EF7 /* HotKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotKeyManager.swift; sourceTree = "<group>"; };
-		D427CEA02E04555B007B5EF7 /* clipboardManager-macOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "clipboardManager-macOS-Bridging-Header.h"; sourceTree = "<group>"; };
-		D427CEA52E047176007B5EF7 /* ClipboardHandler.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ClipboardHandler.mm; sourceTree = "<group>"; };
-		D427DFC12E00B484004461F0 /* WindowManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WindowManager.mm; sourceTree = "<group>"; };
-		D47A861F2E03085700B7E569 /* ClipboardWatcher.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ClipboardWatcher.mm; sourceTree = "<group>"; };
-		D4E79B752E0448BA008107B6 /* KeyboardShortcutManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = KeyboardShortcutManager.mm; sourceTree = "<group>"; };
+		D427CEA72E049791007B5EF7 /* ClipboardHandler.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ClipboardHandler.mm; sourceTree = "<group>"; };
+		D427CEA82E049791007B5EF7 /* ClipboardWatcher.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ClipboardWatcher.mm; sourceTree = "<group>"; };
+		D427CEA92E049791007B5EF7 /* HotKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotKeyManager.swift; sourceTree = "<group>"; };
+		D427CEAA2E049791007B5EF7 /* KeyboardShortcutManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = KeyboardShortcutManager.mm; sourceTree = "<group>"; };
+		D427CEAB2E049791007B5EF7 /* WindowManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WindowManager.mm; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -75,11 +74,7 @@
 		5142014A2437B4B30078DB4F /* clipboardManager-macOS */ = {
 			isa = PBXGroup;
 			children = (
-				D427CEA52E047176007B5EF7 /* ClipboardHandler.mm */,
-				D427CE9E2E04555A007B5EF7 /* HotKeyManager.swift */,
-				D4E79B752E0448BA008107B6 /* KeyboardShortcutManager.mm */,
-				D47A861F2E03085700B7E569 /* ClipboardWatcher.mm */,
-				D427DFC12E00B484004461F0 /* WindowManager.mm */,
+				D427CEAC2E049791007B5EF7 /* modules */,
 				5142014B2437B4B30078DB4F /* AppDelegate.h */,
 				5142014C2437B4B30078DB4F /* AppDelegate.mm */,
 				514201512437B4B40078DB4F /* Assets.xcassets */,
@@ -87,7 +82,6 @@
 				514201562437B4B40078DB4F /* Info.plist */,
 				514201572437B4B40078DB4F /* main.m */,
 				514201592437B4B40078DB4F /* clipboardManager.entitlements */,
-				D427CEA02E04555B007B5EF7 /* clipboardManager-macOS-Bridging-Header.h */,
 			);
 			path = "clipboardManager-macOS";
 			sourceTree = "<group>";
@@ -130,6 +124,18 @@
 				514201492437B4B30078DB4F /* clipboardManager.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		D427CEAC2E049791007B5EF7 /* modules */ = {
+			isa = PBXGroup;
+			children = (
+				D427CEA72E049791007B5EF7 /* ClipboardHandler.mm */,
+				D427CEA82E049791007B5EF7 /* ClipboardWatcher.mm */,
+				D427CEA92E049791007B5EF7 /* HotKeyManager.swift */,
+				D427CEAA2E049791007B5EF7 /* KeyboardShortcutManager.mm */,
+				D427CEAB2E049791007B5EF7 /* WindowManager.mm */,
+			);
+			path = modules;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -326,13 +332,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D4E79B762E0448BA008107B6 /* KeyboardShortcutManager.mm in Sources */,
-				D427CEA62E047176007B5EF7 /* ClipboardHandler.mm in Sources */,
-				D427DFC22E00B484004461F0 /* WindowManager.mm in Sources */,
-				D47A86202E03085700B7E569 /* ClipboardWatcher.mm in Sources */,
 				514201582437B4B40078DB4F /* main.m in Sources */,
+				D427CEAD2E049791007B5EF7 /* ClipboardHandler.mm in Sources */,
+				D427CEAE2E049791007B5EF7 /* ClipboardWatcher.mm in Sources */,
+				D427CEAF2E049791007B5EF7 /* WindowManager.mm in Sources */,
+				D427CEB02E049791007B5EF7 /* HotKeyManager.swift in Sources */,
+				D427CEB12E049791007B5EF7 /* KeyboardShortcutManager.mm in Sources */,
 				5142014D2437B4B30078DB4F /* AppDelegate.mm in Sources */,
-				D427CE9F2E04555A007B5EF7 /* HotKeyManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -498,7 +504,10 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -554,7 +563,10 @@
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = false;

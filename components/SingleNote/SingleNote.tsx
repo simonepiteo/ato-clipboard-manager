@@ -1,8 +1,8 @@
 import React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native-macos';
-import {useInteractiveElements} from '../../hook/useInteractiveElements';
 import {SingleNoteProps} from './SingleNote.model';
 import {CopyItem} from '../../utils/CopyItem';
+import {useInteractiveElements} from '../../hooks/useInteractiveElements';
 
 const SingleNote: React.FC<SingleNoteProps> = ({item, id}) => {
   const {
