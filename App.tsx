@@ -27,7 +27,7 @@ function App(): React.JSX.Element {
     'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip',
   ]; */
 
-  const [clipboardHistory, setClipboardHistory] = useState<string[]>();
+  const [clipboardHistory, setClipboardHistory] = useState<string[]>([]);
   const clipboardHistoryRef = useRef(clipboardHistory);
 
   useEffect(() => {
