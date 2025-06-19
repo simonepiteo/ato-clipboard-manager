@@ -28,7 +28,6 @@ RCT_EXPORT_METHOD(startWatching) {
     }
   });
 }
-
 RCT_EXPORT_METHOD(stopWatching) {
   [self.timer invalidate];
   self.timer = nil;
