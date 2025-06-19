@@ -7,6 +7,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
   description,
   onClick,
   separator,
+  shortcut,
 }) => {
   const {
     isHovered,
@@ -16,6 +17,11 @@ const MenuItem: React.FC<MenuItemProps> = ({
     handleTouchStart,
     handleTouchEnd,
   } = useInteractiveElements();
+
+  const handleClick = () => {
+    handleTouchEnd();
+    onClick?.();
+  };
 
   return (
     <>
@@ -29,10 +35,13 @@ const MenuItem: React.FC<MenuItemProps> = ({
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}>
-        <Text style={style.menuItemText} onPress={onClick}>
-          {description}
-        </Text>
+        onTouchEnd={handleClick}>
+        <Text style={style.menuItemText}>{description}</Text>
+        {shortcut && (
+          <Text style={style.menuItemShortcut} selectable={false}>
+            {shortcut}
+          </Text>
+        )}
       </View>
     </>
   );
@@ -49,6 +58,9 @@ const style = StyleSheet.create({
     paddingEnd: 10,
     borderRadius: 5,
     cursor: 'pointer',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   menuItemHovered: {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -58,6 +70,10 @@ const style = StyleSheet.create({
   },
   menuItemText: {
     fontSize: 13,
+  },
+  menuItemShortcut: {
+    fontSize: 10,
+    opacity: 0.6,
   },
   menuItemSeparator: {
     borderTopWidth: 1,

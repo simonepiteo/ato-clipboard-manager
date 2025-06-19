@@ -10,11 +10,11 @@
 RCT_EXPORT_MODULE();
 
 - (NSArray<NSString *> *)supportedEvents {
-  return @[@"CommandNumberPressed"];
+  return @[@"CommandNumberPressed", @"CommandOption_S_Pressed"];
 }
 
 - (void)startObserving {
-  // Listen for keyDown events globally
+  // Listen for keyDown
   [NSEvent addLocalMonitorForEventsMatchingMask:NSEventMaskKeyDown handler:^NSEvent * _Nullable(NSEvent *event) {
     // Check for Command + 1-9
     if ((event.modifierFlags & NSEventModifierFlagCommand) &&
@@ -28,6 +28,19 @@ RCT_EXPORT_MODULE();
           [self sendEventWithName:@"CommandNumberPressed" body:@{@"number": @(c - '0')}];
           return nil; // Swallow the event
         }
+      }
+    }
+    return event;
+  }];
+  [NSEvent addLocalMonitorForEventsMatchingMask:NSEventMaskKeyDown handler:^NSEvent * _Nullable(NSEvent *event) {
+    if ((event.modifierFlags & NSEventModifierFlagCommand) &&
+        (event.modifierFlags & NSEventModifierFlagOption) &&
+        !(event.modifierFlags & NSEventModifierFlagShift) &&
+        !(event.modifierFlags & NSEventModifierFlagControl)) {
+      NSString *chars = event.charactersIgnoringModifiers;
+      if ([chars.lowercaseString isEqualToString:@"s"]) {
+        [self sendEventWithName:@"CommandOption_S_Pressed" body:@{@"action": @"settings"}];
+        return nil; // Swallow the event
       }
     }
     return event;

@@ -6,7 +6,7 @@ import Search from './components/Search/Search';
 import SingleNote from './components/SingleNote/SingleNote';
 import useSearch from './hooks/useSearch';
 import {CopiedItem} from './types/CopiedItem.model';
-import {CopyItem} from './utils/CopyItem';
+import {copyItem} from './utils/CopyItem';
 
 function App(): React.JSX.Element {
   const {ClipboardWatcher, WindowManager, KeyboardShortcutManager} =
@@ -38,43 +38,59 @@ function App(): React.JSX.Element {
   };
 
   useEffect(() => {
-    const sub = shortcutEvents.addListener('CommandNumberPressed', event => {
-      const history = clipboardHistoryRef.current;
-      if (history.length >= event.number) {
-        const currentItem = history[event.number - 1];
-        CopyItem(currentItem);
-        WindowManager.closePopover();
-      }
-    });
-    return () => sub.remove();
+    const copyItemSub = shortcutEvents.addListener(
+      'CommandNumberPressed',
+      event => {
+        const history = clipboardHistoryRef.current;
+        if (history.length >= event.number) {
+          const currentItem = history[event.number - 1];
+          copyItem(currentItem);
+          WindowManager.closePopover();
+        }
+      },
+    );
+    const openSettingsSub = shortcutEvents.addListener(
+      'CommandOption_S_Pressed',
+      () => {
+        openSettingsWindow();
+      },
+    );
+    return () => {
+      copyItemSub.remove();
+      openSettingsSub.remove();
+    };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     ClipboardWatcher.startWatching();
-    const sub = clipboardEvents.addListener('ClipboardChanged', event => {
-      /* console.log('Clipboard changed:', event.content); */
-      /* console.log(event); */
+    const clipboardUpdateSub = clipboardEvents.addListener(
+      'ClipboardChanged',
+      event => {
+        /* console.log('Clipboard changed:', event.content); */
+        /* console.log(event); */
 
-      const maxLength = 20;
-
-      setClipboardHistory((prev: CopiedItem[]) => {
-        if (
-          prev.length > 0 &&
-          prev[0].type === event.type &&
-          prev[0].content === event.content
-        ) {
-          return prev;
-        }
-        const filtered = prev.filter(
-          item => !(item.type === event.type && item.content === event.content),
-        );
-        return [event, ...filtered].slice(0, maxLength);
-      });
-    });
+        const maxLength = 20;
+        setClipboardHistory((prev: CopiedItem[]) => {
+          if (
+            prev.length > 0 &&
+            prev[0].type === event.type &&
+            prev[0].content === event.content
+          ) {
+            return prev;
+          }
+          const filtered = prev.filter(
+            item =>
+              !(item.type === event.type && item.content === event.content),
+          );
+          return [event, ...filtered].slice(0, maxLength);
+        });
+      },
+    );
     return () => {
       ClipboardWatcher.stopWatching();
-      sub.remove();
+      clipboardUpdateSub.remove();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -102,7 +118,11 @@ function App(): React.JSX.Element {
           description="Clear history"
           onClick={() => setClipboardHistory([])}
         />
-        <MenuItem description="Settings..." onClick={openSettingsWindow} />
+        <MenuItem
+          description="Settings..."
+          onClick={openSettingsWindow}
+          shortcut="⌘⌥S"
+        />
         <MenuItem
           description="Quit"
           separator

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native-macos';
 import {SingleNoteProps} from './SingleNote.model';
-import {CopyItem} from '../../utils/CopyItem';
+import {copyItem} from '../../utils/CopyItem';
 import {useInteractiveElements} from '../../hooks/useInteractiveElements';
 
 const SingleNote: React.FC<SingleNoteProps> = ({item, id}) => {
@@ -16,9 +16,7 @@ const SingleNote: React.FC<SingleNoteProps> = ({item, id}) => {
 
   const handleSaveToClipboard = () => {
     handleTouchStart();
-    if (item) {
-      CopyItem(item);
-    }
+    copyItem(item);
   };
 
   return (

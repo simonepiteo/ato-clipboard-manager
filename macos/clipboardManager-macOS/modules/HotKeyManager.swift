@@ -13,8 +13,7 @@ import HotKey
     // ⌘⇧V
     hotKey = HotKey(key: .v, modifiers: [.command, .shift])
     hotKey?.keyDownHandler = {
-      // Post a notification or call Objective-C/React Native code here
-      NotificationCenter.default.post(name: NSNotification.Name("ShowPopoverFromHotKey"), object: nil)
+      NotificationCenter.default.post(name: NSNotification.Name("TogglePopoverFromHotKey"), object: nil)
     }
   }
   

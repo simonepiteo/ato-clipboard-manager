@@ -43,8 +43,8 @@
   
   [[HotKeyManager shared] registerCommandShiftV];
   [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(showPopoverFromHotKey)
-                                               name:@"ShowPopoverFromHotKey"
+                                           selector:@selector(togglePopover:)
+                                               name:@"TogglePopoverFromHotKey"
                                              object:nil];
 }
 
