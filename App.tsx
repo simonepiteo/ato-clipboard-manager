@@ -14,7 +14,7 @@ function App(): React.JSX.Element {
   const clipboardEvents = new NativeEventEmitter(ClipboardWatcher);
   const shortcutEvents = new NativeEventEmitter(KeyboardShortcutManager);
 
-  /*   const defaultClipboardHistory: string[] = [
+  const defaultClipboardHistory: string[] = [
     'Welcome to Clipboard Manager!',
     'This is a sample note.',
     'You can add more notes here.',
@@ -25,9 +25,11 @@ function App(): React.JSX.Element {
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip',
-  ]; */
+  ];
 
-  const [clipboardHistory, setClipboardHistory] = useState<string[]>([]);
+  const [clipboardHistory, setClipboardHistory] = useState<string[]>(
+    defaultClipboardHistory,
+  );
   const clipboardHistoryRef = useRef(clipboardHistory);
 
   useEffect(() => {

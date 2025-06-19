@@ -3,6 +3,7 @@
 #import <React/RCTRootView.h>
 #import <React/RCTBundleURLProvider.h>
 #import <Cocoa/Cocoa.h>
+#import "clipboardManager-Swift.h"
 
 @implementation AppDelegate
 
@@ -39,6 +40,12 @@
       [weakSelf.popover performClose:nil];
     }
   }];
+  
+  [[HotKeyManager shared] registerCommandShiftV];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(showPopoverFromHotKey)
+                                               name:@"ShowPopoverFromHotKey"
+                                             object:nil];
 }
 
 - (void)togglePopover:(id)sender {
@@ -52,7 +59,12 @@
   }
 }
 
+- (void)showPopoverFromHotKey {
+  [self togglePopover:nil];
+}
+
 - (void)dealloc {
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
   if (self.eventMonitor) {
     [NSEvent removeMonitor:self.eventMonitor];
     self.eventMonitor = nil;

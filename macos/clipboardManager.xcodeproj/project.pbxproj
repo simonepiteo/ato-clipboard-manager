@@ -13,6 +13,7 @@
 		514201582437B4B40078DB4F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 514201572437B4B40078DB4F /* main.m */; };
 		52362749C1751F4D3AC9F1E7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 645F98B64EFB30CA6DC3605C /* PrivacyInfo.xcprivacy */; };
 		BBBE179C6B5F943BC7B4D28B /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 645F98B64EFB30CA6DC3605C /* PrivacyInfo.xcprivacy */; };
+		D427CE9F2E04555A007B5EF7 /* HotKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D427CE9E2E04555A007B5EF7 /* HotKeyManager.swift */; };
 		D427DFC22E00B484004461F0 /* WindowManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D427DFC12E00B484004461F0 /* WindowManager.mm */; };
 		D47A86202E03085700B7E569 /* ClipboardWatcher.mm in Sources */ = {isa = PBXBuildFile; fileRef = D47A861F2E03085700B7E569 /* ClipboardWatcher.mm */; };
 		D4E79B762E0448BA008107B6 /* KeyboardShortcutManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D4E79B752E0448BA008107B6 /* KeyboardShortcutManager.mm */; };
@@ -33,6 +34,8 @@
 		514201592437B4B40078DB4F /* clipboardManager.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = clipboardManager.entitlements; sourceTree = "<group>"; };
 		645F98B64EFB30CA6DC3605C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		6A414629186CB81822762AC1 /* Pods-clipboardManager-macOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-clipboardManager-macOS.release.xcconfig"; path = "Target Support Files/Pods-clipboardManager-macOS/Pods-clipboardManager-macOS.release.xcconfig"; sourceTree = "<group>"; };
+		D427CE9E2E04555A007B5EF7 /* HotKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotKeyManager.swift; sourceTree = "<group>"; };
+		D427CEA02E04555B007B5EF7 /* clipboardManager-macOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "clipboardManager-macOS-Bridging-Header.h"; sourceTree = "<group>"; };
 		D427DFC12E00B484004461F0 /* WindowManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WindowManager.mm; sourceTree = "<group>"; };
 		D47A861F2E03085700B7E569 /* ClipboardWatcher.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ClipboardWatcher.mm; sourceTree = "<group>"; };
 		D4E79B752E0448BA008107B6 /* KeyboardShortcutManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = KeyboardShortcutManager.mm; sourceTree = "<group>"; };
@@ -70,6 +73,7 @@
 		5142014A2437B4B30078DB4F /* clipboardManager-macOS */ = {
 			isa = PBXGroup;
 			children = (
+				D427CE9E2E04555A007B5EF7 /* HotKeyManager.swift */,
 				D4E79B752E0448BA008107B6 /* KeyboardShortcutManager.mm */,
 				D47A861F2E03085700B7E569 /* ClipboardWatcher.mm */,
 				D427DFC12E00B484004461F0 /* WindowManager.mm */,
@@ -80,6 +84,7 @@
 				514201562437B4B40078DB4F /* Info.plist */,
 				514201572437B4B40078DB4F /* main.m */,
 				514201592437B4B40078DB4F /* clipboardManager.entitlements */,
+				D427CEA02E04555B007B5EF7 /* clipboardManager-macOS-Bridging-Header.h */,
 			);
 			path = "clipboardManager-macOS";
 			sourceTree = "<group>";
@@ -178,6 +183,7 @@
 					};
 					514201482437B4B30078DB4F = {
 						CreatedOnToolsVersion = 11.4;
+						LastSwiftMigration = 1640;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -322,6 +328,7 @@
 				D47A86202E03085700B7E569 /* ClipboardWatcher.mm in Sources */,
 				514201582437B4B40078DB4F /* main.m in Sources */,
 				5142014D2437B4B30078DB4F /* AppDelegate.mm in Sources */,
+				D427CE9F2E04555A007B5EF7 /* HotKeyManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -390,8 +397,9 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				INFOPLIST_FILE = "clipboardManager-macos/Info.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -400,6 +408,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = clipboardManager;
 				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "clipboardManager-macOS/clipboardManager-macOS-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -413,8 +422,9 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = "clipboardManager-macos/Info.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -423,6 +433,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = clipboardManager;
 				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "clipboardManager-macOS/clipboardManager-macOS-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
