@@ -1,4 +1,8 @@
 import {useState} from 'react';
+import {
+  NativeSyntheticEvent,
+  TextInputChangeEventData,
+} from 'react-native-macos';
 
 const useSearch = () => {
   const [typedValue, setTypedValue] = useState<string>('');
@@ -13,7 +17,9 @@ const useSearch = () => {
     setSearchValue('');
   };
 
-  const onChangeHandler = (text: string) => setTypedValue(text);
+  const onChangeHandler = (
+    event: NativeSyntheticEvent<TextInputChangeEventData>,
+  ) => setTypedValue(event.nativeEvent.text);
 
   return {
     typedValue,

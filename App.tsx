@@ -4,6 +4,7 @@ import {ScrollView, StyleSheet} from 'react-native-macos';
 import MenuItem from './components/MenuItem/MenuItem';
 import Search from './components/Search/Search';
 import SingleNote from './components/SingleNote/SingleNote';
+import useSearch from './hooks/useSearch';
 import {CopiedItem} from './types/CopiedItem.model';
 import {CopyItem} from './utils/CopyItem';
 
@@ -14,40 +15,23 @@ function App(): React.JSX.Element {
   const clipboardEvents = new NativeEventEmitter(ClipboardWatcher);
   const shortcutEvents = new NativeEventEmitter(KeyboardShortcutManager);
 
-  /* const defaultClipboardHistory: CopiedItem[] = [
-    {type: 'text', content: 'Welcome to Clipboard Manager!'},
-    {type: 'text', content: 'This is a sample note.'},
-    {type: 'text', content: 'You can add more notes here.'},
-    {type: 'text', content: 'Remember to save your important notes.'},
-    {
-      type: 'text',
-      content:
-        'Clipboard Manager helps you keep track of your clipboard history.',
-    },
-    {type: 'text', content: 'You can clear your history anytime.'},
-    {type: 'text', content: 'Feel free to customize your notes.'},
-    {
-      type: 'text',
-      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    },
-    {
-      type: 'text',
-      content:
-        'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    },
-    {
-      type: 'text',
-      content:
-        'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip',
-    },
-  ]; */
-
+  const searchHandler = useSearch();
   const [clipboardHistory, setClipboardHistory] = useState<CopiedItem[]>([]);
-  const clipboardHistoryRef = useRef(clipboardHistory);
+  const filteredHistory =
+    !searchHandler.typedValue || searchHandler.typedValue === ''
+      ? clipboardHistory
+      : clipboardHistory.filter(
+          (item: CopiedItem) =>
+            item.type === 'text' &&
+            item.content
+              .toLowerCase()
+              .includes(searchHandler.typedValue.toLowerCase()),
+        );
+  const clipboardHistoryRef = useRef(filteredHistory);
 
   useEffect(() => {
-    clipboardHistoryRef.current = clipboardHistory;
-  }, [clipboardHistory]);
+    clipboardHistoryRef.current = filteredHistory;
+  }, [filteredHistory]);
 
   const openSettingsWindow = () => {
     WindowManager.openWindow('Settings', 'Clipboard Manager - Settings');
@@ -97,14 +81,18 @@ function App(): React.JSX.Element {
 
   return (
     <View style={styles.container}>
-      <Search />
+      <Search
+        onChange={searchHandler.onChangeHandler}
+        value={searchHandler.typedValue}
+        onReset={searchHandler.handleClear}
+      />
       <ScrollView
         style={styles.notesSection}
         contentContainerStyle={styles.notesContent}
         horizontal={false}
         showsVerticalScrollIndicator={true}>
         <View style={styles.notesGrid}>
-          {clipboardHistory.map((item, idx) => (
+          {filteredHistory.map((item, idx) => (
             <SingleNote key={`note-${idx}`} item={item} id={idx + 1} />
           ))}
         </View>
