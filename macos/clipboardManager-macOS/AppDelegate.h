@@ -6,4 +6,5 @@
     @property(strong, nonatomic) NSStatusItem *statusItem;
     @property(strong, nonatomic) NSString *jsBundleURLForBundleRoot;
     @property (strong) id eventMonitor;
+    @property (copy) NSString *lastActiveAppBundleID;
 @end

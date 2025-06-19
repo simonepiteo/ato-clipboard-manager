@@ -45,6 +45,7 @@ function App(): React.JSX.Element {
       const history = clipboardHistoryRef.current;
       if (history.length >= event.number) {
         Clipboard.setString(history[event.number - 1]);
+        WindowManager.closePopover();
       }
     });
     return () => sub.remove();

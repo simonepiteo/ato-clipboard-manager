@@ -1,6 +1,7 @@
 #import <React/RCTBridgeModule.h>
 #import <React/RCTBridge.h>
 #import <React/RCTRootView.h>
+#import "AppDelegate.h"
 
 @interface WindowManager : NSObject <RCTBridgeModule>
 @property (nonatomic, weak) RCTBridge *bridge;
@@ -55,6 +56,42 @@ RCT_EXPORT_METHOD(openWindow:(NSString *)moduleName
                                                   usingBlock:^(NSNotification *note) {
       [self.openWindows removeObject:window];
     }];
+  });
+}
+
+RCT_EXPORT_METHOD(closePopover)
+{
+  dispatch_async(dispatch_get_main_queue(), ^{
+    AppDelegate *delegate = (AppDelegate *)[NSApp delegate];
+    if (delegate.popover.isShown) {
+      [delegate.popover performClose:nil];
+      if (delegate.lastActiveAppBundleID) {
+        NSArray *runningApps = [NSRunningApplication runningApplicationsWithBundleIdentifier:delegate.lastActiveAppBundleID];
+        NSRunningApplication *appToActivate = runningApps.firstObject;
+        if (appToActivate) {
+          [appToActivate activateWithOptions:0];
+
+          // Simulate Cmd+V after a short delay
+          dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.15 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            CGEventSourceRef source = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
+
+            CGEventRef keyVDown = CGEventCreateKeyboardEvent(source, (CGKeyCode)9, true);  // 9 = 'v'
+            CGEventRef keyVUp   = CGEventCreateKeyboardEvent(source, (CGKeyCode)9, false);
+
+            CGEventSetFlags(keyVDown, kCGEventFlagMaskCommand);
+            CGEventSetFlags(keyVUp,   kCGEventFlagMaskCommand);
+
+            CGEventPost(kCGHIDEventTap, keyVDown);
+            CGEventPost(kCGHIDEventTap, keyVUp);
+
+            CFRelease(keyVDown);
+            CFRelease(keyVUp);
+            CFRelease(source);
+          });
+        }
+        delegate.lastActiveAppBundleID = nil;
+      }
+    }
   });
 }
 

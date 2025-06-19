@@ -52,6 +52,8 @@
   if (self.popover.isShown) {
     [self.popover performClose:sender];
   } else {
+    NSRunningApplication *frontApp = [[NSWorkspace sharedWorkspace] frontmostApplication];
+    self.lastActiveAppBundleID = frontApp.bundleIdentifier;
     [self.popover showRelativeToRect:[self.statusItem.button bounds]
                               ofView:self.statusItem.button
                        preferredEdge:NSRectEdgeMinY];
