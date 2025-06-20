@@ -15,6 +15,7 @@
     "postrelease": "git fetch --atomic . develop:main && git push --atomic --follow-tags origin main develop"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-native-picker/picker": "^2.11.1",
     "i18next": "^25.2.1",
     "react": "19.0.0",

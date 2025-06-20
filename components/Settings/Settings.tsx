@@ -7,75 +7,98 @@ import {Entity} from '../../types/Shared.model';
 import {displayMode} from '../../utils/Settings';
 import packageJson from '../../package.json';
 import Button from '../Button/Button';
+import {useSettings} from '../../hooks/useSetting';
+import {displayModeType} from '../../types/Settings.model';
 
 const Settings = () => {
   const {t, i18n} = useTranslation();
+  const {settings, updateSettings, resetSettings} = useSettings();
 
   const handleLanguageChange = (lng: string) => {
     i18n.changeLanguage(lng);
+    updateSettings({language: lng});
   };
 
   return (
     <View style={style.settingsWindow}>
-      <View style={style.settingsContainer}>
-        <View style={style.settingsSection}>
-          <Text>{t('components.settings.language.label')}</Text>
-          <View style={style.settingPickerContainer}>
-            <Picker
-              selectedValue={i18n.language}
-              onValueChange={handleLanguageChange}
-              style={style.settingsPicker}>
-              {supportedLngs.map(lng => (
-                <Picker.Item
-                  key={`language-selector-${lng}`}
-                  label={t(`extendedLanguageName.${lng}`)}
-                  value={lng}
-                />
-              ))}
-            </Picker>
+      {settings && (
+        <View style={style.settingsContainer}>
+          <View style={style.settingsSection}>
+            <Text>{t('components.settings.language.label')}</Text>
+            <View style={style.settingPickerContainer}>
+              <Picker
+                selectedValue={i18n.language}
+                onValueChange={handleLanguageChange}
+                style={style.settingsPicker}>
+                {supportedLngs.map(lng => (
+                  <Picker.Item
+                    key={`language-selector-${lng}`}
+                    label={t(`extendedLanguageName.${lng}`)}
+                    value={lng}
+                  />
+                ))}
+              </Picker>
+            </View>
+          </View>
+          <View style={style.settingsSection}>
+            <Text>{t('components.settings.displayMode.label')}</Text>
+            <View style={style.settingPickerContainer}>
+              <Picker
+                selectedValue={settings.displayMode}
+                onValueChange={(mode: displayModeType) =>
+                  updateSettings({displayMode: mode})
+                }
+                style={style.settingsPicker}>
+                {displayMode.map((mode: Entity) => (
+                  <Picker.Item
+                    key={`display-mode-${mode.id}`}
+                    label={t(mode.label)}
+                    value={mode.id}
+                  />
+                ))}
+              </Picker>
+            </View>
+          </View>
+          <View style={style.settingsSection}>
+            <Text>{t('components.settings.maxHistoryItems.label')}</Text>
+            <TextInput
+              style={style.settingsTextInput}
+              defaultValue={settings?.maxHistoryItems.toString()}
+            />
+          </View>
+          <View style={style.settingsSection}>
+            <Text>{t('components.settings.automaticPaste.label')}</Text>
+            <Switch
+              onValueChange={() =>
+                updateSettings({automaticPaste: !settings.automaticPaste})
+              }
+              value={settings?.automaticPaste}
+            />
+          </View>
+          <View style={style.settingsSection}>
+            <Text>{t('components.settings.automaticPasteShortcut.label')}</Text>
+            <Switch
+              onValueChange={() =>
+                updateSettings({
+                  automaticPasteShortcut: !settings.automaticPasteShortcut,
+                })
+              }
+              value={settings?.automaticPasteShortcut}
+            />
+          </View>
+          <View style={style.settingsSection}>
+            <Text>{t('components.settings.popoverShortcut.label')}</Text>
+            <TextInput style={style.settingsTextInput} value="⌘ ⇧ V" />
+          </View>
+          <View style={style.settingsSection}>
+            <Button customStyle={style.settingsUpdateButton}>
+              <Text>{t('components.settings.checkUpdates.label')}</Text>
+            </Button>
           </View>
         </View>
-        <View style={style.settingsSection}>
-          <Text>{t('components.settings.displayMode.label')}</Text>
-          <View style={style.settingPickerContainer}>
-            <Picker
-              selectedValue={i18n.language}
-              onValueChange={handleLanguageChange}
-              style={style.settingsPicker}>
-              {displayMode.map((mode: Entity) => (
-                <Picker.Item
-                  key={`display-mode-${mode.id}`}
-                  label={t(mode.label)}
-                  value={mode.id}
-                />
-              ))}
-            </Picker>
-          </View>
-        </View>
-        <View style={style.settingsSection}>
-          <Text>{t('components.settings.maxHistoryItems.label')}</Text>
-          <TextInput style={style.settingsTextInput} value="20" />
-        </View>
-        <View style={style.settingsSection}>
-          <Text>{t('components.settings.automaticPaste.label')}</Text>
-          <Switch onValueChange={() => {}} />
-        </View>
-        <View style={style.settingsSection}>
-          <Text>{t('components.settings.automaticPasteShortcut.label')}</Text>
-          <Switch onValueChange={() => {}} />
-        </View>
-        <View style={style.settingsSection}>
-          <Text>{t('components.settings.popoverShortcut.label')}</Text>
-          <TextInput style={style.settingsTextInput} value="⌘ ⇧ V" />
-        </View>
-        <View style={style.settingsSection}>
-          <Button customStyle={style.settingsUpdateButton}>
-            <Text>{t('components.settings.checkUpdates.label')}</Text>
-          </Button>
-        </View>
-      </View>
+      )}
       <View style={style.settingMenu}>
-        <Button>
+        <Button onClick={resetSettings}>
           <Text>{t('components.settings.menu.reset')}</Text>
         </Button>
         <Button>

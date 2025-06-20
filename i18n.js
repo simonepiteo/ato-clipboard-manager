@@ -22,11 +22,12 @@ const resources = Object.fromEntries(
 );
 
 export const supportedLngs = Object.keys(resources);
+export const defaultLanguage = supportedLngs[0];
 
 i18n.use(initReactI18next).init({
   resources,
-  lng: 'en',
-  fallbackLng: 'en',
+  lng: defaultLanguage,
+  fallbackLng: defaultLanguage,
   supportedLngs,
   interpolation: {
     escapeValue: false,

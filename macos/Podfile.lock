@@ -1481,6 +1481,8 @@ PODS:
     - React-logger (= 0.78.3)
     - React-perflogger (= 0.78.3)
     - React-utils (= 0.78.3)
+  - RNCAsyncStorage (2.2.0):
+    - React-Core
   - RNCPicker (2.11.1):
     - React-Core
   - RNSVG (15.12.0):
@@ -1555,6 +1557,7 @@ DEPENDENCIES:
   - ReactAppDependencyProvider (from `build/generated/ios`)
   - ReactCodegen (from `build/generated/ios`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native-macos/ReactCommon`)
+  - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
   - RNSVG (from `../node_modules/react-native-svg`)
   - SocketRocket (from `../node_modules/react-native-macos/third-party-podspecs/SocketRocket.podspec`)
@@ -1691,6 +1694,8 @@ EXTERNAL SOURCES:
     :path: build/generated/ios
   ReactCommon:
     :path: "../node_modules/react-native-macos/ReactCommon"
+  RNCAsyncStorage:
+    :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCPicker:
     :path: "../node_modules/@react-native-picker/picker"
   RNSVG:
@@ -1765,6 +1770,7 @@ SPEC CHECKSUMS:
   ReactAppDependencyProvider: a12262458b50521ba56afb93f4cc875732f9d643
   ReactCodegen: 3d30536e47f328f0a297d897cb789e46a092c2a6
   ReactCommon: 0f22e3dd34a8215b8482778898f6e1e95572c498
+  RNCAsyncStorage: b44e8a4e798c3e1f56bffccd0f591f674fb9198f
   RNCPicker: da0f1c9411208c1ca52bc98383db54a06e0a3862
   RNSVG: ae1766b2492f8915a1ee25095871f00a4f132093
   SocketRocket: 03f7111df1a343b162bf5b06ead333be808e1e0a

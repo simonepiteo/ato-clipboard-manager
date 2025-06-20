@@ -8,9 +8,11 @@ import useSearch from './hooks/useSearch';
 import {CopiedItem} from './types/CopiedItem.model';
 import {copyItem} from './utils/CopyItem';
 import {useTranslation} from 'react-i18next';
+import {useSettings} from './hooks/useSetting';
 
 function App(): React.JSX.Element {
-  const {t} = useTranslation();
+  const {settings} = useSettings();
+  const {t, i18n} = useTranslation();
 
   const {ClipboardWatcher, WindowManager, KeyboardShortcutManager} =
     NativeModules;
@@ -97,6 +99,10 @@ function App(): React.JSX.Element {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    i18n.changeLanguage(settings?.language);
+  }, [i18n, settings?.language]);
 
   return (
     <View style={styles.container}>
