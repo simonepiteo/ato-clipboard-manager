@@ -56,6 +56,13 @@ RCT_EXPORT_METHOD(openWindow:(NSString *)moduleName
                                                        queue:nil
                                                   usingBlock:^(NSNotification *note) {
       [self.openWindows removeObject:window];
+      // Open and focus the popover
+      dispatch_async(dispatch_get_main_queue(), ^{
+        AppDelegate *delegate = (AppDelegate *)[NSApp delegate];
+        if (delegate && !delegate.popover.isShown) {
+          [delegate togglePopover:nil];
+        }
+      });
     }];
   });
 }
@@ -73,7 +80,7 @@ RCT_EXPORT_METHOD(closePopover:(BOOL)automaticPasteShortcut)
           [appToActivate activateWithOptions:0];
           
           if(automaticPasteShortcut) {
-          // Simulate Cmd+V after a short delay
+            // Simulate Cmd+V after a short delay
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.15 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
               CGEventSourceRef source = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
               

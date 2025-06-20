@@ -7,4 +7,5 @@
     @property(strong, nonatomic) NSString *jsBundleURLForBundleRoot;
     @property (strong) id eventMonitor;
     @property (copy) NSString *lastActiveAppBundleID;
+    - (void)togglePopover:(id)sender;
 @end
