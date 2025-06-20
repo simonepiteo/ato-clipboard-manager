@@ -3,13 +3,13 @@
 #import <React/RCTRootView.h>
 #import <React/RCTBundleURLProvider.h>
 #import <Cocoa/Cocoa.h>
-#import "clipboardManager-Swift.h"
+#import "atoClipboardManager-Swift.h"
 
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
   
-  self.moduleName = @"clipboardManager";
+  self.moduleName = @"atoClipboardManager";
   self.initialProps = @{};
   self.jsBundleURLForBundleRoot = @"index";
   __weak __typeof(self) weakSelf = self;

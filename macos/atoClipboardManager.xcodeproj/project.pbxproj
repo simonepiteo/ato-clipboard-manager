@@ -7,39 +7,40 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1595DBFCC90C88543E8B4065 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = A6797A13C369297E69C7DD49 /* PrivacyInfo.xcprivacy */; };
+		43CDD083FE6B97584FD80FE9 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = A6797A13C369297E69C7DD49 /* PrivacyInfo.xcprivacy */; };
 		5142014D2437B4B30078DB4F /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5142014C2437B4B30078DB4F /* AppDelegate.mm */; };
 		514201522437B4B40078DB4F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 514201512437B4B40078DB4F /* Assets.xcassets */; };
 		514201552437B4B40078DB4F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 514201532437B4B40078DB4F /* Main.storyboard */; };
 		514201582437B4B40078DB4F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 514201572437B4B40078DB4F /* main.m */; };
-		52362749C1751F4D3AC9F1E7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 645F98B64EFB30CA6DC3605C /* PrivacyInfo.xcprivacy */; };
-		BBBE179C6B5F943BC7B4D28B /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 645F98B64EFB30CA6DC3605C /* PrivacyInfo.xcprivacy */; };
-		D427CEAD2E049791007B5EF7 /* ClipboardHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = D427CEA72E049791007B5EF7 /* ClipboardHandler.mm */; };
-		D427CEAE2E049791007B5EF7 /* ClipboardWatcher.mm in Sources */ = {isa = PBXBuildFile; fileRef = D427CEA82E049791007B5EF7 /* ClipboardWatcher.mm */; };
-		D427CEAF2E049791007B5EF7 /* WindowManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D427CEAB2E049791007B5EF7 /* WindowManager.mm */; };
-		D427CEB02E049791007B5EF7 /* HotKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D427CEA92E049791007B5EF7 /* HotKeyManager.swift */; };
-		D427CEB12E049791007B5EF7 /* KeyboardShortcutManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D427CEAA2E049791007B5EF7 /* KeyboardShortcutManager.mm */; };
-		EA81EC1DAA7DCA41B1AA1545 /* libPods-clipboardManager-macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2091947FE99DD099B7C16B3E /* libPods-clipboardManager-macOS.a */; };
+		70330C89043A24442D4958B6 /* libPods-atoClipboardManager-macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 776462B93C0CE903DAAB016E /* libPods-atoClipboardManager-macOS.a */; };
+		D4625D852E05FE0F00C82504 /* WindowManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D4625D832E05FE0F00C82504 /* WindowManager.mm */; };
+		D4625D862E05FE0F00C82504 /* KeyboardShortcutManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D4625D822E05FE0F00C82504 /* KeyboardShortcutManager.mm */; };
+		D4625D872E05FE0F00C82504 /* ClipboardHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = D4625D7F2E05FE0F00C82504 /* ClipboardHandler.mm */; };
+		D4625D882E05FE0F00C82504 /* ClipboardWatcher.mm in Sources */ = {isa = PBXBuildFile; fileRef = D4625D802E05FE0F00C82504 /* ClipboardWatcher.mm */; };
+		D4625D8B2E05FF6100C82504 /* HotKeyManager 2.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4625D8A2E05FF6100C82504 /* HotKeyManager 2.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		13B07F961A680F5B00A75B9A /* clipboardManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = clipboardManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		2091947FE99DD099B7C16B3E /* libPods-clipboardManager-macOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-clipboardManager-macOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		277AB74CE8EE708EE3B02F0B /* Pods-clipboardManager-macOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-clipboardManager-macOS.debug.xcconfig"; path = "Target Support Files/Pods-clipboardManager-macOS/Pods-clipboardManager-macOS.debug.xcconfig"; sourceTree = "<group>"; };
-		514201492437B4B30078DB4F /* clipboardManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = clipboardManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* atoClipboardManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = atoClipboardManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		514201492437B4B30078DB4F /* atoClipboardManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = atoClipboardManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5142014B2437B4B30078DB4F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		5142014C2437B4B30078DB4F /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
 		514201512437B4B40078DB4F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		514201542437B4B40078DB4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		514201562437B4B40078DB4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		514201572437B4B40078DB4F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		514201592437B4B40078DB4F /* clipboardManager.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = clipboardManager.entitlements; sourceTree = "<group>"; };
-		645F98B64EFB30CA6DC3605C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		6A414629186CB81822762AC1 /* Pods-clipboardManager-macOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-clipboardManager-macOS.release.xcconfig"; path = "Target Support Files/Pods-clipboardManager-macOS/Pods-clipboardManager-macOS.release.xcconfig"; sourceTree = "<group>"; };
-		D427CEA72E049791007B5EF7 /* ClipboardHandler.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ClipboardHandler.mm; sourceTree = "<group>"; };
-		D427CEA82E049791007B5EF7 /* ClipboardWatcher.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ClipboardWatcher.mm; sourceTree = "<group>"; };
-		D427CEA92E049791007B5EF7 /* HotKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotKeyManager.swift; sourceTree = "<group>"; };
-		D427CEAA2E049791007B5EF7 /* KeyboardShortcutManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = KeyboardShortcutManager.mm; sourceTree = "<group>"; };
-		D427CEAB2E049791007B5EF7 /* WindowManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WindowManager.mm; sourceTree = "<group>"; };
+		514201592437B4B40078DB4F /* atoClipboardManager.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = atoClipboardManager.entitlements; sourceTree = "<group>"; };
+		776462B93C0CE903DAAB016E /* libPods-atoClipboardManager-macOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-atoClipboardManager-macOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8640FE07C692702D30C76546 /* Pods-atoClipboardManager-macOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-atoClipboardManager-macOS.release.xcconfig"; path = "Target Support Files/Pods-atoClipboardManager-macOS/Pods-atoClipboardManager-macOS.release.xcconfig"; sourceTree = "<group>"; };
+		A6797A13C369297E69C7DD49 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		CBF5305251BEA6496B1BB7B2 /* Pods-atoClipboardManager-macOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-atoClipboardManager-macOS.debug.xcconfig"; path = "Target Support Files/Pods-atoClipboardManager-macOS/Pods-atoClipboardManager-macOS.debug.xcconfig"; sourceTree = "<group>"; };
+		D4625D7F2E05FE0F00C82504 /* ClipboardHandler.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ClipboardHandler.mm; sourceTree = "<group>"; };
+		D4625D802E05FE0F00C82504 /* ClipboardWatcher.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ClipboardWatcher.mm; sourceTree = "<group>"; };
+		D4625D822E05FE0F00C82504 /* KeyboardShortcutManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = KeyboardShortcutManager.mm; sourceTree = "<group>"; };
+		D4625D832E05FE0F00C82504 /* WindowManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WindowManager.mm; sourceTree = "<group>"; };
+		D4625D8A2E05FF6100C82504 /* HotKeyManager 2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HotKeyManager 2.swift"; sourceTree = "<group>"; };
+		D4625D8C2E05FF6200C82504 /* atoClipboardManager-macOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "atoClipboardManager-macOS-Bridging-Header.h"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -55,7 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EA81EC1DAA7DCA41B1AA1545 /* libPods-clipboardManager-macOS.a in Frameworks */,
+				70330C89043A24442D4958B6 /* libPods-atoClipboardManager-macOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,33 +67,25 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				2091947FE99DD099B7C16B3E /* libPods-clipboardManager-macOS.a */,
+				776462B93C0CE903DAAB016E /* libPods-atoClipboardManager-macOS.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		5142014A2437B4B30078DB4F /* clipboardManager-macOS */ = {
+		5142014A2437B4B30078DB4F /* atoClipboardManager-macOS */ = {
 			isa = PBXGroup;
 			children = (
-				D427CEAC2E049791007B5EF7 /* modules */,
+				D4625D842E05FE0F00C82504 /* modules */,
 				5142014B2437B4B30078DB4F /* AppDelegate.h */,
 				5142014C2437B4B30078DB4F /* AppDelegate.mm */,
 				514201512437B4B40078DB4F /* Assets.xcassets */,
 				514201532437B4B40078DB4F /* Main.storyboard */,
 				514201562437B4B40078DB4F /* Info.plist */,
 				514201572437B4B40078DB4F /* main.m */,
-				514201592437B4B40078DB4F /* clipboardManager.entitlements */,
+				514201592437B4B40078DB4F /* atoClipboardManager.entitlements */,
+				D4625D8C2E05FF6200C82504 /* atoClipboardManager-macOS-Bridging-Header.h */,
 			);
-			path = "clipboardManager-macOS";
-			sourceTree = "<group>";
-		};
-		633804CF1B07E95373E064C3 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				277AB74CE8EE708EE3B02F0B /* Pods-clipboardManager-macOS.debug.xcconfig */,
-				6A414629186CB81822762AC1 /* Pods-clipboardManager-macOS.release.xcconfig */,
-			);
-			path = Pods;
+			path = "atoClipboardManager-macOS";
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -105,12 +98,12 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				5142014A2437B4B30078DB4F /* clipboardManager-macOS */,
+				5142014A2437B4B30078DB4F /* atoClipboardManager-macOS */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				645F98B64EFB30CA6DC3605C /* PrivacyInfo.xcprivacy */,
-				633804CF1B07E95373E064C3 /* Pods */,
+				A6797A13C369297E69C7DD49 /* PrivacyInfo.xcprivacy */,
+				C5CF1136FD5A543224956856 /* Pods */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -120,20 +113,29 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* clipboardManager.app */,
-				514201492437B4B30078DB4F /* clipboardManager.app */,
+				13B07F961A680F5B00A75B9A /* atoClipboardManager.app */,
+				514201492437B4B30078DB4F /* atoClipboardManager.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		D427CEAC2E049791007B5EF7 /* modules */ = {
+		C5CF1136FD5A543224956856 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				D427CEA72E049791007B5EF7 /* ClipboardHandler.mm */,
-				D427CEA82E049791007B5EF7 /* ClipboardWatcher.mm */,
-				D427CEA92E049791007B5EF7 /* HotKeyManager.swift */,
-				D427CEAA2E049791007B5EF7 /* KeyboardShortcutManager.mm */,
-				D427CEAB2E049791007B5EF7 /* WindowManager.mm */,
+				CBF5305251BEA6496B1BB7B2 /* Pods-atoClipboardManager-macOS.debug.xcconfig */,
+				8640FE07C692702D30C76546 /* Pods-atoClipboardManager-macOS.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		D4625D842E05FE0F00C82504 /* modules */ = {
+			isa = PBXGroup;
+			children = (
+				D4625D7F2E05FE0F00C82504 /* ClipboardHandler.mm */,
+				D4625D802E05FE0F00C82504 /* ClipboardWatcher.mm */,
+				D4625D822E05FE0F00C82504 /* KeyboardShortcutManager.mm */,
+				D4625D832E05FE0F00C82504 /* WindowManager.mm */,
+				D4625D8A2E05FF6100C82504 /* HotKeyManager 2.swift */,
 			);
 			path = modules;
 			sourceTree = "<group>";
@@ -141,9 +143,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		13B07F861A680F5B00A75B9A /* clipboardManager-iOS */ = {
+		13B07F861A680F5B00A75B9A /* atoClipboardManager-iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "clipboardManager-iOS" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "atoClipboardManager-iOS" */;
 			buildPhases = (
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
@@ -154,29 +156,29 @@
 			);
 			dependencies = (
 			);
-			name = "clipboardManager-iOS";
-			productName = clipboardManager;
-			productReference = 13B07F961A680F5B00A75B9A /* clipboardManager.app */;
+			name = "atoClipboardManager-iOS";
+			productName = atoClipboardManager;
+			productReference = 13B07F961A680F5B00A75B9A /* atoClipboardManager.app */;
 			productType = "com.apple.product-type.application";
 		};
-		514201482437B4B30078DB4F /* clipboardManager-macOS */ = {
+		514201482437B4B30078DB4F /* atoClipboardManager-macOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5142015A2437B4B40078DB4F /* Build configuration list for PBXNativeTarget "clipboardManager-macOS" */;
+			buildConfigurationList = 5142015A2437B4B40078DB4F /* Build configuration list for PBXNativeTarget "atoClipboardManager-macOS" */;
 			buildPhases = (
 				1A938104A937498D81B3BD3B /* [CP] Check Pods Manifest.lock */,
 				514201452437B4B30078DB4F /* Sources */,
 				514201462437B4B30078DB4F /* Frameworks */,
 				514201472437B4B30078DB4F /* Resources */,
 				381D8A6E24576A4E00465D17 /* Bundle React Native code and images */,
-				EBA3B5724DA64BFF194EFF42 /* [CP] Copy Pods Resources */,
+				4B734CAC97BA89C9C3DB489C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = "clipboardManager-macOS";
-			productName = clipboardManager;
-			productReference = 514201492437B4B30078DB4F /* clipboardManager.app */;
+			name = "atoClipboardManager-macOS";
+			productName = atoClipboardManager;
+			productReference = 514201492437B4B30078DB4F /* atoClipboardManager.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -197,7 +199,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "clipboardManager" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "atoClipboardManager" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -210,8 +212,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* clipboardManager-iOS */,
-				514201482437B4B30078DB4F /* clipboardManager-macOS */,
+				13B07F861A680F5B00A75B9A /* atoClipboardManager-iOS */,
+				514201482437B4B30078DB4F /* atoClipboardManager-macOS */,
 			);
 		};
 /* End PBXProject section */
@@ -221,7 +223,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				52362749C1751F4D3AC9F1E7 /* PrivacyInfo.xcprivacy in Resources */,
+				43CDD083FE6B97584FD80FE9 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -231,7 +233,7 @@
 			files = (
 				514201522437B4B40078DB4F /* Assets.xcassets in Resources */,
 				514201552437B4B40078DB4F /* Main.storyboard in Resources */,
-				BBBE179C6B5F943BC7B4D28B /* PrivacyInfo.xcprivacy in Resources */,
+				1595DBFCC90C88543E8B4065 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,7 +269,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-clipboardManager-macOS-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-atoClipboardManager-macOS-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -292,13 +294,13 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native-macos/scripts/react-native-xcode.sh\n";
 		};
-		EBA3B5724DA64BFF194EFF42 /* [CP] Copy Pods Resources */ = {
+		4B734CAC97BA89C9C3DB489C /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-clipboardManager-macOS/Pods-clipboardManager-macOS-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-atoClipboardManager-macOS/Pods-atoClipboardManager-macOS-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/RCT-Folly/RCT-Folly_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/RNCAsyncStorage/RNCAsyncStorage_resources.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/RNSVG/RNSVGFilters.bundle",
@@ -319,7 +321,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-clipboardManager-macOS/Pods-clipboardManager-macOS-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-atoClipboardManager-macOS/Pods-atoClipboardManager-macOS-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -337,12 +339,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				514201582437B4B40078DB4F /* main.m in Sources */,
-				D427CEAD2E049791007B5EF7 /* ClipboardHandler.mm in Sources */,
-				D427CEAE2E049791007B5EF7 /* ClipboardWatcher.mm in Sources */,
-				D427CEAF2E049791007B5EF7 /* WindowManager.mm in Sources */,
-				D427CEB02E049791007B5EF7 /* HotKeyManager.swift in Sources */,
-				D427CEB12E049791007B5EF7 /* KeyboardShortcutManager.mm in Sources */,
 				5142014D2437B4B30078DB4F /* AppDelegate.mm in Sources */,
+				D4625D852E05FE0F00C82504 /* WindowManager.mm in Sources */,
+				D4625D862E05FE0F00C82504 /* KeyboardShortcutManager.mm in Sources */,
+				D4625D872E05FE0F00C82504 /* ClipboardHandler.mm in Sources */,
+				D4625D882E05FE0F00C82504 /* ClipboardWatcher.mm in Sources */,
+				D4625D8B2E05FF6100C82504 /* HotKeyManager 2.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,7 +369,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = "clipboardManager-iOS/Info.plist";
+				INFOPLIST_FILE = "atoClipboardManager-iOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -375,7 +377,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = clipboardManager;
+				PRODUCT_NAME = atoClipboardManager;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -388,7 +390,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = "clipboardManager-iOS/Info.plist";
+				INFOPLIST_FILE = "atoClipboardManager-iOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -396,7 +398,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = clipboardManager;
+				PRODUCT_NAME = atoClipboardManager;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -404,25 +406,24 @@
 		};
 		5142015B2437B4B40078DB4F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 277AB74CE8EE708EE3B02F0B /* Pods-clipboardManager-macOS.debug.xcconfig */;
+			baseConfigurationReference = CBF5305251BEA6496B1BB7B2 /* Pods-atoClipboardManager-macOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				INFOPLIST_FILE = "clipboardManager-macos/Info.plist";
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_FILE = "atoClipboardManager-macos/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = clipboardManager;
+				PRODUCT_NAME = atoClipboardManager;
 				SDKROOT = macosx;
-				SWIFT_OBJC_BRIDGING_HEADER = "clipboardManager-macOS/clipboardManager-macOS-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "atoClipboardManager-macOS/atoClipboardManager-macOS-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -430,24 +431,23 @@
 		};
 		5142015C2437B4B40078DB4F /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6A414629186CB81822762AC1 /* Pods-clipboardManager-macOS.release.xcconfig */;
+			baseConfigurationReference = 8640FE07C692702D30C76546 /* Pods-atoClipboardManager-macOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = "clipboardManager-macos/Info.plist";
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_FILE = "atoClipboardManager-macos/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = clipboardManager;
+				PRODUCT_NAME = atoClipboardManager;
 				SDKROOT = macosx;
-				SWIFT_OBJC_BRIDGING_HEADER = "clipboardManager-macOS/clipboardManager-macOS-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "atoClipboardManager-macOS/atoClipboardManager-macOS-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -581,7 +581,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "clipboardManager-iOS" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "atoClipboardManager-iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -590,7 +590,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		5142015A2437B4B40078DB4F /* Build configuration list for PBXNativeTarget "clipboardManager-macOS" */ = {
+		5142015A2437B4B40078DB4F /* Build configuration list for PBXNativeTarget "atoClipboardManager-macOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5142015B2437B4B40078DB4F /* Debug */,
@@ -599,7 +599,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "clipboardManager" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "atoClipboardManager" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

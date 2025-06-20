@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "514201482437B4B30078DB4F"
-               BuildableName = "clipboardManager.app"
-               BlueprintName = "clipboardManager-macOS"
-               ReferencedContainer = "container:clipboardManager.xcodeproj">
+               BuildableName = "atoClipboardManager.app"
+               BlueprintName = "atoClipboardManager-macOS"
+               ReferencedContainer = "container:atoClipboardManager.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,9 +45,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "514201482437B4B30078DB4F"
-            BuildableName = "clipboardManager.app"
-            BlueprintName = "clipboardManager-macOS"
-            ReferencedContainer = "container:clipboardManager.xcodeproj">
+            BuildableName = "atoClipboardManager.app"
+            BlueprintName = "atoClipboardManager-macOS"
+            ReferencedContainer = "container:atoClipboardManager.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "514201482437B4B30078DB4F"
-            BuildableName = "clipboardManager.app"
-            BlueprintName = "clipboardManager-macOS"
-            ReferencedContainer = "container:clipboardManager.xcodeproj">
+            BuildableName = "atoClipboardManager.app"
+            BlueprintName = "atoClipboardManager-macOS"
+            ReferencedContainer = "container:atoClipboardManager.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

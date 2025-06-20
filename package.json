@@ -1,5 +1,5 @@
 {
-  "name": "clipboardManager",
+  "name": "atoClipboardManager",
   "version": "0.0.6",
   "private": true,
   "scripts": {
