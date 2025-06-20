@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.0.6](https://github.com/simonepiteo/clipboard-manager/compare/v0.0.5...v0.0.6) (2025-06-20)
+
+
+### Features
+
+* automatic paste settings ([8f3bc18](https://github.com/simonepiteo/clipboard-manager/commit/8f3bc181d43f7490ef04de05738a0e3deb315fa0))
+* display mode setting ([988953b](https://github.com/simonepiteo/clipboard-manager/commit/988953b43af9894e86fb830a0128cad81671f389))
+* icons ([27ae0da](https://github.com/simonepiteo/clipboard-manager/commit/27ae0dae9b1b8b6d237d86c6fe5401e6e7a057af))
+* max history item setting ([49e2404](https://github.com/simonepiteo/clipboard-manager/commit/49e24040649636538b54fb5a3996f5eeb3da381c))
+* open popover on close settings ([a199010](https://github.com/simonepiteo/clipboard-manager/commit/a199010d9dd24ca2a1cd78ff4cc548674ddcadb1))
+* settings manager ([e043412](https://github.com/simonepiteo/clipboard-manager/commit/e04341232e321a843bbc60ae0acb4c23be96d11a))
+
+
+### Bug Fixes
+
+* setting window size ([c975828](https://github.com/simonepiteo/clipboard-manager/commit/c97582826519b72020bf8c73fed422d9b020fb2e))
+
 ## [0.0.5](https://github.com/simonepiteo/clipboard-manager/compare/v0.0.4...v0.0.5) (2025-06-20)
 
 
