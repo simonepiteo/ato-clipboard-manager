@@ -84,7 +84,7 @@ function App(): React.JSX.Element {
         /* console.log('Clipboard changed:', event.content); */
         /* console.log(event); */
 
-        const maxLength = 20;
+        const currentSettings = settingsRef.current;
         setClipboardHistory((prev: CopiedItem[]) => {
           if (
             prev.length > 0 &&
@@ -97,7 +97,10 @@ function App(): React.JSX.Element {
             item =>
               !(item.type === event.type && item.content === event.content),
           );
-          return [event, ...filtered].slice(0, maxLength);
+          return [event, ...filtered].slice(
+            0,
+            currentSettings?.maxHistoryItems,
+          );
         });
       },
     );

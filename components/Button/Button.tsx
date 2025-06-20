@@ -20,7 +20,7 @@ const Button: React.FC<ButtonProps> = ({children, onClick, customStyle}) => {
 
   const style = StyleSheet.create({
     button: {
-      padding: 7,
+      padding: 6,
       marginStart: 5,
       marginEnd: 5,
       borderWidth: 1,

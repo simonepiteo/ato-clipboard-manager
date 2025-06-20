@@ -1,10 +1,10 @@
 import {Picker} from '@react-native-picker/picker';
-import React from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet, Switch, Text, TextInput, View} from 'react-native-macos';
 import {supportedLngs} from '../../i18n';
 import {Entity} from '../../types/Shared.model';
-import {displayMode} from '../../utils/Settings';
+import {defaultSettings, displayMode} from '../../utils/Settings';
 import packageJson from '../../package.json';
 import Button from '../Button/Button';
 import {useSettings} from '../../hooks/useSetting';
@@ -14,10 +14,35 @@ const Settings = () => {
   const {t, i18n} = useTranslation();
   const {settings, updateSettings, resetSettings} = useSettings();
 
-  const handleLanguageChange = (lng: string) => {
-    i18n.changeLanguage(lng);
-    updateSettings({language: lng});
-  };
+  const [maxHistoryItems, setMaxHistoryItems] = useState<number>(
+    defaultSettings.maxHistoryItems,
+  );
+
+  useEffect(() => {
+    if (settings) {
+      setMaxHistoryItems(settings.maxHistoryItems);
+    }
+  }, [settings]);
+
+  const handleLanguageChange = useCallback(
+    (lng: string) => {
+      i18n.changeLanguage(lng);
+      updateSettings({language: lng});
+    },
+    [i18n, updateSettings],
+  );
+
+  const handleMaxHistoryItemsChange = useCallback(() => {
+    if (!maxHistoryItems || maxHistoryItems < 1) {
+      setMaxHistoryItems(1);
+      updateSettings({maxHistoryItems: 1});
+    } else if (maxHistoryItems > 100) {
+      setMaxHistoryItems(100);
+      updateSettings({maxHistoryItems: 100});
+    } else {
+      updateSettings({maxHistoryItems});
+    }
+  }, [maxHistoryItems, updateSettings]);
 
   return (
     <View style={style.settingsWindow}>
@@ -61,10 +86,20 @@ const Settings = () => {
           </View>
           <View style={style.settingsSection}>
             <Text>{t('components.settings.maxHistoryItems.label')}</Text>
-            <TextInput
-              style={style.settingsTextInput}
-              defaultValue={settings?.maxHistoryItems.toString()}
-            />
+            <View style={style.settingsTextInputContainer}>
+              <TextInput
+                style={style.settingsTextInput}
+                keyboardType="numeric"
+                value={maxHistoryItems.toString()}
+                onChangeText={text => {
+                  const num = parseInt(text.replace(/[^0-9]/g, ''), 10);
+                  setMaxHistoryItems(num);
+                }}
+              />
+              <Button onClick={handleMaxHistoryItemsChange}>
+                <Text>Save</Text>
+              </Button>
+            </View>
           </View>
           <View style={style.settingsSection}>
             <Text>{t('components.settings.automaticPaste.label')}</Text>
@@ -142,6 +177,10 @@ const style = StyleSheet.create({
   },
   settingsPicker: {
     width: 120,
+  },
+  settingsTextInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   settingsTextInput: {
     padding: 5,

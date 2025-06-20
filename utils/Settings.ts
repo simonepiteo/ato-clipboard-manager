@@ -11,7 +11,7 @@ export const displayMode: Entity[] = [
 
 const SETTINGS_KEY = 'clipboardManagerSettings';
 
-const defaultSettings: Settings = {
+export const defaultSettings: Settings = {
   language: defaultLanguage,
   displayMode: 'grid',
   maxHistoryItems: 20,
