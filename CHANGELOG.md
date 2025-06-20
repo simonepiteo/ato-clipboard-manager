@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.0.7](https://github.com/simonepiteo/clipboard-manager/compare/v0.0.6...v0.0.7) (2025-06-20)
+
+
+### Features
+
+* change project name ([36b3aca](https://github.com/simonepiteo/clipboard-manager/commit/36b3acaa17c07152d31fce9cefe984dacd47713f))
+
+
+### Bug Fixes
+
+* removed unused path ([7a32e89](https://github.com/simonepiteo/clipboard-manager/commit/7a32e89bcc6edea70cdce0447b9f49fc99ed097a))
+
 ## [0.0.6](https://github.com/simonepiteo/clipboard-manager/compare/v0.0.5...v0.0.6) (2025-06-20)
 
 
