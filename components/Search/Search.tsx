@@ -1,8 +1,8 @@
 import React, {useRef} from 'react';
-import {StyleSheet, Text, TextInput, View} from 'react-native-macos';
-import Svg, {Path} from 'react-native-svg';
-import {SearchProps} from './Search.model';
 import {useTranslation} from 'react-i18next';
+import {StyleSheet, Text, TextInput, View} from 'react-native-macos';
+import {SearchClearIcon} from '../Icons/SearchClearIcon';
+import {SearchProps} from './Search.model';
 
 const Search: React.FC<SearchProps> = ({value, onChange, onReset}) => {
   const {t} = useTranslation();
@@ -30,19 +30,7 @@ const Search: React.FC<SearchProps> = ({value, onChange, onReset}) => {
       {value && (
         <View style={style.resetContainer} onTouchEnd={handleReset}>
           <Text style={style.resetButton}>
-            <Svg
-              width={12}
-              height={12}
-              viewBox="0 0 21 12"
-              fill="none"
-              stroke="#fff"
-              strokeWidth={3}
-              strokeLinecap="round"
-              strokeLinejoin="round">
-              <Path stroke="none" d="M0 0h24v24H0z" fill="none" />
-              <Path d="M18 6l-12 12" />
-              <Path d="M6 6l12 12" />
-            </Svg>
+            <SearchClearIcon />
           </Text>
         </View>
       )}

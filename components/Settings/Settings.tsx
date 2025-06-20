@@ -9,6 +9,9 @@ import packageJson from '../../package.json';
 import Button from '../Button/Button';
 import {useSettings} from '../../hooks/useSetting';
 import {displayModeType} from '../../types/Settings.model';
+import {GithubIcon} from '../Icons/GithubIcon';
+import {LicenseIcon} from '../Icons/LicenseIcon';
+import {SaveIcon} from '../Icons/SaveIcon';
 
 const Settings = () => {
   const {t, i18n} = useTranslation();
@@ -97,7 +100,7 @@ const Settings = () => {
                 }}
               />
               <Button onClick={handleMaxHistoryItemsChange}>
-                <Text>Save</Text>
+                <SaveIcon />
               </Button>
             </View>
           </View>
@@ -133,17 +136,19 @@ const Settings = () => {
         </View>
       )}
       <View style={style.settingMenu}>
+        <View style={style.settingMenuIcons}>
+          <Button>
+            <GithubIcon />
+          </Button>
+          <Button>
+            <LicenseIcon />
+          </Button>
+          <Button>
+            <Text>{t('version', {version: packageJson.version})}</Text>
+          </Button>
+        </View>
         <Button onClick={resetSettings}>
           <Text>{t('components.settings.menu.reset')}</Text>
-        </Button>
-        <Button>
-          <Text>Github</Text>
-        </Button>
-        <Button>
-          <Text>License</Text>
-        </Button>
-        <Button>
-          <Text>{t('version', {version: packageJson.version})}</Text>
         </Button>
       </View>
     </View>
@@ -206,9 +211,14 @@ const style = StyleSheet.create({
   },
   settingMenu: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    paddingStart: 10,
+    paddingEnd: 10,
   },
-  settingMenuItem: {},
+  settingMenuIcons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 });
 
 export default Settings;
