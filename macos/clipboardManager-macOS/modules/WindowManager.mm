@@ -40,7 +40,7 @@ RCT_EXPORT_METHOD(openWindow:(NSString *)moduleName
     window.title = customTitle ?: moduleName;
     [window center];
     window.backgroundColor = [[NSColor windowBackgroundColor] colorWithAlphaComponent:0.95];
-
+    
     RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:self.bridge
                                                      moduleName:moduleName
                                               initialProperties:nil];
@@ -60,7 +60,7 @@ RCT_EXPORT_METHOD(openWindow:(NSString *)moduleName
   });
 }
 
-RCT_EXPORT_METHOD(closePopover)
+RCT_EXPORT_METHOD(closePopover:(BOOL)automaticPasteShortcut)
 {
   dispatch_async(dispatch_get_main_queue(), ^{
     AppDelegate *delegate = (AppDelegate *)[NSApp delegate];
@@ -71,24 +71,26 @@ RCT_EXPORT_METHOD(closePopover)
         NSRunningApplication *appToActivate = runningApps.firstObject;
         if (appToActivate) {
           [appToActivate activateWithOptions:0];
-
+          
+          if(automaticPasteShortcut) {
           // Simulate Cmd+V after a short delay
-          dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.15 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            CGEventSourceRef source = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
-
-            CGEventRef keyVDown = CGEventCreateKeyboardEvent(source, (CGKeyCode)9, true);  // 9 = 'v'
-            CGEventRef keyVUp   = CGEventCreateKeyboardEvent(source, (CGKeyCode)9, false);
-
-            CGEventSetFlags(keyVDown, kCGEventFlagMaskCommand);
-            CGEventSetFlags(keyVUp,   kCGEventFlagMaskCommand);
-
-            CGEventPost(kCGHIDEventTap, keyVDown);
-            CGEventPost(kCGHIDEventTap, keyVUp);
-
-            CFRelease(keyVDown);
-            CFRelease(keyVUp);
-            CFRelease(source);
-          });
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.15 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+              CGEventSourceRef source = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
+              
+              CGEventRef keyVDown = CGEventCreateKeyboardEvent(source, (CGKeyCode)9, true);  // 9 = 'v'
+              CGEventRef keyVUp   = CGEventCreateKeyboardEvent(source, (CGKeyCode)9, false);
+              
+              CGEventSetFlags(keyVDown, kCGEventFlagMaskCommand);
+              CGEventSetFlags(keyVUp,   kCGEventFlagMaskCommand);
+              
+              CGEventPost(kCGHIDEventTap, keyVDown);
+              CGEventPost(kCGHIDEventTap, keyVUp);
+              
+              CFRelease(keyVDown);
+              CFRelease(keyVUp);
+              CFRelease(source);
+            });
+          }
         }
         delegate.lastActiveAppBundleID = nil;
       }

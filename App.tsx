@@ -1,14 +1,15 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {NativeEventEmitter, NativeModules, View} from 'react-native';
 import {ScrollView, StyleSheet} from 'react-native-macos';
 import MenuItem from './components/MenuItem/MenuItem';
 import Search from './components/Search/Search';
 import SingleNote from './components/SingleNote/SingleNote';
 import useSearch from './hooks/useSearch';
-import {CopiedItem} from './types/CopiedItem.model';
-import {copyItem} from './utils/CopyItem';
-import {useTranslation} from 'react-i18next';
 import {useSettings} from './hooks/useSetting';
+import {CopiedItem} from './types/CopiedItem.model';
+import {Settings} from './types/Settings.model';
+import {copyItem} from './utils/CopyItem';
 
 function App(): React.JSX.Element {
   const {settings} = useSettings();
@@ -38,19 +39,26 @@ function App(): React.JSX.Element {
     clipboardHistoryRef.current = filteredHistory;
   }, [filteredHistory]);
 
-  const openSettingsWindow = () => {
+  const settingsRef = useRef<Settings | null>(null);
+
+  useEffect(() => {
+    settingsRef.current = settings;
+  }, [settings]);
+
+  const openSettingsWindow = useCallback(() => {
     WindowManager.openWindow('Settings', t('components.settings.windowTitle'));
-  };
+  }, [WindowManager, t]);
 
   useEffect(() => {
     const copyItemSub = shortcutEvents.addListener(
       'CommandNumberPressed',
       event => {
         const history = clipboardHistoryRef.current;
+        const currentSettings = settingsRef.current;
         if (history.length >= event.number) {
           const currentItem = history[event.number - 1];
           copyItem(currentItem);
-          WindowManager.closePopover();
+          WindowManager.closePopover(currentSettings?.automaticPasteShortcut);
         }
       },
     );
@@ -66,7 +74,7 @@ function App(): React.JSX.Element {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [settings]);
 
   useEffect(() => {
     ClipboardWatcher.startWatching();

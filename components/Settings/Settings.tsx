@@ -118,11 +118,11 @@ const Settings = () => {
 const style = StyleSheet.create({
   settingsWindow: {},
   settingsContainer: {
-    margin: 10,
-    padding: 10,
-    paddingTop: 5,
-    paddingBottom: 5,
-    borderWidth: 1,
+    marginBottom: 10,
+    padding: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
     borderColor: 'rgba(204,204,204,.3)',
     borderStyle: 'solid',
     borderRadius: 5,

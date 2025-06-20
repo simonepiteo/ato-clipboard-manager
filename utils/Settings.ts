@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {defaultLanguage} from '../i18n';
 import {Entity} from '../types/Shared.model';
 import {Settings} from '../types/Settings.model';
+import {settingsEvents} from './EventEmitter';
 
 export const displayMode: Entity[] = [
   {id: 'grid', label: 'components.settings.displayMode.grid'},
@@ -32,6 +33,7 @@ export const SettingsManager = {
     const current = await SettingsManager.get();
     const updated = {...current, ...newSettings};
     await AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify(updated));
+    settingsEvents.emit('settingsChanged', updated);
     return updated;
   },
 

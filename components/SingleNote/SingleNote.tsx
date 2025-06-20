@@ -1,8 +1,9 @@
 import React from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native-macos';
+import {Image, NativeModules, StyleSheet, Text, View} from 'react-native-macos';
 import {SingleNoteProps} from './SingleNote.model';
 import {copyItem} from '../../utils/CopyItem';
 import {useInteractiveElements} from '../../hooks/useInteractiveElements';
+import {useSettings} from '../../hooks/useSetting';
 
 const SingleNote: React.FC<SingleNoteProps> = ({item, id}) => {
   const {
@@ -14,9 +15,15 @@ const SingleNote: React.FC<SingleNoteProps> = ({item, id}) => {
     handleTouchEnd,
   } = useInteractiveElements();
 
+  const {settings} = useSettings();
+  const {WindowManager} = NativeModules;
+
   const handleSaveToClipboard = () => {
     handleTouchStart();
     copyItem(item);
+    if (settings?.automaticPaste) {
+      WindowManager.closePopover(true);
+    }
   };
 
   return (

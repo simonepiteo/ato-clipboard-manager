@@ -3,6 +3,7 @@ import {SettingsManager} from '../utils/Settings';
 import {Settings} from '../types/Settings.model';
 import {useTranslation} from 'react-i18next';
 import {defaultLanguage} from '../i18n';
+import {settingsEvents} from '../utils/EventEmitter';
 
 export function useSettings() {
   const [settings, setSettings] = useState<Settings | null>(null);
@@ -10,6 +11,13 @@ export function useSettings() {
 
   useEffect(() => {
     SettingsManager.get().then(setSettings);
+
+    const handler = (updated: Settings) => setSettings(updated);
+    settingsEvents.on('settingsChanged', handler);
+
+    return () => {
+      settingsEvents.off('settingsChanged', handler);
+    };
   }, []);
 
   const updateSettings = useCallback(async (newSettings: Partial<Settings>) => {
