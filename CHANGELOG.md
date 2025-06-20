@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.0.4](https://github.com/simonepiteo/clipboard-manager/compare/v0.0.3...v0.0.4) (2025-06-20)
+
+
+### Features
+
+* i18n ([280b7fa](https://github.com/simonepiteo/clipboard-manager/commit/280b7fab46582d91d1e2a46a50a9b181252efd6d))
+* settings shortcut ([8fca7f7](https://github.com/simonepiteo/clipboard-manager/commit/8fca7f7ec43b5e0a2cf602305639ee3c28bf8478))
+* useSearch hook ([5b43af2](https://github.com/simonepiteo/clipboard-manager/commit/5b43af23bdbda97713f5a8e88886f29b4f7e16b6))
+
+
+### Bug Fixes
+
+* minor ui issue ([3480b1b](https://github.com/simonepiteo/clipboard-manager/commit/3480b1b70da26a7c5e18d6c70a78f564a77aa26f))
+
 ## [0.0.3](https://github.com/simonepiteo/clipboard-manager/compare/v0.0.2...v0.0.3) (2025-06-19)
 
 
