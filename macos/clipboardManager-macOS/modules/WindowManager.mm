@@ -31,7 +31,7 @@ RCT_EXPORT_METHOD(openWindow:(NSString *)moduleName
       return;
     }
     
-    NSRect frame = NSMakeRect(0, 0, 400, 350);
+    NSRect frame = NSMakeRect(0, 0, 400, 345);
     NSWindow *window = [[NSWindow alloc] initWithContentRect:frame
                                                    styleMask:(NSWindowStyleMaskTitled |
                                                               NSWindowStyleMaskClosable)
