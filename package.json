@@ -15,7 +15,9 @@
     "postrelease": "git fetch --atomic . develop:main && git push --atomic --follow-tags origin main develop"
   },
   "dependencies": {
+    "i18next": "^25.2.1",
     "react": "19.0.0",
+    "react-i18next": "^15.5.3",
     "react-native": "0.78.2",
     "react-native-macos": "^0.78.3",
     "react-native-svg": "^15.12.0"

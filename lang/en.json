@@ -1,0 +1,18 @@
+{
+  "shared": {
+    "appName": "Clipboard Manager"
+  },
+  "menu": {
+    "clearHistory": "Clear history",
+    "settings": "Settings...",
+    "quit": "Quit"
+  },
+  "components": {
+    "search": {
+      "placeholder": "Search..."
+    },
+    "settings": {
+      "windowTitle": "$t(shared.appName) - Settings"
+    }
+  }
+}

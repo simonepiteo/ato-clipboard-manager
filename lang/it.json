@@ -1,0 +1,18 @@
+{
+  "shared": {
+    "appName": "Clipboard Manager"
+  },
+  "menu": {
+    "clearHistory": "Cancella cronologia",
+    "settings": "Impostazioni...",
+    "quit": "Chiudi"
+  },
+  "components": {
+    "search": {
+      "placeholder": "Cerca..."
+    },
+    "settings": {
+      "windowTitle": "$t(shared.appName) - Impostazioni"
+    }
+  }
+}

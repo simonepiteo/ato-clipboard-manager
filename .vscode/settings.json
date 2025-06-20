@@ -1,0 +1,9 @@
+{
+    "i18n-ally.localesPaths": [
+        "lang",
+        "macos/Pods/RCT-Folly/folly/lang",
+        "macos/Pods/boost/boost/predef/language",
+        "macos/Pods/Headers/Private/RCT-Folly/folly/lang",
+        "macos/Pods/Headers/Public/RCT-Folly/folly/lang"
+    ]
+}

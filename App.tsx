@@ -7,8 +7,11 @@ import SingleNote from './components/SingleNote/SingleNote';
 import useSearch from './hooks/useSearch';
 import {CopiedItem} from './types/CopiedItem.model';
 import {copyItem} from './utils/CopyItem';
+import {useTranslation} from 'react-i18next';
 
 function App(): React.JSX.Element {
+  const {t} = useTranslation();
+
   const {ClipboardWatcher, WindowManager, KeyboardShortcutManager} =
     NativeModules;
 
@@ -34,7 +37,7 @@ function App(): React.JSX.Element {
   }, [filteredHistory]);
 
   const openSettingsWindow = () => {
-    WindowManager.openWindow('Settings', 'Clipboard Manager - Settings');
+    WindowManager.openWindow('Settings', t('components.settings.windowTitle'));
   };
 
   useEffect(() => {
@@ -115,16 +118,16 @@ function App(): React.JSX.Element {
       </ScrollView>
       <View style={styles.menuSection}>
         <MenuItem
-          description="Clear history"
+          description={t('menu.clearHistory')}
           onClick={() => setClipboardHistory([])}
         />
         <MenuItem
-          description="Settings..."
+          description={t('menu.settings')}
           onClick={openSettingsWindow}
           shortcut="⌘ ⌥ S"
         />
         <MenuItem
-          description="Quit"
+          description={t('menu.quit')}
           separator
           onClick={() => WindowManager.quitApp()}
         />

@@ -2,8 +2,11 @@ import React, {useRef} from 'react';
 import {StyleSheet, Text, TextInput, View} from 'react-native-macos';
 import Svg, {Path} from 'react-native-svg';
 import {SearchProps} from './Search.model';
+import {useTranslation} from 'react-i18next';
 
 const Search: React.FC<SearchProps> = ({value, onChange, onReset}) => {
+  const {t} = useTranslation();
+
   const searchInputRef = useRef<TextInput>(null);
 
   const handleReset = () => {
@@ -17,13 +20,12 @@ const Search: React.FC<SearchProps> = ({value, onChange, onReset}) => {
     <View style={style.searchContainer}>
       <TextInput
         style={style.search}
-        placeholder="Search..."
+        placeholder={t('components.search.placeholder')}
         placeholderTextColor="rgba(204,204,204,.3)"
         value={value}
         onChange={onChange}
         autoFocus={false}
         ref={searchInputRef}
-        onBlur={() => console.log('Input blurred')}
       />
       {value && (
         <View style={style.resetContainer} onTouchEnd={handleReset}>
