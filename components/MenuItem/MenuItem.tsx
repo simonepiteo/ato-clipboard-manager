@@ -72,8 +72,8 @@ const style = StyleSheet.create({
     fontSize: 13,
   },
   menuItemShortcut: {
-    fontSize: 10,
-    opacity: 0.6,
+    fontSize: 12,
+    opacity: 0.4,
   },
   menuItemSeparator: {
     borderTopWidth: 1,

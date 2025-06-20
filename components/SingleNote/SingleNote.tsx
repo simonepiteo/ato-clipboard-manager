@@ -80,7 +80,7 @@ const style = StyleSheet.create({
     paddingStart: 4,
   },
   shortcutText: {
-    fontSize: 9,
+    fontSize: 11,
     color: 'rgba(255,255,255,.7)',
   },
   textItem: {margin: 3},

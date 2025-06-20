@@ -121,7 +121,7 @@ function App(): React.JSX.Element {
         <MenuItem
           description="Settings..."
           onClick={openSettingsWindow}
-          shortcut="⌘⌥S"
+          shortcut="⌘ ⌥ S"
         />
         <MenuItem
           description="Quit"
