@@ -1763,6 +1763,11 @@
     invariant "^2.2.4"
     nullthrows "^1.1.1"
 
+"@react-native-picker/picker@^2.11.1":
+  version "2.11.1"
+  resolved "https://registry.npmjs.org/@react-native-picker/picker/-/picker-2.11.1.tgz"
+  integrity sha512-ThklnkK4fV3yynnIIRBkxxjxR4IFbdMNJVF6tlLdOJ/zEFUEFUEdXY0KmH0iYzMwY8W4/InWsLiA7AkpAbnexA==
+
 "@react-native/assets-registry@0.78.2":
   version "0.78.2"
   resolved "https://registry.npmjs.org/@react-native/assets-registry/-/assets-registry-0.78.2.tgz"

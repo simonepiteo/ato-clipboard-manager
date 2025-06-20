@@ -47,7 +47,7 @@ RCT_EXPORT_METHOD(stopWatching) {
     CGImageRef cgRef = [image CGImageForProposedRect:NULL context:nil hints:nil];
     if (cgRef) {
       NSBitmapImageRep *newRep = [[NSBitmapImageRep alloc] initWithCGImage:cgRef];
-      [newRep setSize:[image size]];   // if you want the same resolution
+      [newRep setSize:[image size]];
       currentImageData = [newRep representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
       base64Image = [currentImageData base64EncodedStringWithOptions:0];
     }

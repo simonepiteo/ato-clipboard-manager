@@ -31,7 +31,7 @@ RCT_EXPORT_METHOD(openWindow:(NSString *)moduleName
       return;
     }
     
-    NSRect frame = NSMakeRect(0, 0, 600, 400);
+    NSRect frame = NSMakeRect(0, 0, 400, 350);
     NSWindow *window = [[NSWindow alloc] initWithContentRect:frame
                                                    styleMask:(NSWindowStyleMaskTitled |
                                                               NSWindowStyleMaskClosable)
@@ -39,7 +39,8 @@ RCT_EXPORT_METHOD(openWindow:(NSString *)moduleName
                                                        defer:NO];
     window.title = customTitle ?: moduleName;
     [window center];
-    
+    window.backgroundColor = [[NSColor windowBackgroundColor] colorWithAlphaComponent:0.95];
+
     RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:self.bridge
                                                      moduleName:moduleName
                                               initialProperties:nil];

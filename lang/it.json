@@ -1,7 +1,5 @@
 {
-  "shared": {
-    "appName": "Clipboard Manager"
-  },
+  "shared": {},
   "menu": {
     "clearHistory": "Cancella cronologia",
     "settings": "Impostazioni...",
@@ -12,7 +10,23 @@
       "placeholder": "Cerca..."
     },
     "settings": {
-      "windowTitle": "$t(shared.appName) - Impostazioni"
+      "windowTitle": "$t(appName) - Impostazioni",
+      "language": {"label": "Seleziona lingua:"},
+      "displayMode": {
+        "label": "Vista elementi:",
+        "grid": "Griglia",
+        "list": "Lista"
+      },
+      "maxHistoryItems": {"label": "Massimo numero di elementi salvati:"},
+      "automaticPaste": {"label": "Incolla automaticamente:"},
+      "automaticPasteShortcut": {
+        "label": "Incolla automaticamente tramite shortcut:"
+      },
+      "popoverShortcut": {"label": "Shortcut popover:"},
+      "checkUpdates": {"label": "Controlla aggiornamenti"},
+      "menu": {
+        "reset": "Reset impostazioni"
+      }
     }
   }
 }
