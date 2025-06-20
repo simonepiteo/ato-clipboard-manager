@@ -39,6 +39,7 @@ export const SettingsManager = {
 
   async reset() {
     await AsyncStorage.removeItem(SETTINGS_KEY);
+    settingsEvents.emit('settingsChanged', defaultSettings);
     return defaultSettings;
   },
 };
