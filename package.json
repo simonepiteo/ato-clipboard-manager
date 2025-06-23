@@ -10,7 +10,7 @@
     "test": "jest",
     "prepare": "husky",
     "clear": "rm -rf node_modules package-lock.json && npm i",
-    "sync-version": "node scripts/updateVersion.js",
+    "sync-version": "node scripts/updateVersion.js && git add macos/atoClipboardManager-macOS/Info.plist && git commit -m \"chore: updated Info.plist version\"",
     "prerelease": "git checkout develop",
     "release": "commit-and-tag-version",
     "postrelease": "npm run sync-version && git fetch --atomic . develop:main && git push --atomic --follow-tags origin main develop"
