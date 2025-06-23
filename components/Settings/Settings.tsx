@@ -1,7 +1,14 @@
 import {Picker} from '@react-native-picker/picker';
 import React, {useCallback, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {StyleSheet, Switch, Text, TextInput, View} from 'react-native-macos';
+import {
+  Linking,
+  StyleSheet,
+  Switch,
+  Text,
+  TextInput,
+  View,
+} from 'react-native-macos';
 import {supportedLngs} from '../../i18n';
 import {Entity} from '../../types/Shared.model';
 import {defaultSettings, displayMode} from '../../utils/Settings';
@@ -12,6 +19,7 @@ import {displayModeType} from '../../types/Settings.model';
 import {GithubIcon} from '../Icons/GithubIcon';
 import {LicenseIcon} from '../Icons/LicenseIcon';
 import {SaveIcon} from '../Icons/SaveIcon';
+import {EXTERNAL_LINKS} from '../../utils/ExternalLinks';
 
 const Settings = () => {
   const {t, i18n} = useTranslation();
@@ -137,10 +145,13 @@ const Settings = () => {
       )}
       <View style={style.settingMenu}>
         <View style={style.settingMenuIcons}>
-          <Button>
+          <Button
+            onClick={() => {
+              Linking.openURL(EXTERNAL_LINKS.GITHUB);
+            }}>
             <GithubIcon />
           </Button>
-          <Button>
+          <Button onClick={() => Linking.openURL(EXTERNAL_LINKS.LICENSE)}>
             <LicenseIcon />
           </Button>
           <Button>
