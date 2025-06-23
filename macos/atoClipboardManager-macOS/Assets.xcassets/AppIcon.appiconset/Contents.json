@@ -1,25 +1,25 @@
 {
   "images" : [
     {
-      "filename" : "ATO_16_2.png",
+      "filename" : "ATO_16.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "16x16"
     },
     {
-      "filename" : "ATO_32_2 1.png",
+      "filename" : "ATO_32 1.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "16x16"
     },
     {
-      "filename" : "ATO_32_2.png",
+      "filename" : "ATO_32.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "32x32"
     },
     {
-      "filename" : "ATO_64.png",
+      "filename" : "ATO_64 1.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "32x32"
@@ -43,19 +43,19 @@
       "size" : "256x256"
     },
     {
-      "filename" : "ATO.png",
+      "filename" : "ATO_512 1.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "256x256"
     },
     {
-      "filename" : "ATO 1.png",
+      "filename" : "ATO_512.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "512x512"
     },
     {
-      "filename" : "ATO 2.png",
+      "filename" : "ATO_1024.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "512x512"
