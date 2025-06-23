@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.2](https://github.com/simonepiteo/ato-clipboard-manager/compare/v0.1.1...v0.1.2) (2025-06-23)
+
+
+### Features
+
+* updated icons ([8187a12](https://github.com/simonepiteo/ato-clipboard-manager/commit/8187a129fb6384ceb1dcbede7d5092503fb8da07))
+
 ## [0.1.1](https://github.com/simonepiteo/ato-clipboard-manager/compare/v0.1.0...v0.1.1) (2025-06-23)
 
 ## [0.1.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v0.0.8...v0.1.0) (2025-06-23)
