@@ -13,7 +13,7 @@
     "sync-version": "node scripts/updateVersion.js",
     "prerelease": "git checkout develop",
     "release": "commit-and-tag-version",
-    "postrelease": "git fetch --atomic . develop:main && git push --atomic --follow-tags origin main develop && npm run sync-version"
+    "postrelease": "npm run sync-version && git fetch --atomic . develop:main && git push --atomic --follow-tags origin main develop"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.2.0",
