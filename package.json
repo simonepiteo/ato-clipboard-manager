@@ -10,15 +10,17 @@
     "test": "jest",
     "prepare": "husky",
     "clear": "rm -rf node_modules package-lock.json && npm i",
+    "sync-version": "node scripts/update-version.js",
     "prerelease": "git checkout develop",
     "release": "commit-and-tag-version",
-    "postrelease": "git fetch --atomic . develop:main && git push --atomic --follow-tags origin main develop"
+    "postrelease": "git fetch --atomic . develop:main && git push --atomic --follow-tags origin main develop && npm run sync-version"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-native-picker/picker": "^2.11.1",
     "eventemitter3": "^5.0.1",
     "i18next": "^25.2.1",
+    "plist": "^3.1.0",
     "react": "19.0.0",
     "react-i18next": "^15.5.3",
     "react-native": "0.78.2",
