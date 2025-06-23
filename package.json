@@ -10,7 +10,7 @@
     "test": "jest",
     "prepare": "husky",
     "clear": "rm -rf node_modules package-lock.json && npm i",
-    "sync-version": "node scripts/update-version.js",
+    "sync-version": "node scripts/updateVersion.js",
     "prerelease": "git checkout develop",
     "release": "commit-and-tag-version",
     "postrelease": "git fetch --atomic . develop:main && git push --atomic --follow-tags origin main develop && npm run sync-version"
