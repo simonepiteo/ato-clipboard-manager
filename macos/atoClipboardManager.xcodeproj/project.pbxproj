@@ -14,11 +14,11 @@
 		514201552437B4B40078DB4F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 514201532437B4B40078DB4F /* Main.storyboard */; };
 		514201582437B4B40078DB4F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 514201572437B4B40078DB4F /* main.m */; };
 		70330C89043A24442D4958B6 /* libPods-atoClipboardManager-macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 776462B93C0CE903DAAB016E /* libPods-atoClipboardManager-macOS.a */; };
+		D40BEDEC2E098ED300F914C3 /* HotKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40BEDEB2E098ED300F914C3 /* HotKeyManager.swift */; };
 		D4625D852E05FE0F00C82504 /* WindowManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D4625D832E05FE0F00C82504 /* WindowManager.mm */; };
 		D4625D862E05FE0F00C82504 /* KeyboardShortcutManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D4625D822E05FE0F00C82504 /* KeyboardShortcutManager.mm */; };
 		D4625D872E05FE0F00C82504 /* ClipboardHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = D4625D7F2E05FE0F00C82504 /* ClipboardHandler.mm */; };
 		D4625D882E05FE0F00C82504 /* ClipboardWatcher.mm in Sources */ = {isa = PBXBuildFile; fileRef = D4625D802E05FE0F00C82504 /* ClipboardWatcher.mm */; };
-		D4625D8B2E05FF6100C82504 /* HotKeyManager 2.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4625D8A2E05FF6100C82504 /* HotKeyManager 2.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,11 +35,11 @@
 		8640FE07C692702D30C76546 /* Pods-atoClipboardManager-macOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-atoClipboardManager-macOS.release.xcconfig"; path = "Target Support Files/Pods-atoClipboardManager-macOS/Pods-atoClipboardManager-macOS.release.xcconfig"; sourceTree = "<group>"; };
 		A6797A13C369297E69C7DD49 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		CBF5305251BEA6496B1BB7B2 /* Pods-atoClipboardManager-macOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-atoClipboardManager-macOS.debug.xcconfig"; path = "Target Support Files/Pods-atoClipboardManager-macOS/Pods-atoClipboardManager-macOS.debug.xcconfig"; sourceTree = "<group>"; };
+		D40BEDEB2E098ED300F914C3 /* HotKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotKeyManager.swift; sourceTree = "<group>"; };
 		D4625D7F2E05FE0F00C82504 /* ClipboardHandler.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ClipboardHandler.mm; sourceTree = "<group>"; };
 		D4625D802E05FE0F00C82504 /* ClipboardWatcher.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ClipboardWatcher.mm; sourceTree = "<group>"; };
 		D4625D822E05FE0F00C82504 /* KeyboardShortcutManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = KeyboardShortcutManager.mm; sourceTree = "<group>"; };
 		D4625D832E05FE0F00C82504 /* WindowManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WindowManager.mm; sourceTree = "<group>"; };
-		D4625D8A2E05FF6100C82504 /* HotKeyManager 2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HotKeyManager 2.swift"; sourceTree = "<group>"; };
 		D4625D8C2E05FF6200C82504 /* atoClipboardManager-macOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "atoClipboardManager-macOS-Bridging-Header.h"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -131,11 +131,11 @@
 		D4625D842E05FE0F00C82504 /* modules */ = {
 			isa = PBXGroup;
 			children = (
+				D40BEDEB2E098ED300F914C3 /* HotKeyManager.swift */,
 				D4625D7F2E05FE0F00C82504 /* ClipboardHandler.mm */,
 				D4625D802E05FE0F00C82504 /* ClipboardWatcher.mm */,
 				D4625D822E05FE0F00C82504 /* KeyboardShortcutManager.mm */,
 				D4625D832E05FE0F00C82504 /* WindowManager.mm */,
-				D4625D8A2E05FF6100C82504 /* HotKeyManager 2.swift */,
 			);
 			path = modules;
 			sourceTree = "<group>";
@@ -344,7 +344,7 @@
 				D4625D862E05FE0F00C82504 /* KeyboardShortcutManager.mm in Sources */,
 				D4625D872E05FE0F00C82504 /* ClipboardHandler.mm in Sources */,
 				D4625D882E05FE0F00C82504 /* ClipboardWatcher.mm in Sources */,
-				D4625D8B2E05FF6100C82504 /* HotKeyManager 2.swift in Sources */,
+				D40BEDEC2E098ED300F914C3 /* HotKeyManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -508,10 +508,7 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -567,10 +564,7 @@
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = false;

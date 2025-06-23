@@ -124,7 +124,7 @@ const Settings = () => {
               value={settings?.automaticPasteShortcut}
             />
           </View>
-          <View style={style.settingsSection}>
+          {/* <View style={style.settingsSection}>
             <Text>{t('components.settings.popoverShortcut.label')}</Text>
             <TextInput style={style.settingsTextInput} value="⌘ ⇧ V" />
           </View>
@@ -132,7 +132,7 @@ const Settings = () => {
             <Button customStyle={style.settingsUpdateButton}>
               <Text>{t('components.settings.checkUpdates.label')}</Text>
             </Button>
-          </View>
+          </View> */}
         </View>
       )}
       <View style={style.settingMenu}>
