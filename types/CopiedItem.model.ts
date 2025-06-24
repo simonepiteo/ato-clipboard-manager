@@ -1,1 +1,1 @@
-export type CopiedItem = {type: string; content: string};
+export type CopiedItem = {type: 'text' | 'image'; content: string};
