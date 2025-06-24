@@ -16,6 +16,7 @@
       "maxHistoryItems": {"label": "Max history items:"},
       "automaticPaste": {"label": "Automatic paste on selection:"},
       "automaticPasteShortcut": {"label": "Automatic paste using shortcut:"},
+      "autoLaunch": {"label": "Launch app at startup:"},
       "popoverShortcut": {"label": "Popover shortcut:"},
       "checkUpdates": {"label": "Check for updates"},
       "menu": {

@@ -1,7 +1,6 @@
 # ATO - Clipboard Manager
 
 [![Version](https://img.shields.io/github/v/release/simonepiteo/ato-clipboard-manager?sort=semver)](https://github.com/simonepiteo/ato-clipboard-manager/releases/latest)
-[![License](https://img.shields.io/github/license/simonepiteo/ato-clipboard-manager)](https://github.com/simonepiteo/ato-clipboard-manager/blob/main/LICENSE)
 
 ATO Clipboard Manager is a modern, open-source clipboard manager for macOS, built with React Native and Swift/ObjC. It helps you keep track of your clipboard history, quickly access previous items, and boost your productivity.
 
@@ -37,7 +36,7 @@ ATO Clipboard Manager is a modern, open-source clipboard manager for macOS, buil
 - [x] Customizable settings
 - [x] Search clipboard history
 - [x] Auto-paste mode
-- [x] Run on startup
+- [ ] Run at startup
 - [ ] Pin favorite items
 - [ ] Customizable keyboard shortcuts
 - [ ] Rich media support (files, links, etc.)
