@@ -11,7 +11,7 @@ import {
 } from 'react-native-macos';
 import {supportedLngs} from '../../i18n';
 import {Entity} from '../../types/Shared.model';
-import {defaultSettings, displayMode} from '../../utils/Settings';
+import {defaultSettings, displayMode} from '../../utils/Settings/SettingsData';
 import packageJson from '../../package.json';
 import Button from '../Button/Button';
 import {useSettings} from '../../hooks/useSetting';

@@ -4,8 +4,10 @@ import {SingleNoteProps} from './SingleNote.model';
 import {copyItem} from '../../utils/CopyItem';
 import {useInteractiveElements} from '../../hooks/useInteractiveElements';
 import {useSettings} from '../../hooks/useSetting';
-import {displayModeData} from '../../utils/SettingsData';
-import {defaultSettings} from '../../utils/Settings';
+import {
+  displayModeData,
+  defaultSettings,
+} from '../../utils/Settings/SettingsData';
 
 const SingleNote: React.FC<SingleNoteProps> = ({item, id}) => {
   const {

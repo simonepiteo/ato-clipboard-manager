@@ -5,5 +5,6 @@
     "macos/Pods/boost/boost/predef/language",
     "macos/Pods/Headers/Private/RCT-Folly/folly/lang",
     "macos/Pods/Headers/Public/RCT-Folly/folly/lang"
-  ]
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

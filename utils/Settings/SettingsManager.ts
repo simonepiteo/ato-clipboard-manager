@@ -1,24 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {defaultLanguage} from '../i18n';
-import {Entity} from '../types/Shared.model';
-import {Settings} from '../types/Settings.model';
-import {settingsEvents} from './EventEmitter';
-
-export const displayMode: Entity[] = [
-  {id: 'grid', label: 'components.settings.displayMode.grid'},
-  {id: 'list', label: 'components.settings.displayMode.list'},
-];
-
-const SETTINGS_KEY = 'clipboardManagerSettings';
-
-export const defaultSettings: Settings = {
-  language: defaultLanguage,
-  displayMode: 'grid',
-  maxHistoryItems: 20,
-  automaticPaste: false,
-  automaticPasteShortcut: true,
-  popoverShortcut: '⌘ ⇧ V',
-};
+import {Settings} from '../../types/Settings.model';
+import {defaultSettings, SETTINGS_KEY} from './SettingsData';
+import {settingsEvents} from '../EventEmitter';
 
 export const SettingsManager = {
   async get(): Promise<Settings> {

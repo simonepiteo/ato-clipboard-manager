@@ -1,5 +1,5 @@
 import {useEffect, useState, useCallback} from 'react';
-import {SettingsManager} from '../utils/Settings';
+import {SettingsManager} from '../utils/Settings/SettingsManager';
 import {Settings} from '../types/Settings.model';
 import {useTranslation} from 'react-i18next';
 import {defaultLanguage} from '../i18n';
