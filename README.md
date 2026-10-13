@@ -1,119 +1,97 @@
-# ATO Clipboard Manager — versione nativa Swift
+# ATO - Clipboard Manager
 
-ATO è un clipboard manager per macOS realizzato interamente con **Swift, SwiftUI e AppKit**. Non richiede Node.js, React Native, CocoaPods o dipendenze di terze parti.
+[![Version](https://img.shields.io/github/v/release/simonepiteo/ato-clipboard-manager?sort=semver)](https://github.com/simonepiteo/ato-clipboard-manager/releases/latest)
 
-## Funzionalità
+ATO Clipboard Manager is a modern, open-source clipboard manager for macOS, built natively with Swift, SwiftUI, and AppKit. It keeps text and image clipboard history available for the current session, lets you quickly reuse previous items, and requires no third-party dependencies.
 
-- cronologia in memoria di testi e immagini;
-- ricerca istantanea negli elementi testuali;
-- vista a griglia o lista;
-- selezione rapida con `⌘1`–`⌘9`;
-- apertura globale dalla barra menu con `⌘⇧V`;
-- finestra impostazioni con `⌘⌥S`;
-- incolla automatica opzionale nell'app usata in precedenza;
-- interfaccia in italiano e inglese;
-- preferenze persistenti tramite `UserDefaults`.
+---
 
-La cronologia non viene salvata su disco e viene eliminata alla chiusura dell'app, così il contenuto della clipboard resta locale alla sessione.
+## 💻 Demo
 
-## Requisiti
+<img src="readme_example.gif" alt="Demo" width="800"/>
 
-- macOS 13 Ventura o successivo;
-- Xcode 15 o successivo, oppure i relativi Command Line Tools;
-- Swift 5.9 o successivo.
+---
 
-Verifica l'ambiente con:
+## ✨ Features
+
+- Save and browse text and image clipboard history for the current session
+- Search text entries instantly
+- Switch between grid and list layouts
+- Select the first nine items with keyboard shortcuts (`⌘1`–`⌘9`)
+- Open the popover globally with `⌘⇧V`
+- Optionally paste a selected item into the previously active app
+- Move the selected item to the top of the history
+- Customize language, display mode, history size, and automatic paste behavior
+- Open Settings with `⌘⌥S`
+- Clear clipboard history
+- Native macOS menu bar and popover integration
+- Persistent preferences with `UserDefaults`
+- English and Italian localization
+
+Clipboard history is stored in memory only and is cleared when the app quits.
+
+---
+
+## 🛠️ Roadmap / To-Do
+
+- [x] Save text and image history
+- [x] Customizable settings
+- [x] Search clipboard history
+- [x] Auto-paste mode
+- [ ] Run at startup
+- [ ] Pin favorite items
+- [ ] Customizable keyboard shortcuts
+- [ ] Rich media support (files, links, etc.)
+- [ ] Auto-update support
+
+---
+
+## 🚀 Getting Started
+
+### Requirements
+
+- macOS 13 Ventura or later
+- Swift 5.9 or later, included with Xcode 15 or the corresponding Command Line Tools
+
+### Run from source
+
+1. Clone the repository:
+
+   ```sh
+   git clone https://github.com/simonepiteo/ato-clipboard-manager.git
+   cd ato-clipboard-manager
+   ```
+
+2. Build and run the native macOS app:
+
+   ```sh
+   swift run
+   ```
+
+ATO appears in the menu bar with a clipboard icon. Copy some text or an image, then press `⌘⇧V` or click the icon to open the history.
+
+### Build the app bundle
 
 ```sh
-swift --version
-xcodebuild -version
+./scripts/build-app.sh
 ```
 
-## Avvio in sviluppo
-
-Clona il repository, seleziona il branch nativo e avvia il pacchetto:
+The release build is created at `dist/ATO Clipboard Manager.app`. To create a DMG installer instead, run:
 
 ```sh
-git clone https://github.com/simonepiteo/ato-clipboard-manager.git
-cd ato-clipboard-manager
-git switch feat/native-swift-rewrite
-swift run
+./scripts/build-dmg.sh
 ```
 
-ATO compare nella barra menu con l'icona della clipboard. Copia un testo o un'immagine, poi premi `⌘⇧V` o fai clic sull'icona.
+Automatic paste requires Accessibility permission so ATO can simulate `⌘V` in the previously active app. macOS prompts for it when the feature is first used; it can also be enabled under **System Settings → Privacy & Security → Accessibility**.
 
-Per aprire e modificare il progetto in Xcode:
-
-```sh
-open Package.swift
-```
-
-## Test
+### Run the tests
 
 ```sh
 swift test
 ```
 
-## Creare l'app
+---
 
-Rendi eseguibili gli script una sola volta, poi genera il bundle:
+## License
 
-```sh
-chmod +x scripts/build-app.sh scripts/build-dmg.sh
-./scripts/build-app.sh
-```
-
-Il risultato si trova in `dist/ATO Clipboard Manager.app`. Lo script compila in modalità release, crea il bundle macOS, genera l'icona e applica una firma ad hoc. Puoi trascinare direttamente l'app nella cartella `/Applications` per un uso locale.
-
-## Creare il file di installazione DMG
-
-```sh
-./scripts/build-dmg.sh
-```
-
-Il file installabile viene creato come `dist/ATO-Clipboard-Manager-0.1.3.dmg`. Aprilo e trascina **ATO Clipboard Manager** sul collegamento **Applications**.
-
-### Firma Developer ID e notarizzazione
-
-Per distribuire l'app ad altre persone senza avvisi Gatekeeper serve un certificato “Developer ID Application” associato a un account Apple Developer:
-
-```sh
-export CODE_SIGN_IDENTITY="Developer ID Application: Nome Cognome (TEAMID)"
-./scripts/build-dmg.sh
-```
-
-Per firmare, inviare automaticamente il DMG ad Apple e allegare il ticket di notarizzazione:
-
-```sh
-export CODE_SIGN_IDENTITY="Developer ID Application: Nome Cognome (TEAMID)"
-export APPLE_ID="nome@example.com"
-export APPLE_TEAM_ID="TEAMID"
-export APP_SPECIFIC_PASSWORD="xxxx-xxxx-xxxx-xxxx"
-./scripts/build-dmg.sh
-```
-
-La password specifica per l'app si crea da [account.apple.com](https://account.apple.com). Non salvare queste variabili o credenziali nel repository.
-
-## Permessi macOS
-
-La lettura e scrittura della clipboard non richiede permessi. Se abiliti l'incolla automatico, macOS chiede l'accesso in **Impostazioni di Sistema → Privacy e sicurezza → Accessibilità**: serve esclusivamente per simulare `⌘V` nell'app usata in precedenza.
-
-## Struttura
-
-```text
-Package.swift
-Sources/ATOClipboardManager/
-  AppDelegate.swift       barra menu, popover e finestre
-  ClipboardStore.swift    osservazione e scrittura NSPasteboard
-  HotKeyManager.swift     scorciatoia globale Carbon
-  PopoverView.swift       cronologia, ricerca e menu
-  SettingsView.swift      preferenze SwiftUI
-Tests/
-scripts/
-  build-app.sh            genera il bundle .app
-  build-dmg.sh            genera il file installabile .dmg
-```
-
-## Licenza
-
-Il progetto è distribuito secondo i termini indicati nel file [LICENSE](LICENSE).
+See [LICENSE](LICENSE).
