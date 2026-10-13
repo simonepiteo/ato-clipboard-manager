@@ -81,12 +81,12 @@ struct PopoverView: View {
             Button(action: store.clear) {
                 footerLabel(Localizer.text(.clearHistory, language: settings.language))
             }
-            .buttonStyle(.borderless)
+            .buttonStyle(MenuItemButtonStyle())
 
             Button(action: openSettings) {
                 footerLabel(Localizer.text(.settings, language: settings.language), shortcut: "⌘⌥S")
             }
-            .buttonStyle(.borderless)
+            .buttonStyle(MenuItemButtonStyle())
             .keyboardShortcut("s", modifiers: [.command, .option])
 
             Divider()
@@ -95,7 +95,7 @@ struct PopoverView: View {
             Button(role: .destructive, action: quit) {
                 footerLabel(Localizer.text(.quit, language: settings.language), shortcut: "⌘Q")
             }
-            .buttonStyle(.borderless)
+            .buttonStyle(MenuItemButtonStyle())
             .keyboardShortcut("q", modifiers: .command)
         }
         .padding(.vertical, 4)
@@ -107,7 +107,7 @@ struct PopoverView: View {
             Spacer()
             if let shortcut {
                 Text(shortcut)
-                    .foregroundStyle(.secondary)
+                    .opacity(0.65)
             }
         }
         .contentShape(Rectangle())
@@ -157,5 +157,33 @@ private struct CardButtonStyle: ButtonStyle {
             .background(configuration.isPressed ? Color.accentColor.opacity(0.35) : Color.black.opacity(0.10))
             .overlay(RoundedRectangle(cornerRadius: 6).stroke(configuration.isPressed ? Color.accentColor : Color.secondary.opacity(0.35)))
             .clipShape(RoundedRectangle(cornerRadius: 6))
+    }
+}
+
+private struct MenuItemButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        MenuItemButton(configuration: configuration)
+    }
+
+    private struct MenuItemButton: View {
+        let configuration: Configuration
+        @State private var isHovered = false
+
+        private var isHighlighted: Bool {
+            isHovered || configuration.isPressed
+        }
+
+        var body: some View {
+            configuration.label
+                .foregroundStyle(isHighlighted ? Color.white : Color.primary)
+                .background {
+                    RoundedRectangle(cornerRadius: 5, style: .continuous)
+                        .fill(isHighlighted ? Color.accentColor : Color.clear)
+                        .padding(.horizontal, 5)
+                }
+                .contentShape(Rectangle())
+                .onHover { isHovered = $0 }
+                .animation(.easeOut(duration: 0.08), value: isHighlighted)
+        }
     }
 }
