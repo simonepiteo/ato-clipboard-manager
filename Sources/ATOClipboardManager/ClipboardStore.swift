@@ -109,6 +109,8 @@ final class ClipboardStore: ObservableObject {
             } else {
                 didWrite = false
             }
+        case let .files(files):
+            didWrite = !files.isEmpty && pasteboard.writeObjects(files.map { $0.url as NSURL })
         }
 
         guard didWrite else { return false }
@@ -136,7 +138,9 @@ final class ClipboardStore: ObservableObject {
         }
 
         let item: ClipboardItem?
-        if let text = pasteboard.string(forType: .string), !text.isEmpty {
+        if let files = files(from: pasteboard), !files.isEmpty {
+            item = ClipboardItem(content: .files(files))
+        } else if let text = pasteboard.string(forType: .string), !text.isEmpty {
             item = ClipboardItem(content: .text(text))
         } else if let data = imageData(from: pasteboard) {
             item = ClipboardItem(content: .image(data))
@@ -238,5 +242,25 @@ final class ClipboardStore: ObservableObject {
               let representation = NSBitmapImageRep(data: tiff)
         else { return nil }
         return representation.representation(using: .png, properties: [:])
+    }
+
+    private func files(from pasteboard: NSPasteboard) -> [ClipboardFile]? {
+        let options: [NSPasteboard.ReadingOptionKey: Any] = [
+            .urlReadingFileURLsOnly: true
+        ]
+        guard let objects = pasteboard.readObjects(
+            forClasses: [NSURL.self],
+            options: options
+        ) as? [NSURL] else { return nil }
+
+        var seenPaths = Set<String>()
+        let files = objects.compactMap { object -> ClipboardFile? in
+            let url = object as URL
+            guard url.isFileURL else { return nil }
+            let file = ClipboardFile(url: url)
+            guard seenPaths.insert(file.path).inserted else { return nil }
+            return file
+        }
+        return files.isEmpty ? nil : files
     }
 }

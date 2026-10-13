@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct PopoverView: View {
     @ObservedObject var store: ClipboardStore
@@ -185,6 +186,7 @@ struct PopoverView: View {
                             item: item,
                             shortcut: shortcutLabel(for: index),
                             isList: settings.displayMode == .list,
+                            language: settings.language,
                             showsFavoriteIndicator: selectedSection == .history && favoritesStore.contains(item),
                             isFavorite: favoritesStore.contains(item),
                             toggleFavorite: { favoritesStore.toggle(item) },
@@ -344,6 +346,7 @@ private struct ClipboardCard: View {
     let item: ClipboardItem
     let shortcut: String?
     let isList: Bool
+    let language: AppLanguage
     let showsFavoriteIndicator: Bool
     let isFavorite: Bool
     let toggleFavorite: () -> Void
@@ -364,6 +367,12 @@ private struct ClipboardCard: View {
                         if let image = NSImage(data: data) {
                             Image(nsImage: image).resizable().scaledToFit().frame(maxWidth: .infinity, maxHeight: .infinity)
                         }
+                    case let .files(files):
+                        FileClipboardPreview(
+                            files: files,
+                            isList: isList,
+                            language: language
+                        )
                     }
                 }
                 .padding(6)
@@ -403,6 +412,86 @@ private struct ClipboardCard: View {
             }
             .disabled(isFavorite)
         }
+    }
+}
+
+private struct FileClipboardPreview: View {
+    let files: [ClipboardFile]
+    let isList: Bool
+    let language: AppLanguage
+
+    var body: some View {
+        VStack(spacing: files.count == 1 ? 5 : 2) {
+            if let file = files.first, files.count == 1 {
+                fileIcon(for: file, size: 38)
+                Text(file.name)
+                    .font(.caption.weight(.medium))
+                    .lineLimit(2)
+                    .truncationMode(.middle)
+                    .multilineTextAlignment(.center)
+            } else {
+                overlappingIcons
+                Text(fileCountLabel)
+                    .font(.caption.weight(.semibold))
+                    .lineLimit(1)
+                Text(fileSummary)
+                    .font(.system(size: 9))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+            }
+        }
+        .padding(.horizontal, 2)
+        .padding(.bottom, 13)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(files.map(\.name).joined(separator: ", "))
+    }
+
+    private var overlappingIcons: some View {
+        HStack(spacing: -10) {
+            ForEach(Array(files.prefix(3).enumerated()), id: \.element.id) { index, file in
+                fileIcon(for: file, size: 31)
+                    .zIndex(Double(3 - index))
+            }
+        }
+        .frame(height: 32)
+    }
+
+    private var fileCountLabel: String {
+        String(
+            format: Localizer.text(
+                files.count == 1 ? .fileCountSingular : .fileCountPlural,
+                language: language
+            ),
+            files.count
+        )
+    }
+
+    private var fileSummary: String {
+        let names = files.prefix(isList ? 3 : 2).map(\.name).joined(separator: ", ")
+        let remaining = files.count - min(files.count, isList ? 3 : 2)
+        return remaining > 0 ? "\(names)  +\(remaining)" : names
+    }
+
+    private func fileIcon(for file: ClipboardFile, size: CGFloat) -> some View {
+        Image(nsImage: icon(for: file))
+            .resizable()
+            .interpolation(.high)
+            .scaledToFit()
+            .frame(width: size, height: size)
+            .shadow(color: .black.opacity(0.16), radius: 1.5, y: 1)
+    }
+
+    private func icon(for file: ClipboardFile) -> NSImage {
+        if FileManager.default.fileExists(atPath: file.path) {
+            return NSWorkspace.shared.icon(forFile: file.path)
+        }
+        if !file.url.pathExtension.isEmpty,
+           let type = UTType(filenameExtension: file.url.pathExtension) {
+            return NSWorkspace.shared.icon(for: type)
+        }
+        return NSImage(systemSymbolName: "doc", accessibilityDescription: nil) ?? NSImage()
     }
 }
 

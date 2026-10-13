@@ -28,6 +28,7 @@ enum LocalizedKey: String {
     case history, favorites, emptyFavorites, noSearchResults
     case addToFavorites, removeFromFavorites, favoritesPersistenceError
     case deleteFromHistory, unpinBeforeDeleting
+    case fileCountSingular, fileCountPlural
 }
 
 enum Localizer {
@@ -38,7 +39,7 @@ enum Localizer {
         .displayMode: "Display mode", .grid: "Grid", .list: "List",
         .maxHistory: "Maximum history items", .automaticPaste: "Paste automatically on selection",
         .automaticPasteShortcut: "Paste automatically when using item shortcuts",
-        .resetSettings: "Reset settings", .emptyHistory: "Copy text or an image to get started",
+        .resetSettings: "Reset settings", .emptyHistory: "Copy text, an image, or files to get started",
         .settingsDescription: "Customize how ATO displays and pastes your clipboard items.",
         .appearance: "Appearance and history", .behavior: "Paste behavior",
         .general: "General", .generalSettingsDescription: "Language, layout, and visible clipboard history.",
@@ -87,7 +88,8 @@ enum Localizer {
         .noSearchResults: "No matching items",
         .addToFavorites: "Pin Item", .removeFromFavorites: "Unpin Item",
         .favoritesPersistenceError: "Couldn’t update Pinned items",
-        .deleteFromHistory: "Delete from History", .unpinBeforeDeleting: "Unpin Before Deleting"
+        .deleteFromHistory: "Delete from History", .unpinBeforeDeleting: "Unpin Before Deleting",
+        .fileCountSingular: "%d file", .fileCountPlural: "%d files"
     ]
 
     private static let italian: [LocalizedKey: String] = [
@@ -97,7 +99,7 @@ enum Localizer {
         .displayMode: "Vista elementi", .grid: "Griglia", .list: "Lista",
         .maxHistory: "Massimo numero di elementi", .automaticPaste: "Incolla automaticamente alla selezione",
         .automaticPasteShortcut: "Incolla automaticamente usando le scorciatoie degli elementi",
-        .resetSettings: "Ripristina impostazioni", .emptyHistory: "Copia un testo o un'immagine per iniziare",
+        .resetSettings: "Ripristina impostazioni", .emptyHistory: "Copia un testo, un’immagine o dei file per iniziare",
         .settingsDescription: "Personalizza la visualizzazione e l'incolla degli elementi copiati.",
         .appearance: "Aspetto e cronologia", .behavior: "Comportamento incolla",
         .general: "Generali", .generalSettingsDescription: "Lingua, layout e cronologia visibile degli appunti.",
@@ -146,7 +148,8 @@ enum Localizer {
         .noSearchResults: "Nessun elemento corrispondente",
         .addToFavorites: "Fissa elemento", .removeFromFavorites: "Rimuovi dai fissati",
         .favoritesPersistenceError: "Impossibile aggiornare gli elementi fissati",
-        .deleteFromHistory: "Elimina dalla cronologia", .unpinBeforeDeleting: "Rimuovi il pin prima di eliminare"
+        .deleteFromHistory: "Elimina dalla cronologia", .unpinBeforeDeleting: "Rimuovi il pin prima di eliminare",
+        .fileCountSingular: "%d file", .fileCountPlural: "%d file"
     ]
 
     static func text(_ key: LocalizedKey, language: AppLanguage) -> String {

@@ -2,7 +2,7 @@
 
 [![Version](https://img.shields.io/github/v/release/simonepiteo/ato-clipboard-manager?sort=semver)](https://github.com/simonepiteo/ato-clipboard-manager/releases/latest)
 
-ATO Clipboard Manager is a modern, open-source clipboard manager for macOS, built natively with Swift, SwiftUI, and AppKit. It keeps text and image clipboard history available, lets you quickly reuse previous items, and requires no third-party dependencies.
+ATO Clipboard Manager is a modern, open-source clipboard manager for macOS, built natively with Swift, SwiftUI, and AppKit. It keeps text, image, and file clipboard history available, lets you quickly reuse previous items, and requires no third-party dependencies.
 
 ---
 
@@ -10,7 +10,8 @@ ATO Clipboard Manager is a modern, open-source clipboard manager for macOS, buil
 
 ### Clipboard history
 
-- Capture and browse copied text and images.
+- Capture and browse copied text, images, folders, and files of any type.
+- Keep a multi-file Finder selection together in one card, with native file icons, filenames, and a clear item count.
 - Search the selected History or Pinned section, with live result counts for both tabs.
 - Switch between grid and list layouts.
 - Move any selected item to the top of the history.
@@ -67,7 +68,7 @@ Pinned items are stored privately in `~/.ato/favorites.json` and remain availabl
 - [x] Customizable keyboard shortcuts
 - [x] Auto-update support
 - [x] System, light, and dark themes
-- [ ] Rich media support (files, links, etc.)
+- [x] Single-file and multi-file clipboard support
 
 ---
 
@@ -93,7 +94,7 @@ Pinned items are stored privately in `~/.ato/favorites.json` and remain availabl
    swift run
    ```
 
-ATO appears in the menu bar with a clipboard icon. Copy some text or an image, then use the configured global shortcut (default: `⌘⇧V`) or click the icon to open the history.
+ATO appears in the menu bar with a clipboard icon. Copy some text, an image, or one or more files, then use the configured global shortcut (default: `⌘⇧V`) or click the icon to open the history.
 
 ### Build the app bundle
 

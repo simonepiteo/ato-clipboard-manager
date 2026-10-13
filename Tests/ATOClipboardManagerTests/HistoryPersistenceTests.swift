@@ -37,7 +37,11 @@ final class HistoryPersistenceTests: XCTestCase {
         let persistence = HistoryPersistence()
         let expected = [
             ClipboardItem(content: .text("hello")),
-            ClipboardItem(content: .image(Data([0x01, 0x02, 0x03])))
+            ClipboardItem(content: .image(Data([0x01, 0x02, 0x03]))),
+            ClipboardItem(content: .files([
+                ClipboardFile(path: "/tmp/report.pdf"),
+                ClipboardFile(path: "/tmp/photo.jpg")
+            ]))
         ]
 
         try persistence.save(expected, to: path)
@@ -47,6 +51,7 @@ final class HistoryPersistenceTests: XCTestCase {
         let json = try String(contentsOfFile: path, encoding: .utf8)
         XCTAssertTrue(json.contains("\"version\" : 1"))
         XCTAssertTrue(json.contains("\"type\" : \"text\""))
+        XCTAssertTrue(json.contains("\"type\" : \"files\""))
         XCTAssertEqual(
             try FileManager.default.attributesOfItem(atPath: path)[.posixPermissions] as? Int,
             0o600
@@ -54,6 +59,17 @@ final class HistoryPersistenceTests: XCTestCase {
 
         try persistence.delete(at: path)
         XCTAssertFalse(persistence.exists(at: path))
+    }
+
+    func testFileItemsAreSearchableByNameExtensionAndPath() {
+        let item = ClipboardItem(content: .files([
+            ClipboardFile(path: "/Users/example/Documents/Quarterly Report.pdf"),
+            ClipboardFile(path: "/Users/example/Desktop/mockup.sketch")
+        ]))
+
+        XCTAssertTrue(item.searchableText.localizedCaseInsensitiveContains("Quarterly Report.pdf"))
+        XCTAssertTrue(item.searchableText.localizedCaseInsensitiveContains("mockup.sketch"))
+        XCTAssertTrue(item.searchableText.localizedCaseInsensitiveContains("Documents"))
     }
 
     @MainActor

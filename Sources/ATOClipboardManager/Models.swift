@@ -1,16 +1,33 @@
 import AppKit
 import Foundation
 
+struct ClipboardFile: Hashable, Codable, Identifiable {
+    let path: String
+
+    init(path: String) {
+        self.path = URL(fileURLWithPath: path).standardizedFileURL.path
+    }
+
+    init(url: URL) {
+        self.init(path: url.path)
+    }
+
+    var id: String { path }
+    var url: URL { URL(fileURLWithPath: path) }
+    var name: String { url.lastPathComponent }
+}
+
 enum ClipboardContent: Hashable, Codable {
     case text(String)
     case image(Data)
+    case files([ClipboardFile])
 
     private enum CodingKeys: String, CodingKey {
-        case type, text, data
+        case type, text, data, files
     }
 
     private enum ContentType: String, Codable {
-        case text, image
+        case text, image, files
     }
 
     init(from decoder: Decoder) throws {
@@ -20,6 +37,8 @@ enum ClipboardContent: Hashable, Codable {
             self = .text(try container.decode(String.self, forKey: .text))
         case .image:
             self = .image(try container.decode(Data.self, forKey: .data))
+        case .files:
+            self = .files(try container.decode([ClipboardFile].self, forKey: .files))
         }
     }
 
@@ -32,6 +51,9 @@ enum ClipboardContent: Hashable, Codable {
         case let .image(data):
             try container.encode(ContentType.image, forKey: .type)
             try container.encode(data, forKey: .data)
+        case let .files(files):
+            try container.encode(ContentType.files, forKey: .type)
+            try container.encode(files, forKey: .files)
         }
     }
 }
@@ -54,8 +76,14 @@ struct ClipboardItem: Identifiable, Codable, Hashable {
     }
 
     var searchableText: String {
-        guard case let .text(value) = content else { return "" }
-        return value
+        switch content {
+        case let .text(value):
+            return value
+        case .image:
+            return ""
+        case let .files(files):
+            return files.flatMap { [$0.name, $0.path] }.joined(separator: " ")
+        }
     }
 }
 
