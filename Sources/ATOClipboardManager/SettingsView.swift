@@ -6,7 +6,7 @@ struct SettingsView: View {
     @ObservedObject var launchAtLogin: LaunchAtLoginManager
     @ObservedObject var clipboardStore: ClipboardStore
     @ObservedObject var updateManager: UpdateManager
-    @State private var showDeletePersistedHistoryConfirmation = false
+    @State private var showDeleteHistoryAfterDisabling = false
 
     var body: some View {
         VStack(spacing: 20) {
@@ -39,12 +39,11 @@ struct SettingsView: View {
                         }
 
                         settingRow(Localizer.text(.maxHistory, language: settings.language)) {
-                            Stepper(value: $settings.maxHistoryItems, in: 1...100) {
-                                Text("\(settings.maxHistoryItems)")
-                                    .monospacedDigit()
-                                    .frame(minWidth: 28, alignment: .trailing)
-                            }
-                            .frame(width: 110)
+                            numericInput(
+                                value: $settings.maxHistoryItems,
+                                range: 1...100,
+                                fieldWidth: 64
+                            )
                         }
                     }
 
@@ -141,15 +140,16 @@ struct SettingsView: View {
             Text(updateManager.errorMessage ?? "")
         }
         .confirmationDialog(
-            Localizer.text(.deletePersistedHistoryTitle, language: settings.language),
-            isPresented: $showDeletePersistedHistoryConfirmation,
+            Localizer.text(.disablePersistenceTitle, language: settings.language),
+            isPresented: $showDeleteHistoryAfterDisabling,
             titleVisibility: .visible
         ) {
-            Button(Localizer.text(.delete, language: settings.language), role: .destructive) {
+            Button(Localizer.text(.deletePersistedHistory, language: settings.language), role: .destructive) {
                 clipboardStore.deletePersistedHistory()
             }
+            Button(Localizer.text(.keepPersistedHistory, language: settings.language), role: .cancel) {}
         } message: {
-            Text(Localizer.text(.deletePersistedHistoryMessage, language: settings.language))
+            Text(Localizer.text(.disablePersistenceMessage, language: settings.language))
         }
     }
 
@@ -262,35 +262,26 @@ struct SettingsView: View {
         ) {
             toggleRow(
                 Localizer.text(.persistHistory, language: settings.language),
-                isOn: $settings.persistHistory
+                isOn: Binding(
+                    get: { settings.persistHistory },
+                    set: { enabled in
+                        let shouldAskToDelete = settings.persistHistory && !enabled && clipboardStore.hasPersistedHistory
+                        settings.persistHistory = enabled
+                        if shouldAskToDelete {
+                            showDeleteHistoryAfterDisabling = true
+                        }
+                    }
+                )
             )
 
             if settings.persistHistory {
-                settingRow(Localizer.text(.historyFilePath, language: settings.language)) {
-                    TextField("", text: $settings.historyFilePath)
-                        .textFieldStyle(.roundedBorder)
-                        .frame(width: 290)
-                }
-
                 settingRow(Localizer.text(.persistedHistoryLimit, language: settings.language)) {
-                    Stepper(
+                    numericInput(
                         value: $settings.maxPersistedHistoryItems,
-                        in: settings.maxHistoryItems...AppSettings.maximumPersistedHistoryItems
-                    ) {
-                        Text("\(settings.maxPersistedHistoryItems)")
-                            .monospacedDigit()
-                            .frame(minWidth: 48, alignment: .trailing)
-                    }
-                    .frame(width: 130)
+                        range: settings.maxHistoryItems...AppSettings.maximumPersistedHistoryItems,
+                        fieldWidth: 64
+                    )
                 }
-            }
-
-            HStack {
-                Spacer()
-                Button(Localizer.text(.deletePersistedHistory, language: settings.language), role: .destructive) {
-                    showDeletePersistedHistoryConfirmation = true
-                }
-                .disabled(!clipboardStore.hasPersistedHistory)
             }
         }
     }
@@ -379,5 +370,59 @@ struct SettingsView: View {
                 .labelsHidden()
         }
         .frame(minHeight: 24)
+    }
+
+    private func numericInput(
+        value: Binding<Int>,
+        range: ClosedRange<Int>,
+        fieldWidth: CGFloat
+    ) -> some View {
+        HStack(spacing: 6) {
+            Button {
+                value.wrappedValue = max(range.lowerBound, value.wrappedValue - 1)
+            } label: {
+                Image(systemName: "minus")
+            }
+            .buttonStyle(NumericStepButtonStyle())
+            .disabled(value.wrappedValue <= range.lowerBound)
+
+            TextField("", value: value, format: .number)
+                .textFieldStyle(.roundedBorder)
+                .multilineTextAlignment(.trailing)
+                .monospacedDigit()
+                .frame(width: fieldWidth, height: 24)
+
+            Button {
+                value.wrappedValue = min(range.upperBound, value.wrappedValue + 1)
+            } label: {
+                Image(systemName: "plus")
+            }
+            .buttonStyle(NumericStepButtonStyle())
+            .disabled(value.wrappedValue >= range.upperBound)
+        }
+        .controlSize(.regular)
+    }
+}
+
+private struct NumericStepButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        NumericStepButton(configuration: configuration)
+    }
+
+    private struct NumericStepButton: View {
+        let configuration: Configuration
+        @Environment(\.isEnabled) private var isEnabled
+
+        var body: some View {
+            configuration.label
+                .font(.system(size: 13, weight: .medium))
+                .frame(width: 34, height: 24)
+                .foregroundStyle(isEnabled ? Color.primary : Color.secondary.opacity(0.55))
+                .background {
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .fill(Color.primary.opacity(configuration.isPressed ? 0.16 : 0.10))
+                }
+                .contentShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+        }
     }
 }

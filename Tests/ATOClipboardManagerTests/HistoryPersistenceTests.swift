@@ -65,13 +65,11 @@ final class HistoryPersistenceTests: XCTestCase {
         let defaults = UserDefaults(suiteName: suiteName)!
         defer { defaults.removePersistentDomain(forName: suiteName) }
         defaults.set(true, forKey: "persistHistory")
-        defaults.set(path, forKey: "historyFilePath")
         defaults.set(2, forKey: "maxHistoryItems")
         defaults.set(5, forKey: "maxPersistedHistoryItems")
         let settings = AppSettings(defaults: defaults)
         XCTAssertTrue(settings.persistHistory)
-        XCTAssertEqual(settings.historyFilePath, path)
-        let store = ClipboardStore(settings: settings, persistence: persistence)
+        let store = ClipboardStore(settings: settings, persistence: persistence, historyFilePath: path)
 
         XCTAssertNil(store.persistenceError)
         XCTAssertEqual(store.items.map(\.searchableText), ["item 5", "item 4"])
@@ -80,6 +78,8 @@ final class HistoryPersistenceTests: XCTestCase {
 
         store.promote(ClipboardItem(content: .text("new item")))
         XCTAssertEqual(try persistence.load(from: path).first?.searchableText, "new item")
+        settings.persistHistory = false
+        XCTAssertTrue(persistence.exists(at: path))
         store.deletePersistedHistory()
         XCTAssertEqual(store.items.map(\.searchableText), ["new item", "item 5", "item 4", "item 3"])
         XCTAssertFalse(persistence.exists(at: path))

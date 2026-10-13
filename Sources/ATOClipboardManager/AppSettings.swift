@@ -10,12 +10,11 @@ final class AppSettings: ObservableObject {
         static let automaticPasteShortcut = "automaticPasteShortcut"
         static let launchAtLoginPromptShown = "launchAtLoginPromptShown"
         static let persistHistory = "persistHistory"
-        static let historyFilePath = "historyFilePath"
         static let maxPersistedHistoryItems = "maxPersistedHistoryItems"
     }
 
     static let defaultMaxHistoryItems = 20
-    static let defaultHistoryFilePath = "~/.ato/history.json"
+    nonisolated static let defaultHistoryFilePath = "~/.ato/history.json"
     nonisolated static let maximumPersistedHistoryItems = 10_000
     private let defaults: UserDefaults
 
@@ -37,7 +36,6 @@ final class AppSettings: ObservableObject {
     @Published var automaticPaste: Bool { didSet { defaults.set(automaticPaste, forKey: Key.automaticPaste) } }
     @Published var automaticPasteShortcut: Bool { didSet { defaults.set(automaticPasteShortcut, forKey: Key.automaticPasteShortcut) } }
     @Published var persistHistory: Bool { didSet { defaults.set(persistHistory, forKey: Key.persistHistory) } }
-    @Published var historyFilePath: String { didSet { defaults.set(historyFilePath, forKey: Key.historyFilePath) } }
     @Published var maxPersistedHistoryItems: Int {
         didSet {
             let validValue = Self.clampPersistedHistoryLimit(maxPersistedHistoryItems, minimum: maxHistoryItems)
@@ -59,7 +57,6 @@ final class AppSettings: ObservableObject {
         automaticPaste = defaults.bool(forKey: Key.automaticPaste)
         automaticPasteShortcut = defaults.object(forKey: Key.automaticPasteShortcut) as? Bool ?? true
         persistHistory = defaults.bool(forKey: Key.persistHistory)
-        historyFilePath = defaults.string(forKey: Key.historyFilePath) ?? Self.defaultHistoryFilePath
         let savedPersistedLimit = defaults.object(forKey: Key.maxPersistedHistoryItems) as? Int
         maxPersistedHistoryItems = Self.clampPersistedHistoryLimit(
             savedPersistedLimit ?? historyLimit,

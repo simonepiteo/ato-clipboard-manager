@@ -25,7 +25,7 @@ ATO Clipboard Manager is a modern, open-source clipboard manager for macOS, buil
 - Open Settings with `⌘⌥S`
 - Clear clipboard history
 - Optionally launch ATO automatically when you log in
-- Optionally persist history to a configurable JSON file and restore it on startup
+- Optionally persist history to a private JSON file and restore it on startup
 - Configure separate limits for visible and saved history, and delete the saved file from Settings
 - Check GitHub Releases for updates at startup, when Settings opens, and at least once a day
 - Download, verify, install, and restart into a newer DMG release directly from Settings
@@ -34,7 +34,7 @@ ATO Clipboard Manager is a modern, open-source clipboard manager for macOS, buil
 - Persistent preferences with `UserDefaults`
 - English and Italian localization
 
-Clipboard history is stored in memory by default and is cleared when the app quits. JSON persistence can be enabled in Settings; its default path is `~/.ato/history.json`.
+Clipboard history is stored in memory by default and is cleared when the app quits. JSON persistence can be enabled in Settings; ATO stores it at `~/.ato/history.json`. When persistence is disabled, ATO asks whether the existing file should be kept or deleted.
 
 ---
 

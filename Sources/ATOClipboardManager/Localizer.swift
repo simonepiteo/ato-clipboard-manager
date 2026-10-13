@@ -9,9 +9,10 @@ enum LocalizedKey: String {
     case startup, launchAtLogin, launchAtLoginApproval, openLoginItems
     case launchAtLoginPromptTitle, launchAtLoginPromptMessage, enable, notNow
     case launchAtLoginError
-    case storage, persistHistory, historyFilePath, persistedHistoryLimit
-    case deletePersistedHistory, deletePersistedHistoryTitle, deletePersistedHistoryMessage, delete
+    case storage, persistHistory, persistedHistoryLimit
+    case deletePersistedHistory
     case historyPersistenceError
+    case disablePersistenceTitle, disablePersistenceMessage, keepPersistedHistory
     case updates, checkForUpdates, updateAvailable, upToDate, lastChecked
     case downloadAndInstall, downloadAndRestartHint, previousVersions, noVersionsLoaded
     case installed, releaseNotes, updateError
@@ -35,10 +36,11 @@ enum Localizer {
         .launchAtLoginPromptMessage: "ATO can start automatically when you log in, so your clipboard history is always ready.",
         .enable: "Enable", .notNow: "Not now", .launchAtLoginError: "Couldn’t update the login item",
         .storage: "Storage", .persistHistory: "Save clipboard history to a JSON file",
-        .historyFilePath: "File path", .persistedHistoryLimit: "Maximum saved items",
-        .deletePersistedHistory: "Delete saved history", .deletePersistedHistoryTitle: "Delete saved history?",
-        .deletePersistedHistoryMessage: "This permanently deletes the JSON history file. Items currently visible in ATO are not removed.",
-        .delete: "Delete", .historyPersistenceError: "Couldn’t update the saved history",
+        .persistedHistoryLimit: "Maximum saved items",
+        .deletePersistedHistory: "Delete saved history", .historyPersistenceError: "Couldn’t update the saved history",
+        .disablePersistenceTitle: "Delete the saved history?",
+        .disablePersistenceMessage: "History saving is now off. Do you also want to delete the history file stored on this Mac? Items currently visible in ATO will remain available until the app quits.",
+        .keepPersistedHistory: "Keep File",
         .updates: "Updates", .checkForUpdates: "Check for Updates",
         .updateAvailable: "Version %@ is available", .upToDate: "ATO is up to date",
         .lastChecked: "Last checked: %@", .downloadAndInstall: "Download and Install",
@@ -66,10 +68,11 @@ enum Localizer {
         .launchAtLoginPromptMessage: "ATO può avviarsi automaticamente quando accedi, così la cronologia degli appunti è sempre pronta.",
         .enable: "Attiva", .notNow: "Non ora", .launchAtLoginError: "Impossibile aggiornare l’elemento di login",
         .storage: "Archiviazione", .persistHistory: "Salva la cronologia degli appunti in un file JSON",
-        .historyFilePath: "Percorso file", .persistedHistoryLimit: "Massimo elementi salvati",
-        .deletePersistedHistory: "Elimina cronologia salvata", .deletePersistedHistoryTitle: "Eliminare la cronologia salvata?",
-        .deletePersistedHistoryMessage: "Questa azione elimina definitivamente il file JSON. Gli elementi attualmente visibili in ATO non vengono rimossi.",
-        .delete: "Elimina", .historyPersistenceError: "Impossibile aggiornare la cronologia salvata",
+        .persistedHistoryLimit: "Massimo elementi salvati",
+        .deletePersistedHistory: "Elimina cronologia salvata", .historyPersistenceError: "Impossibile aggiornare la cronologia salvata",
+        .disablePersistenceTitle: "Eliminare la cronologia salvata?",
+        .disablePersistenceMessage: "Il salvataggio è ora disattivato. Vuoi eliminare anche il file della cronologia presente sul Mac? Gli elementi attualmente visibili resteranno disponibili fino alla chiusura dell’app.",
+        .keepPersistedHistory: "Mantieni file",
         .updates: "Aggiornamenti", .checkForUpdates: "Cerca aggiornamenti",
         .updateAvailable: "È disponibile la versione %@", .upToDate: "ATO è aggiornato",
         .lastChecked: "Ultimo controllo: %@", .downloadAndInstall: "Scarica e installa",
