@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.2.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v1.1.0...v1.2.0) (2026-10-13)
+
+### Features
+
+* Add support for file clipboard items and enhance UI to display file previews ([5040e21](https://github.com/simonepiteo/ato-clipboard-manager/commit/5040e21d4af9f2c452fdc7d7e03c6b80f4696f71))
+* Implement delete functionality for history items and update UI accordingly ([afbef86](https://github.com/simonepiteo/ato-clipboard-manager/commit/afbef86d50f1812d7e2e9de26b9e8b18519fc5eb))
+
 ## [1.1.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v1.0.0...v1.1.0) (2026-10-13)
 
 ### Features
