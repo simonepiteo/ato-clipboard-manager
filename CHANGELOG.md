@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.3.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v1.2.1...v1.3.0) (2026-10-13)
+
+### Features
+
+* Add support for automatic paste on Return setting and update related UI and tests ([8854a4d](https://github.com/simonepiteo/ato-clipboard-manager/commit/8854a4de7ac07c1530cd52f5b050b844858a74a8))
+
 ## [1.2.1](https://github.com/simonepiteo/ato-clipboard-manager/compare/v1.2.0...v1.2.1) (2026-10-13)
 
 ### Other Changes
