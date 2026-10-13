@@ -24,6 +24,13 @@ struct HistoryBuffer {
         items = Array(items.prefix(max(limit, 1)))
     }
 
+    @discardableResult
+    mutating func remove(_ item: ClipboardItem) -> Bool {
+        let previousCount = items.count
+        items.removeAll { $0 == item }
+        return items.count != previousCount
+    }
+
     mutating func clear() {
         items.removeAll()
     }

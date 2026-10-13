@@ -15,6 +15,7 @@ ATO Clipboard Manager is a modern, open-source clipboard manager for macOS, buil
 - Switch between grid and list layouts.
 - Move any selected item to the top of the history.
 - Pin or unpin items from their context menu and switch between History and Pinned from the popover.
+- Delete individual history items from their context menu; pinned items must be unpinned first.
 - Configure separate limits for visible items and saved history.
 - Keep history in memory only, or persist it privately and restore it at startup.
 

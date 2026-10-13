@@ -18,6 +18,18 @@ final class HistoryBufferTests: XCTestCase {
         XCTAssertEqual(history.items.map(\.searchableText), ["4", "3", "2"])
     }
 
+    func testHistoryItemCanBeRemoved() {
+        var history = HistoryBuffer()
+        let first = ClipboardItem(content: .text("first"))
+        let second = ClipboardItem(content: .text("second"))
+        history.insert(first, limit: 20)
+        history.insert(second, limit: 20)
+
+        XCTAssertTrue(history.remove(first))
+        XCTAssertEqual(history.items, [second])
+        XCTAssertFalse(history.remove(first))
+    }
+
     func testHistoryLimitIsClamped() {
         XCTAssertEqual(AppSettings.clampHistoryLimit(0), 1)
         XCTAssertEqual(AppSettings.clampHistoryLimit(120), 100)

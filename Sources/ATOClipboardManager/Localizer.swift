@@ -27,6 +27,7 @@ enum LocalizedKey: String {
     case openAccessibilitySettings, automaticPastePermissionTitle, automaticPastePermissionMessage
     case history, favorites, emptyFavorites, noSearchResults
     case addToFavorites, removeFromFavorites, favoritesPersistenceError
+    case deleteFromHistory, unpinBeforeDeleting
 }
 
 enum Localizer {
@@ -85,7 +86,8 @@ enum Localizer {
         .emptyFavorites: "Right-click an item to pin it",
         .noSearchResults: "No matching items",
         .addToFavorites: "Pin Item", .removeFromFavorites: "Unpin Item",
-        .favoritesPersistenceError: "Couldn’t update Pinned items"
+        .favoritesPersistenceError: "Couldn’t update Pinned items",
+        .deleteFromHistory: "Delete from History", .unpinBeforeDeleting: "Unpin Before Deleting"
     ]
 
     private static let italian: [LocalizedKey: String] = [
@@ -143,7 +145,8 @@ enum Localizer {
         .emptyFavorites: "Fai clic destro su un elemento per fissarlo",
         .noSearchResults: "Nessun elemento corrispondente",
         .addToFavorites: "Fissa elemento", .removeFromFavorites: "Rimuovi dai fissati",
-        .favoritesPersistenceError: "Impossibile aggiornare gli elementi fissati"
+        .favoritesPersistenceError: "Impossibile aggiornare gli elementi fissati",
+        .deleteFromHistory: "Elimina dalla cronologia", .unpinBeforeDeleting: "Rimuovi il pin prima di eliminare"
     ]
 
     static func text(_ key: LocalizedKey, language: AppLanguage) -> String {

@@ -73,6 +73,33 @@ final class HistoryPersistenceTests: XCTestCase {
     }
 
     @MainActor
+    func testDeletingAnItemUpdatesVisibleAndPersistedHistory() throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("ClipboardStoreDeletionTests-\(UUID().uuidString)", isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let path = directory.appendingPathComponent("history.json").path
+        let suiteName = "ClipboardStoreDeletionSettingsTests.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        defaults.set(true, forKey: "persistHistory")
+        defaults.set(5, forKey: "maxHistoryItems")
+        defaults.set(5, forKey: "maxPersistedHistoryItems")
+        let settings = AppSettings(defaults: defaults)
+        let persistence = HistoryPersistence()
+        let store = ClipboardStore(settings: settings, persistence: persistence, historyFilePath: path)
+        let first = ClipboardItem(content: .text("first"))
+        let second = ClipboardItem(content: .text("second"))
+
+        store.promote(first)
+        store.promote(second)
+        XCTAssertTrue(store.delete(first))
+
+        XCTAssertEqual(store.items, [second])
+        XCTAssertEqual(try persistence.load(from: path), [second])
+        XCTAssertFalse(store.delete(first))
+    }
+
+    @MainActor
     func testStoreRestoresOnlyVisibleLimitAndDeletesOnlyTheFile() throws {
         let directory = FileManager.default.temporaryDirectory
             .appendingPathComponent("ClipboardStorePersistenceTests-\(UUID().uuidString)", isDirectory: true)

@@ -53,6 +53,36 @@ final class ClipboardStore: ObservableObject {
         items = buffer.items
     }
 
+    @discardableResult
+    func delete(_ item: ClipboardItem) -> Bool {
+        let previousBuffer = buffer
+        let previousPersistedBuffer = persistedBuffer
+        let removedFromVisibleHistory = buffer.remove(item)
+
+        guard settings.persistHistory else {
+            items = buffer.items
+            return removedFromVisibleHistory
+        }
+
+        let removedFromSavedHistory = persistedBuffer.remove(item)
+        guard removedFromVisibleHistory || removedFromSavedHistory else { return false }
+
+        do {
+            try persistence.save(persistedBuffer.items, to: historyFilePath)
+            items = buffer.items
+            hasPersistedHistory = true
+            persistenceError = nil
+            return true
+        } catch {
+            buffer = previousBuffer
+            persistedBuffer = previousPersistedBuffer
+            items = buffer.items
+            persistenceError = error.localizedDescription
+            refreshPersistedHistoryAvailability()
+            return false
+        }
+    }
+
     func deletePersistedHistory() {
         do {
             try persistence.delete(at: historyFilePath)

@@ -71,6 +71,17 @@ struct PopoverView: View {
         } message: {
             Text(favoritesStore.persistenceError ?? "")
         }
+        .alert(
+            Localizer.text(.historyPersistenceError, language: settings.language),
+            isPresented: Binding(
+                get: { store.persistenceError != nil },
+                set: { if !$0 { store.persistenceError = nil } }
+            )
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(store.persistenceError ?? "")
+        }
     }
 
     private func items(for section: ClipboardSection) -> [ClipboardItem] {
@@ -179,6 +190,14 @@ struct PopoverView: View {
                             toggleFavorite: { favoritesStore.toggle(item) },
                             favoriteActionTitle: Localizer.text(
                                 favoritesStore.contains(item) ? .removeFromFavorites : .addToFavorites,
+                                language: settings.language
+                            ),
+                            deleteFromHistory: {
+                                guard !favoritesStore.contains(item) else { return }
+                                store.delete(item)
+                            },
+                            deleteActionTitle: Localizer.text(
+                                favoritesStore.contains(item) ? .unpinBeforeDeleting : .deleteFromHistory,
                                 language: settings.language
                             )
                         ) {
@@ -329,6 +348,8 @@ private struct ClipboardCard: View {
     let isFavorite: Bool
     let toggleFavorite: () -> Void
     let favoriteActionTitle: String
+    let deleteFromHistory: () -> Void
+    let deleteActionTitle: String
     let action: () -> Void
 
     var body: some View {
@@ -374,6 +395,13 @@ private struct ClipboardCard: View {
             Button(action: toggleFavorite) {
                 Label(favoriteActionTitle, systemImage: isFavorite ? "pin.slash" : "pin")
             }
+
+            Divider()
+
+            Button(role: .destructive, action: deleteFromHistory) {
+                Label(deleteActionTitle, systemImage: "trash")
+            }
+            .disabled(isFavorite)
         }
     }
 }
