@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.4.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v0.3.0...v0.4.0) (2026-10-13)
+
+### Features
+
+* update settings view layout and enhance localization support ([228d67b](https://github.com/simonepiteo/ato-clipboard-manager/commit/228d67b7dfc6b9528f2ac01eb21987aa783be506))
+* enhance clipboard history persistence with user prompts for deletion and improved settings integration ([25806f2](https://github.com/simonepiteo/ato-clipboard-manager/commit/25806f23ada0ee588cd93c69d5f81ffe73436f1d))
+* implement auto-update functionality with GitHub Releases integration ([db92e9f](https://github.com/simonepiteo/ato-clipboard-manager/commit/db92e9f4d5bc7e3de5fcf78551b5e6f1eaf012b9))
+* add clipboard history persistence with JSON support and settings integration ([f89e786](https://github.com/simonepiteo/ato-clipboard-manager/commit/f89e7863dda060cfc5673d486d55abea945efacc))
+* mark 'Run at startup' as completed in the roadmap ([0352265](https://github.com/simonepiteo/ato-clipboard-manager/commit/0352265c0b7a3827a87a9c21cc1422e71d551f29))
+* implement launch at login functionality with user prompt and settings integration ([1d1cf9a](https://github.com/simonepiteo/ato-clipboard-manager/commit/1d1cf9a2ec19656e340711cf04b254b668f2102c))
+
 ## [0.3.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v0.2.0...v0.3.0) (2026-10-13)
 
 ### Features
