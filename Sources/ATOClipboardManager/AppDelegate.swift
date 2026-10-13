@@ -167,12 +167,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
         let controller = NSHostingController(
-            rootView: SettingsView(settings: settings, launchAtLogin: launchAtLogin)
+            rootView: SettingsView(
+                settings: settings,
+                launchAtLogin: launchAtLogin,
+                clipboardStore: clipboardStore
+            )
         )
         let window = NSWindow(contentViewController: controller)
         window.title = Localizer.text(.settingsTitle, language: settings.language)
         window.styleMask = [.titled, .closable]
-        window.setContentSize(NSSize(width: 520, height: 540))
+        window.setContentSize(NSSize(width: 560, height: 640))
         window.center()
         window.isReleasedWhenClosed = false
         window.delegate = self

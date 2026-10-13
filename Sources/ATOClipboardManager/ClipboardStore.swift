@@ -1,18 +1,32 @@
 import AppKit
+import Combine
 import Foundation
 
 @MainActor
 final class ClipboardStore: ObservableObject {
     @Published private(set) var items: [ClipboardItem] = []
+    @Published private(set) var hasPersistedHistory = false
+    @Published var persistenceError: String?
 
     private var buffer = HistoryBuffer()
+    private var persistedBuffer = HistoryBuffer()
     private var timer: Timer?
     private var lastChangeCount = NSPasteboard.general.changeCount
     private var ignoredChangeCount: Int?
     private let settings: AppSettings
+    private let persistence: HistoryPersistence
+    private var cancellables = Set<AnyCancellable>()
 
-    init(settings: AppSettings) {
+    init(settings: AppSettings, persistence: HistoryPersistence = HistoryPersistence()) {
         self.settings = settings
+        self.persistence = persistence
+
+        if settings.persistHistory {
+            restorePersistedHistory(includingCurrentItems: false)
+        } else {
+            refreshPersistedHistoryAvailability()
+        }
+        observeSettings()
     }
 
     func start() {
@@ -31,6 +45,18 @@ final class ClipboardStore: ObservableObject {
     func clear() {
         buffer.clear()
         items = buffer.items
+    }
+
+    func deletePersistedHistory() {
+        do {
+            try persistence.delete(at: settings.historyFilePath)
+            persistedBuffer.clear()
+            hasPersistedHistory = false
+            persistenceError = nil
+        } catch {
+            persistenceError = error.localizedDescription
+            refreshPersistedHistoryAvailability()
+        }
     }
 
     @discardableResult
@@ -60,8 +86,7 @@ final class ClipboardStore: ObservableObject {
     }
 
     func promote(_ item: ClipboardItem) {
-        buffer.insert(item, limit: settings.maxHistoryItems)
-        items = buffer.items
+        record(item)
     }
 
     private func readPasteboardIfChanged() {
@@ -84,8 +109,103 @@ final class ClipboardStore: ObservableObject {
         }
 
         guard let item else { return }
+        record(item)
+    }
+
+    private func record(_ item: ClipboardItem) {
         buffer.insert(item, limit: settings.maxHistoryItems)
         items = buffer.items
+
+        guard settings.persistHistory else { return }
+        persistedBuffer.insert(item, limit: settings.maxPersistedHistoryItems)
+        savePersistedHistory()
+    }
+
+    private func observeSettings() {
+        settings.$persistHistory
+            .dropFirst()
+            .removeDuplicates()
+            .sink { [weak self] enabled in
+                guard let self else { return }
+                if enabled {
+                    self.restorePersistedHistory(includingCurrentItems: true)
+                } else {
+                    self.refreshPersistedHistoryAvailability()
+                }
+            }
+            .store(in: &cancellables)
+
+        settings.$maxHistoryItems
+            .dropFirst()
+            .removeDuplicates()
+            .sink { [weak self] limit in
+                guard let self else { return }
+                if self.settings.persistHistory {
+                    self.buffer.replace(with: self.persistedBuffer.items, limit: limit)
+                } else {
+                    self.buffer.trim(to: limit)
+                }
+                self.items = self.buffer.items
+            }
+            .store(in: &cancellables)
+
+        settings.$maxPersistedHistoryItems
+            .dropFirst()
+            .removeDuplicates()
+            .sink { [weak self] limit in
+                guard let self, self.settings.persistHistory else { return }
+                let validLimit = AppSettings.clampPersistedHistoryLimit(
+                    limit,
+                    minimum: self.settings.maxHistoryItems
+                )
+                self.persistedBuffer.trim(to: validLimit)
+                self.savePersistedHistory()
+            }
+            .store(in: &cancellables)
+
+        settings.$historyFilePath
+            .dropFirst()
+            .removeDuplicates()
+            .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                if self.settings.persistHistory {
+                    self.savePersistedHistory()
+                } else {
+                    self.refreshPersistedHistoryAvailability()
+                }
+            }
+            .store(in: &cancellables)
+    }
+
+    private func restorePersistedHistory(includingCurrentItems: Bool) {
+        do {
+            let persistedItems = try persistence.load(from: settings.historyFilePath)
+            let combinedItems = includingCurrentItems ? buffer.items + persistedItems : persistedItems
+            persistedBuffer.replace(with: combinedItems, limit: settings.maxPersistedHistoryItems)
+            buffer.replace(with: persistedBuffer.items, limit: settings.maxHistoryItems)
+            items = buffer.items
+            persistenceError = nil
+            savePersistedHistory()
+        } catch {
+            persistenceError = error.localizedDescription
+            refreshPersistedHistoryAvailability()
+        }
+    }
+
+    private func savePersistedHistory() {
+        do {
+            try persistence.save(persistedBuffer.items, to: settings.historyFilePath)
+            hasPersistedHistory = true
+            persistenceError = nil
+        } catch {
+            persistenceError = error.localizedDescription
+            refreshPersistedHistoryAvailability()
+        }
+    }
+
+    private func refreshPersistedHistoryAvailability() {
+        hasPersistedHistory = persistence.exists(at: settings.historyFilePath)
     }
 
     private func imageData(from pasteboard: NSPasteboard) -> Data? {

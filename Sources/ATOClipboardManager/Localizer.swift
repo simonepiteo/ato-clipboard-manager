@@ -9,6 +9,9 @@ enum LocalizedKey: String {
     case startup, launchAtLogin, launchAtLoginApproval, openLoginItems
     case launchAtLoginPromptTitle, launchAtLoginPromptMessage, enable, notNow
     case launchAtLoginError
+    case storage, persistHistory, historyFilePath, persistedHistoryLimit
+    case deletePersistedHistory, deletePersistedHistoryTitle, deletePersistedHistoryMessage, delete
+    case historyPersistenceError
 }
 
 enum Localizer {
@@ -26,7 +29,12 @@ enum Localizer {
         .launchAtLoginApproval: "Approval is required in System Settings.",
         .openLoginItems: "Open Login Items", .launchAtLoginPromptTitle: "Launch ATO at login?",
         .launchAtLoginPromptMessage: "ATO can start automatically when you log in, so your clipboard history is always ready.",
-        .enable: "Enable", .notNow: "Not now", .launchAtLoginError: "Couldn’t update the login item"
+        .enable: "Enable", .notNow: "Not now", .launchAtLoginError: "Couldn’t update the login item",
+        .storage: "Storage", .persistHistory: "Save clipboard history to a JSON file",
+        .historyFilePath: "File path", .persistedHistoryLimit: "Maximum saved items",
+        .deletePersistedHistory: "Delete saved history", .deletePersistedHistoryTitle: "Delete saved history?",
+        .deletePersistedHistoryMessage: "This permanently deletes the JSON history file. Items currently visible in ATO are not removed.",
+        .delete: "Delete", .historyPersistenceError: "Couldn’t update the saved history"
     ]
 
     private static let italian: [LocalizedKey: String] = [
@@ -43,7 +51,12 @@ enum Localizer {
         .launchAtLoginApproval: "È necessaria l’approvazione nelle Impostazioni di Sistema.",
         .openLoginItems: "Apri Elementi login", .launchAtLoginPromptTitle: "Avviare ATO all’accesso?",
         .launchAtLoginPromptMessage: "ATO può avviarsi automaticamente quando accedi, così la cronologia degli appunti è sempre pronta.",
-        .enable: "Attiva", .notNow: "Non ora", .launchAtLoginError: "Impossibile aggiornare l’elemento di login"
+        .enable: "Attiva", .notNow: "Non ora", .launchAtLoginError: "Impossibile aggiornare l’elemento di login",
+        .storage: "Archiviazione", .persistHistory: "Salva la cronologia degli appunti in un file JSON",
+        .historyFilePath: "Percorso file", .persistedHistoryLimit: "Massimo elementi salvati",
+        .deletePersistedHistory: "Elimina cronologia salvata", .deletePersistedHistoryTitle: "Eliminare la cronologia salvata?",
+        .deletePersistedHistoryMessage: "Questa azione elimina definitivamente il file JSON. Gli elementi attualmente visibili in ATO non vengono rimossi.",
+        .delete: "Elimina", .historyPersistenceError: "Impossibile aggiornare la cronologia salvata"
     ]
 
     static func text(_ key: LocalizedKey, language: AppLanguage) -> String {

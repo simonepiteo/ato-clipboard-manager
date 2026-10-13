@@ -2,7 +2,7 @@
 
 [![Version](https://img.shields.io/github/v/release/simonepiteo/ato-clipboard-manager?sort=semver)](https://github.com/simonepiteo/ato-clipboard-manager/releases/latest)
 
-ATO Clipboard Manager is a modern, open-source clipboard manager for macOS, built natively with Swift, SwiftUI, and AppKit. It keeps text and image clipboard history available for the current session, lets you quickly reuse previous items, and requires no third-party dependencies.
+ATO Clipboard Manager is a modern, open-source clipboard manager for macOS, built natively with Swift, SwiftUI, and AppKit. It keeps text and image clipboard history available, lets you quickly reuse previous items, and requires no third-party dependencies.
 
 ---
 
@@ -14,7 +14,7 @@ ATO Clipboard Manager is a modern, open-source clipboard manager for macOS, buil
 
 ## ✨ Features
 
-- Save and browse text and image clipboard history for the current session
+- Save and browse text and image clipboard history
 - Search text entries instantly
 - Switch between grid and list layouts
 - Select the first nine items with keyboard shortcuts (`⌘1`–`⌘9`)
@@ -24,11 +24,14 @@ ATO Clipboard Manager is a modern, open-source clipboard manager for macOS, buil
 - Customize language, display mode, history size, and automatic paste behavior
 - Open Settings with `⌘⌥S`
 - Clear clipboard history
+- Optionally launch ATO automatically when you log in
+- Optionally persist history to a configurable JSON file and restore it on startup
+- Configure separate limits for visible and saved history, and delete the saved file from Settings
 - Native macOS menu bar and popover integration
 - Persistent preferences with `UserDefaults`
 - English and Italian localization
 
-Clipboard history is stored in memory only and is cleared when the app quits.
+Clipboard history is stored in memory by default and is cleared when the app quits. JSON persistence can be enabled in Settings; its default path is `~/.ato/history.json`.
 
 ---
 
@@ -39,6 +42,7 @@ Clipboard history is stored in memory only and is cleared when the app quits.
 - [x] Search clipboard history
 - [x] Auto-paste mode
 - [x] Run at startup
+- [x] Optional JSON history persistence
 - [ ] Pin favorite items
 - [ ] Customizable keyboard shortcuts
 - [ ] Rich media support (files, links, etc.)

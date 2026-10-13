@@ -4,89 +4,98 @@ import SwiftUI
 struct SettingsView: View {
     @ObservedObject var settings: AppSettings
     @ObservedObject var launchAtLogin: LaunchAtLoginManager
+    @ObservedObject var clipboardStore: ClipboardStore
+    @State private var showDeletePersistedHistoryConfirmation = false
 
     var body: some View {
         VStack(spacing: 20) {
             header
 
-            settingsSection(
-                Localizer.text(.appearance, language: settings.language),
-                systemImage: "rectangle.grid.2x2"
-            ) {
-                settingRow(Localizer.text(.language, language: settings.language)) {
-                    Picker("", selection: $settings.language) {
-                        ForEach(AppLanguage.allCases) { language in
-                            Text(language.displayName).tag(language)
+            ScrollView {
+                VStack(spacing: 20) {
+                    settingsSection(
+                        Localizer.text(.appearance, language: settings.language),
+                        systemImage: "rectangle.grid.2x2"
+                    ) {
+                        settingRow(Localizer.text(.language, language: settings.language)) {
+                            Picker("", selection: $settings.language) {
+                                ForEach(AppLanguage.allCases) { language in
+                                    Text(language.displayName).tag(language)
+                                }
+                            }
+                            .labelsHidden()
+                            .frame(width: 160)
+                        }
+
+                        settingRow(Localizer.text(.displayMode, language: settings.language)) {
+                            Picker("", selection: $settings.displayMode) {
+                                Text(Localizer.text(.grid, language: settings.language)).tag(DisplayMode.grid)
+                                Text(Localizer.text(.list, language: settings.language)).tag(DisplayMode.list)
+                            }
+                            .pickerStyle(.segmented)
+                            .labelsHidden()
+                            .frame(width: 160)
+                        }
+
+                        settingRow(Localizer.text(.maxHistory, language: settings.language)) {
+                            Stepper(value: $settings.maxHistoryItems, in: 1...100) {
+                                Text("\(settings.maxHistoryItems)")
+                                    .monospacedDigit()
+                                    .frame(minWidth: 28, alignment: .trailing)
+                            }
+                            .frame(width: 110)
                         }
                     }
-                    .labelsHidden()
-                    .frame(width: 160)
-                }
 
-                settingRow(Localizer.text(.displayMode, language: settings.language)) {
-                    Picker("", selection: $settings.displayMode) {
-                        Text(Localizer.text(.grid, language: settings.language)).tag(DisplayMode.grid)
-                        Text(Localizer.text(.list, language: settings.language)).tag(DisplayMode.list)
+                    settingsSection(
+                        Localizer.text(.behavior, language: settings.language),
+                        systemImage: "command"
+                    ) {
+                        toggleRow(
+                            Localizer.text(.automaticPaste, language: settings.language),
+                            isOn: $settings.automaticPaste
+                        )
+                        toggleRow(
+                            Localizer.text(.automaticPasteShortcut, language: settings.language),
+                            isOn: $settings.automaticPasteShortcut
+                        )
                     }
-                    .pickerStyle(.segmented)
-                    .labelsHidden()
-                    .frame(width: 160)
-                }
 
-                settingRow(Localizer.text(.maxHistory, language: settings.language)) {
-                    Stepper(value: $settings.maxHistoryItems, in: 1...100) {
-                        Text("\(settings.maxHistoryItems)")
-                            .monospacedDigit()
-                            .frame(minWidth: 28, alignment: .trailing)
-                    }
-                    .frame(width: 110)
-                }
-            }
+                    settingsSection(
+                        Localizer.text(.startup, language: settings.language),
+                        systemImage: "power"
+                    ) {
+                        toggleRow(
+                            Localizer.text(.launchAtLogin, language: settings.language),
+                            isOn: Binding(
+                                get: { launchAtLogin.isEnabled },
+                                set: launchAtLogin.setEnabled
+                            )
+                        )
 
-            settingsSection(
-                Localizer.text(.behavior, language: settings.language),
-                systemImage: "command"
-            ) {
-                toggleRow(
-                    Localizer.text(.automaticPaste, language: settings.language),
-                    isOn: $settings.automaticPaste
-                )
-                toggleRow(
-                    Localizer.text(.automaticPasteShortcut, language: settings.language),
-                    isOn: $settings.automaticPasteShortcut
-                )
-            }
-
-            settingsSection(
-                Localizer.text(.startup, language: settings.language),
-                systemImage: "power"
-            ) {
-                toggleRow(
-                    Localizer.text(.launchAtLogin, language: settings.language),
-                    isOn: Binding(
-                        get: { launchAtLogin.isEnabled },
-                        set: launchAtLogin.setEnabled
-                    )
-                )
-
-                if launchAtLogin.requiresApproval {
-                    HStack {
-                        Text(Localizer.text(.launchAtLoginApproval, language: settings.language))
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                        Spacer()
-                        Button(Localizer.text(.openLoginItems, language: settings.language)) {
-                            launchAtLogin.openSystemSettings()
+                        if launchAtLogin.requiresApproval {
+                            HStack {
+                                Text(Localizer.text(.launchAtLoginApproval, language: settings.language))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                Spacer()
+                                Button(Localizer.text(.openLoginItems, language: settings.language)) {
+                                    launchAtLogin.openSystemSettings()
+                                }
+                                .controlSize(.small)
+                            }
                         }
-                        .controlSize(.small)
                     }
+
+                    persistenceSection
                 }
+                .padding(.trailing, 8)
             }
 
             footer
         }
         .padding(24)
-        .frame(width: 520, height: 540)
+        .frame(width: 560, height: 640)
         .background(Color(nsColor: .windowBackgroundColor))
         .onAppear(perform: launchAtLogin.refresh)
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
@@ -102,6 +111,68 @@ struct SettingsView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(launchAtLogin.errorMessage ?? "")
+        }
+        .alert(
+            Localizer.text(.historyPersistenceError, language: settings.language),
+            isPresented: Binding(
+                get: { clipboardStore.persistenceError != nil },
+                set: { if !$0 { clipboardStore.persistenceError = nil } }
+            )
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(clipboardStore.persistenceError ?? "")
+        }
+        .confirmationDialog(
+            Localizer.text(.deletePersistedHistoryTitle, language: settings.language),
+            isPresented: $showDeletePersistedHistoryConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button(Localizer.text(.delete, language: settings.language), role: .destructive) {
+                clipboardStore.deletePersistedHistory()
+            }
+        } message: {
+            Text(Localizer.text(.deletePersistedHistoryMessage, language: settings.language))
+        }
+    }
+
+    private var persistenceSection: some View {
+        settingsSection(
+            Localizer.text(.storage, language: settings.language),
+            systemImage: "externaldrive"
+        ) {
+            toggleRow(
+                Localizer.text(.persistHistory, language: settings.language),
+                isOn: $settings.persistHistory
+            )
+
+            if settings.persistHistory {
+                settingRow(Localizer.text(.historyFilePath, language: settings.language)) {
+                    TextField("", text: $settings.historyFilePath)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(width: 290)
+                }
+
+                settingRow(Localizer.text(.persistedHistoryLimit, language: settings.language)) {
+                    Stepper(
+                        value: $settings.maxPersistedHistoryItems,
+                        in: settings.maxHistoryItems...AppSettings.maximumPersistedHistoryItems
+                    ) {
+                        Text("\(settings.maxPersistedHistoryItems)")
+                            .monospacedDigit()
+                            .frame(minWidth: 48, alignment: .trailing)
+                    }
+                    .frame(width: 130)
+                }
+            }
+
+            HStack {
+                Spacer()
+                Button(Localizer.text(.deletePersistedHistory, language: settings.language), role: .destructive) {
+                    showDeletePersistedHistoryConfirmation = true
+                }
+                .disabled(!clipboardStore.hasPersistedHistory)
+            }
         }
     }
 

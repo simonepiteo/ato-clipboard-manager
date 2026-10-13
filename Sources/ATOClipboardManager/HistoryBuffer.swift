@@ -6,7 +6,22 @@ struct HistoryBuffer {
     mutating func insert(_ item: ClipboardItem, limit: Int) {
         items.removeAll { $0 == item }
         items.insert(item, at: 0)
-        items = Array(items.prefix(AppSettings.clampHistoryLimit(limit)))
+        trim(to: limit)
+    }
+
+    mutating func replace(with newItems: [ClipboardItem], limit: Int) {
+        var seen = Set<ClipboardItem>()
+        var uniqueItems: [ClipboardItem] = []
+        let validLimit = max(limit, 1)
+        for item in newItems where seen.insert(item).inserted {
+            uniqueItems.append(item)
+            if uniqueItems.count == validLimit { break }
+        }
+        items = uniqueItems
+    }
+
+    mutating func trim(to limit: Int) {
+        items = Array(items.prefix(max(limit, 1)))
     }
 
     mutating func clear() {
