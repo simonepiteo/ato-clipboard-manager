@@ -98,7 +98,8 @@ struct PopoverView: View {
             .buttonStyle(MenuItemButtonStyle())
             .keyboardShortcut("q", modifiers: .command)
         }
-        .padding(.vertical, 4)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 6)
     }
 
     private func footerLabel(_ title: String, shortcut: String? = nil) -> some View {
