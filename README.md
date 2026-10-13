@@ -42,7 +42,7 @@ ATO Clipboard Manager is a modern, open-source clipboard manager for macOS, buil
 
 ### Updates
 
-- Check GitHub Releases automatically at startup, when Settings opens, and at least once a day.
+- Check GitHub Releases automatically at startup, when Settings opens if a check is due, and at least once a day.
 - Check for updates manually from Settings.
 - Download, verify, install, and restart into a newer DMG release.
 - Browse a scrollable list of current and previous releases with links to their release notes.
