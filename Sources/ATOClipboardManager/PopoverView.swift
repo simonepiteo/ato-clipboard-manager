@@ -10,6 +10,7 @@ struct PopoverView: View {
     @State private var searchText = ""
     @State private var dismissedUpdateVersion: String?
     @State private var selectedSection: ClipboardSection = .history
+    @Namespace private var sectionSelectionNamespace
 
     let select: (ClipboardItem, Bool, Bool) -> Void
     let openSettings: () -> Void
@@ -55,7 +56,9 @@ struct PopoverView: View {
             guard let rawValue = notification.userInfo?["section"] as? String,
                   let section = ClipboardSection(rawValue: rawValue)
             else { return }
-            selectedSection = section
+            withAnimation(.spring(response: 0.28, dampingFraction: 0.84)) {
+                selectedSection = section
+            }
         }
         .alert(
             Localizer.text(.favoritesPersistenceError, language: settings.language),
@@ -151,7 +154,7 @@ struct PopoverView: View {
         ScrollView {
             if filteredItems.isEmpty {
                 VStack(spacing: 8) {
-                    Image(systemName: selectedSection == .history ? "clipboard" : "star")
+                    Image(systemName: selectedSection == .history ? "clipboard" : "pin")
                         .font(.system(size: 32))
                         .foregroundStyle(.secondary)
                     Text(emptyStateText)
@@ -217,12 +220,12 @@ struct PopoverView: View {
         let isSelected = selectedSection == section
 
         return Button {
-            withAnimation(.easeOut(duration: 0.14)) {
+            withAnimation(.spring(response: 0.28, dampingFraction: 0.84)) {
                 selectedSection = section
             }
         } label: {
             HStack(spacing: 6) {
-                Image(systemName: section == .history ? "clock.arrow.circlepath" : "star.fill")
+                Image(systemName: section == .history ? "clock.arrow.circlepath" : "pin.fill")
                     .font(.system(size: 11, weight: .semibold))
                 Text(Localizer.text(section == .history ? .history : .favorites, language: settings.language))
                     .font(.system(size: 12, weight: .semibold))
@@ -238,10 +241,16 @@ struct PopoverView: View {
             .foregroundStyle(isSelected ? Color.white : Color.secondary)
             .padding(.horizontal, 10)
             .frame(height: 24)
-            .background(
-                isSelected ? Color.accentColor.opacity(0.7) : Color.clear,
-                in: RoundedRectangle(cornerRadius: 18, style: .continuous)
-            )
+            .background {
+                if isSelected {
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .fill(Color.accentColor.opacity(0.7))
+                        .matchedGeometryEffect(
+                            id: "sectionSelection",
+                            in: sectionSelectionNamespace
+                        )
+                }
+            }
             .contentShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         }
         .buttonStyle(.plain)
@@ -326,7 +335,7 @@ private struct ClipboardCard: View {
                 .padding(6)
 
                 if showsFavoriteIndicator {
-                    Image(systemName: "star.fill")
+                    Image(systemName: "pin.fill")
                         .font(.caption2.weight(.semibold))
                         .foregroundStyle(.white)
                         .padding(6)
@@ -350,7 +359,7 @@ private struct ClipboardCard: View {
         .buttonStyle(CardButtonStyle())
         .contextMenu {
             Button(action: toggleFavorite) {
-                Label(favoriteActionTitle, systemImage: isFavorite ? "star.slash" : "star")
+                Label(favoriteActionTitle, systemImage: isFavorite ? "pin.slash" : "pin")
             }
         }
     }

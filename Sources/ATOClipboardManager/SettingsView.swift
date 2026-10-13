@@ -390,13 +390,9 @@ struct SettingsView: View {
     }
 
     private var shortcutsSettings: some View {
-        VStack(spacing: 14) {
-            settingsPanel {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text(Localizer.text(.applicationShortcuts, language: settings.language))
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(MacPalette.ink)
-
+        VStack(alignment: .leading, spacing: 20) {
+            settingsSection(Localizer.text(.applicationShortcuts, language: settings.language)) {
+                settingsPanel {
                     shortcutRow(.togglePopover)
                     panelDivider
                     shortcutRow(.showHistory)
@@ -409,12 +405,8 @@ struct SettingsView: View {
                 }
             }
 
-            settingsPanel {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text(Localizer.text(.historyShortcuts, language: settings.language))
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(MacPalette.ink)
-
+            settingsSection(Localizer.text(.historyShortcuts, language: settings.language)) {
+                settingsPanel {
                     ForEach(Array(1...9), id: \.self) { number in
                         if let action = ShortcutAction.selectItem(at: number - 1) {
                             shortcutRow(action)
