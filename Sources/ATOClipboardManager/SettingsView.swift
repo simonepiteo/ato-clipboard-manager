@@ -6,17 +6,19 @@ struct SettingsView: View {
     @ObservedObject var launchAtLogin: LaunchAtLoginManager
     @ObservedObject var clipboardStore: ClipboardStore
     @ObservedObject var updateManager: UpdateManager
+    @ObservedObject var shortcutSettings: ShortcutSettings
     @State private var selectedTab: SettingsTab = .general
     @State private var showDeleteHistoryAfterDisabling = false
 
     var body: some View {
         HStack(spacing: 0) {
             sidebar
-            Divider()
             detail
         }
-        .frame(width: 760, height: 600)
-        .background(Color(nsColor: .windowBackgroundColor))
+        .frame(width: 820, height: 620)
+        .background(RaycastPalette.canvas)
+        .tint(RaycastPalette.accentRed)
+        .preferredColorScheme(.dark)
         .onAppear {
             launchAtLogin.refresh()
             Task { await updateManager.checkIfNeeded() }
@@ -57,6 +59,17 @@ struct SettingsView: View {
         } message: {
             Text(updateManager.errorMessage ?? "")
         }
+        .alert(
+            Localizer.text(.shortcutError, language: settings.language),
+            isPresented: Binding(
+                get: { shortcutSettings.issue != nil },
+                set: { if !$0 { shortcutSettings.issue = nil } }
+            )
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(shortcutIssueMessage)
+        }
         .confirmationDialog(
             Localizer.text(.disablePersistenceTitle, language: settings.language),
             isPresented: $showDeleteHistoryAfterDisabling,
@@ -73,78 +86,183 @@ struct SettingsView: View {
 
     private var sidebar: some View {
         VStack(spacing: 0) {
-            HStack(spacing: 11) {
-                Image(systemName: "clipboard.fill")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundStyle(Color.accentColor)
-                    .frame(width: 36, height: 36)
-                    .background(Color.accentColor.opacity(0.13), in: RoundedRectangle(cornerRadius: 9, style: .continuous))
+            HStack(spacing: 12) {
+                if let settingsIcon {
+                    Image(nsImage: settingsIcon)
+                        .resizable()
+                        .interpolation(.high)
+                        .antialiased(true)
+                        .scaledToFit()
+                        .frame(width: 46, height: 46)
+                } else {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .fill(
+                                LinearGradient(
+                                    colors: [RaycastPalette.accentRed, RaycastPalette.accentRedDeep],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                        Image(systemName: "clipboard.fill")
+                            .font(.system(size: 19, weight: .semibold))
+                            .foregroundStyle(.white)
+                    }
+                    .frame(width: 42, height: 42)
+                }
 
-                VStack(alignment: .leading, spacing: 1) {
+                VStack(alignment: .leading, spacing: 2) {
                     Text("ATO")
-                        .font(.headline)
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(RaycastPalette.ink)
                     Text("Clipboard Manager")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(RaycastPalette.mute)
                 }
                 Spacer(minLength: 0)
             }
-            .padding(.horizontal, 16)
-            .padding(.top, 18)
-            .padding(.bottom, 12)
+            .padding(.horizontal, 18)
+            .padding(.top, 22)
+            .padding(.bottom, 24)
 
-            List(SettingsTab.allCases, selection: $selectedTab) { tab in
-                Label(tab.title(language: settings.language), systemImage: tab.systemImage)
-                    .tag(tab)
-                    .padding(.vertical, 3)
+            VStack(spacing: 4) {
+                ForEach(SettingsTab.allCases) { tab in
+                    sidebarButton(tab)
+                }
             }
-            .listStyle(.sidebar)
-            .scrollContentBackground(.hidden)
+            .padding(.horizontal, 10)
 
-            Text(Localizer.text(.version, language: settings.language))
-                .font(.caption)
-                .foregroundStyle(.tertiary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 17)
-                .padding(.bottom, 14)
+            Spacer(minLength: 20)
+
+            HStack(spacing: 7) {
+                Circle()
+                    .fill(RaycastPalette.accentGreen)
+                    .frame(width: 6, height: 6)
+                Text(Localizer.text(.version, language: settings.language))
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(RaycastPalette.mute)
+                Spacer()
+            }
+            .padding(.horizontal, 18)
+            .frame(height: 52)
+            .overlay(alignment: .top) {
+                Rectangle()
+                    .fill(RaycastPalette.hairline)
+                    .frame(height: 1)
+            }
         }
-        .frame(width: 190)
-        .background(Color(nsColor: .underPageBackgroundColor))
+        .frame(width: 210)
+        .background(RaycastPalette.sidebar)
+        .overlay(alignment: .trailing) {
+            Rectangle()
+                .fill(RaycastPalette.hairline)
+                .frame(width: 1)
+        }
+    }
+
+    private func sidebarButton(_ tab: SettingsTab) -> some View {
+        let isSelected = selectedTab == tab
+        let showsUpdateIndicator = tab == .updates && updateManager.availableUpdate != nil
+
+        return Button {
+            withAnimation(.easeOut(duration: 0.16)) {
+                selectedTab = tab
+            }
+        } label: {
+            HStack(spacing: 11) {
+                Image(systemName: tab.systemImage)
+                    .font(.system(size: 13, weight: .semibold))
+                    .frame(width: 20)
+                    .foregroundStyle(isSelected ? RaycastPalette.ink : RaycastPalette.mute)
+
+                Text(tab.title(language: settings.language))
+                    .font(.system(size: 13, weight: isSelected ? .semibold : .medium))
+                    .foregroundStyle(isSelected ? RaycastPalette.ink : RaycastPalette.body)
+
+                Spacer(minLength: 0)
+
+                if showsUpdateIndicator {
+                    Circle()
+                        .fill(RaycastPalette.accentRed)
+                        .frame(width: 5, height: 5)
+                        .accessibilityHidden(true)
+                }
+            }
+            .padding(.horizontal, 11)
+            .frame(height: 38)
+            .background {
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill(isSelected ? RaycastPalette.selected : Color.clear)
+            }
+            .contentShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .accessibilityValue(isSelected ? "Selected" : "")
+    }
+
+    private var settingsIcon: NSImage? {
+        if let bundledIcon = Bundle.main.url(forResource: "AppIcon", withExtension: "icns"),
+           let image = NSImage(contentsOf: bundledIcon) {
+            return image
+        }
+
+        let sourceIcon = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("macos/atoClipboardManager-macOS/Assets.xcassets/AppIcon.appiconset/ATO_1024.png")
+        return NSImage(contentsOf: sourceIcon)
     }
 
     private var detail: some View {
         VStack(spacing: 0) {
-            HStack(spacing: 14) {
+            HStack(spacing: 13) {
                 Image(systemName: selectedTab.systemImage)
-                    .font(.system(size: 17, weight: .semibold))
-                    .foregroundStyle(Color.accentColor)
-                    .frame(width: 38, height: 38)
-                    .background(Color.accentColor.opacity(0.10), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(RaycastPalette.ink)
+                    .frame(width: 34, height: 34)
+                    .background(RaycastPalette.surfaceElevated, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .stroke(RaycastPalette.hairline)
+                    }
 
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 3) {
                     Text(selectedTab.title(language: settings.language))
-                        .font(.title2.weight(.semibold))
+                        .font(.system(size: 19, weight: .semibold))
+                        .foregroundStyle(RaycastPalette.ink)
                     Text(selectedTab.description(language: settings.language))
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
+                        .font(.system(size: 12))
+                        .foregroundStyle(RaycastPalette.mute)
                 }
                 Spacer()
             }
-            .padding(.horizontal, 24)
-            .padding(.vertical, 18)
-
-            Divider()
+            .padding(.horizontal, 26)
+            .frame(height: 78)
+            .background(RaycastPalette.surface)
+            .overlay(alignment: .bottom) {
+                Rectangle()
+                    .fill(RaycastPalette.hairline)
+                    .frame(height: 1)
+            }
 
             ScrollView {
                 selectedTabContent
-                    .padding(24)
+                    .padding(.horizontal, 26)
+                    .padding(.vertical, 24)
                     .frame(maxWidth: .infinity, alignment: .topLeading)
             }
+            .background(RaycastPalette.canvas)
 
-            Divider()
             footer
-                .padding(.horizontal, 20)
-                .frame(height: 48)
+                .padding(.horizontal, 22)
+                .frame(height: 52)
+                .background(RaycastPalette.surface)
+                .overlay(alignment: .top) {
+                    Rectangle()
+                        .fill(RaycastPalette.hairline)
+                        .frame(height: 1)
+                }
         }
     }
 
@@ -155,6 +273,8 @@ struct SettingsView: View {
             generalSettings
         case .behavior:
             behaviorSettings
+        case .shortcuts:
+            shortcutsSettings
         case .startup:
             startupSettings
         case .storage:
@@ -209,6 +329,46 @@ struct SettingsView: View {
                 Localizer.text(.automaticPasteShortcut, language: settings.language),
                 isOn: $settings.automaticPasteShortcut
             )
+        }
+    }
+
+    private var shortcutsSettings: some View {
+        VStack(spacing: 14) {
+            settingsPanel {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text(Localizer.text(.applicationShortcuts, language: settings.language))
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(RaycastPalette.ink)
+
+                    shortcutRow(.togglePopover)
+                    panelDivider
+                    shortcutRow(.openSettings)
+                    panelDivider
+                    shortcutRow(.quit)
+                }
+            }
+
+            settingsPanel {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text(Localizer.text(.historyShortcuts, language: settings.language))
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(RaycastPalette.ink)
+
+                    ForEach(Array(1...9), id: \.self) { number in
+                        if let action = ShortcutAction.selectItem(at: number - 1) {
+                            shortcutRow(action)
+                            if number < 9 { panelDivider }
+                        }
+                    }
+                }
+            }
+
+            HStack {
+                Spacer()
+                Button(Localizer.text(.resetShortcuts, language: settings.language)) {
+                    shortcutSettings.reset()
+                }
+            }
         }
     }
 
@@ -270,7 +430,7 @@ struct SettingsView: View {
     }
 
     private var updatesSettings: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 14) {
             settingsPanel {
                 HStack(alignment: .center, spacing: 12) {
                     Image(systemName: updateManager.availableUpdate == nil ? "checkmark.circle.fill" : "arrow.down.circle.fill")
@@ -334,7 +494,8 @@ struct SettingsView: View {
             settingsPanel {
                 VStack(alignment: .leading, spacing: 10) {
                     Text(Localizer.text(.previousVersions, language: settings.language))
-                        .font(.headline)
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(RaycastPalette.ink)
 
                     if updateManager.releases.isEmpty {
                         Text(Localizer.text(.noVersionsLoaded, language: settings.language))
@@ -378,31 +539,91 @@ struct SettingsView: View {
             Link(destination: URL(string: "https://github.com/simonepiteo/ato-clipboard-manager")!) {
                 Label(Localizer.text(.sourceCode, language: settings.language), systemImage: "chevron.left.forwardslash.chevron.right")
             }
+            .foregroundStyle(RaycastPalette.mute)
 
             Link(destination: URL(string: "https://github.com/simonepiteo/ato-clipboard-manager/blob/main/LICENSE")!) {
                 Label(Localizer.text(.license, language: settings.language), systemImage: "doc.text")
             }
+            .foregroundStyle(RaycastPalette.mute)
 
             Spacer()
 
             Button(Localizer.text(.resetSettings, language: settings.language), action: settings.reset)
         }
-        .font(.callout)
+        .font(.system(size: 12, weight: .medium))
+    }
+
+    private var shortcutIssueMessage: String {
+        switch shortcutSettings.issue {
+        case .modifierRequired:
+            Localizer.text(.shortcutModifierRequired, language: settings.language)
+        case let .duplicate(action):
+            String(
+                format: Localizer.text(.shortcutDuplicate, language: settings.language),
+                shortcutTitle(for: action)
+            )
+        case let .persistence(message):
+            message
+        case nil:
+            ""
+        }
+    }
+
+    private func shortcutRow(_ action: ShortcutAction) -> some View {
+        settingRow(shortcutTitle(for: action)) {
+            HStack(spacing: 7) {
+                if shortcutSettings.isCustomized(action) {
+                    Button {
+                        shortcutSettings.reset(action)
+                    } label: {
+                        Image(systemName: "arrow.counterclockwise")
+                    }
+                    .help(Localizer.text(.resetShortcut, language: settings.language))
+                }
+
+                ShortcutRecorderView(
+                    shortcut: shortcutSettings.shortcut(for: action),
+                    prompt: Localizer.text(.recordShortcut, language: settings.language)
+                ) { shortcut in
+                    shortcutSettings.set(shortcut, for: action)
+                }
+                .frame(width: 140, height: 26)
+            }
+        }
+    }
+
+    private func shortcutTitle(for action: ShortcutAction) -> String {
+        switch action {
+        case .togglePopover:
+            Localizer.text(.openPopoverShortcut, language: settings.language)
+        case .openSettings:
+            Localizer.text(.openSettingsShortcut, language: settings.language)
+        case .quit:
+            Localizer.text(.quitShortcut, language: settings.language)
+        default:
+            String(
+                format: Localizer.text(.selectItemShortcut, language: settings.language),
+                (action.itemIndex ?? 0) + 1
+            )
+        }
     }
 
     private var panelDivider: some View {
-        Divider().padding(.vertical, 4)
+        Rectangle()
+            .fill(RaycastPalette.hairline)
+            .frame(height: 1)
+            .padding(.vertical, 4)
     }
 
     private func settingsPanel<Content: View>(@ViewBuilder content: () -> Content) -> some View {
         VStack(spacing: 12) {
             content()
         }
-        .padding(18)
-        .background(Color(nsColor: .controlBackgroundColor), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .padding(16)
+        .background(RaycastPalette.surfaceElevated, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .stroke(Color.primary.opacity(0.07))
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .stroke(RaycastPalette.hairline)
         }
     }
 
@@ -412,22 +633,26 @@ struct SettingsView: View {
     ) -> some View {
         HStack(spacing: 16) {
             Text(title)
+                .font(.system(size: 13))
+                .foregroundStyle(RaycastPalette.body)
             Spacer(minLength: 16)
             control()
         }
-        .frame(minHeight: 28)
+        .frame(minHeight: 30)
     }
 
     private func toggleRow(_ title: String, isOn: Binding<Bool>) -> some View {
         HStack(spacing: 16) {
             Text(title)
+                .font(.system(size: 13))
+                .foregroundStyle(RaycastPalette.body)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 16)
             Toggle("", isOn: isOn)
                 .toggleStyle(.switch)
                 .labelsHidden()
         }
-        .frame(minHeight: 28)
+        .frame(minHeight: 30)
     }
 
     private func numericInput(value: Binding<Int>, range: ClosedRange<Int>) -> some View {
@@ -444,7 +669,7 @@ struct SettingsView: View {
                 .textFieldStyle(.roundedBorder)
                 .multilineTextAlignment(.trailing)
                 .monospacedDigit()
-                .frame(width: 64, height: 24)
+                .frame(width: 64, height: 26)
 
             Button {
                 value.wrappedValue = min(range.upperBound, value.wrappedValue + 1)
@@ -459,7 +684,7 @@ struct SettingsView: View {
 }
 
 private enum SettingsTab: String, CaseIterable, Identifiable {
-    case general, behavior, startup, storage, updates
+    case general, behavior, shortcuts, startup, storage, updates
 
     var id: String { rawValue }
 
@@ -467,6 +692,7 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
         switch self {
         case .general: "slider.horizontal.3"
         case .behavior: "command"
+        case .shortcuts: "keyboard"
         case .startup: "power"
         case .storage: "externaldrive"
         case .updates: "arrow.triangle.2.circlepath"
@@ -477,6 +703,7 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
         switch self {
         case .general: Localizer.text(.general, language: language)
         case .behavior: Localizer.text(.behavior, language: language)
+        case .shortcuts: Localizer.text(.shortcuts, language: language)
         case .startup: Localizer.text(.startup, language: language)
         case .storage: Localizer.text(.storage, language: language)
         case .updates: Localizer.text(.updates, language: language)
@@ -487,6 +714,7 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
         switch self {
         case .general: Localizer.text(.generalSettingsDescription, language: language)
         case .behavior: Localizer.text(.behaviorSettingsDescription, language: language)
+        case .shortcuts: Localizer.text(.shortcutsSettingsDescription, language: language)
         case .startup: Localizer.text(.startupSettingsDescription, language: language)
         case .storage: Localizer.text(.storageSettingsDescription, language: language)
         case .updates: Localizer.text(.updatesSettingsDescription, language: language)
@@ -506,13 +734,34 @@ private struct NumericStepButtonStyle: ButtonStyle {
         var body: some View {
             configuration.label
                 .font(.system(size: 13, weight: .medium))
-                .frame(width: 34, height: 24)
-                .foregroundStyle(isEnabled ? Color.primary : Color.secondary.opacity(0.55))
+                .frame(width: 34, height: 26)
+                .foregroundStyle(isEnabled ? RaycastPalette.ink : RaycastPalette.ash)
                 .background {
                     RoundedRectangle(cornerRadius: 6, style: .continuous)
-                        .fill(Color.primary.opacity(configuration.isPressed ? 0.16 : 0.10))
+                        .fill(configuration.isPressed ? RaycastPalette.selectedStrong : RaycastPalette.selected)
+                }
+                .overlay {
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .stroke(RaycastPalette.hairline)
                 }
                 .contentShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
         }
     }
+}
+
+private enum RaycastPalette {
+    static let canvas = Color(red: 0.027, green: 0.031, blue: 0.039)
+    static let sidebar = Color(red: 0.039, green: 0.043, blue: 0.051)
+    static let surface = Color(red: 0.051, green: 0.051, blue: 0.051)
+    static let surfaceElevated = Color(red: 0.071, green: 0.071, blue: 0.071)
+    static let selected = Color.white.opacity(0.075)
+    static let selectedStrong = Color.white.opacity(0.13)
+    static let hairline = Color.white.opacity(0.085)
+    static let ink = Color(red: 0.957, green: 0.957, blue: 0.965)
+    static let body = Color(red: 0.804, green: 0.804, blue: 0.804)
+    static let mute = Color(red: 0.612, green: 0.612, blue: 0.616)
+    static let ash = Color(red: 0.416, green: 0.420, blue: 0.424)
+    static let accentRed = Color(red: 1.0, green: 0.38, blue: 0.38)
+    static let accentRedDeep = Color(red: 0.63, green: 0.075, blue: 0.102)
+    static let accentGreen = Color(red: 0.349, green: 0.831, blue: 0.600)
 }

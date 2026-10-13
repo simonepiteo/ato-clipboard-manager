@@ -7,6 +7,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     let settings = AppSettings()
     let launchAtLogin = LaunchAtLoginManager()
     let updateManager = UpdateManager()
+    let shortcutSettings = ShortcutSettings()
     lazy var clipboardStore = ClipboardStore(settings: settings)
 
     private var statusItem: NSStatusItem!
@@ -18,6 +19,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var actionAfterPopoverCloses: (() -> Void)?
     private var restorePopoverAnimationAfterClose = false
     private var updateObservation: AnyCancellable?
+    private var shortcutObservation: AnyCancellable?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
@@ -42,6 +44,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             store: clipboardStore,
             settings: settings,
             updateManager: updateManager,
+            shortcutSettings: shortcutSettings,
             select: { [weak self] item, paste, waitForClick in
                 self?.select(item, paste: paste, waitForClickCompletion: waitForClick)
             },
@@ -88,24 +91,37 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         hotKeyManager = HotKeyManager { [weak self] in
             DispatchQueue.main.async { self?.togglePopover() }
         }
-        hotKeyManager?.register()
+        shortcutObservation = shortcutSettings.$shortcuts.sink { [weak self] shortcuts in
+            guard let shortcut = shortcuts[.togglePopover] else { return }
+            self?.hotKeyManager?.register(shortcut)
+        }
 
         localKeyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             guard let self else { return event }
-            let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
-            if flags == .command, let number = Int(event.charactersIgnoringModifiers ?? ""), (1...9).contains(number) {
+            guard !(NSApp.keyWindow?.firstResponder is ShortcutRecorderButton),
+                  let action = self.shortcutSettings.action(matching: event) else { return event }
+
+            if let index = action.itemIndex {
                 NotificationCenter.default.post(
                     name: .selectClipboardHistoryItem,
                     object: nil,
-                    userInfo: ["index": number - 1]
+                    userInfo: ["index": index]
                 )
                 return nil
             }
-            if flags == [.command, .option], event.charactersIgnoringModifiers?.lowercased() == "s" {
+
+            switch action {
+            case .openSettings:
                 Task { @MainActor in self.openSettings() }
                 return nil
+            case .quit:
+                NSApp.terminate(nil)
+                return nil
+            case .togglePopover:
+                return event
+            default:
+                return event
             }
-            return event
         }
     }
 
@@ -199,13 +215,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 settings: settings,
                 launchAtLogin: launchAtLogin,
                 clipboardStore: clipboardStore,
-                updateManager: updateManager
+                updateManager: updateManager,
+                shortcutSettings: shortcutSettings
             )
         )
         let window = NSWindow(contentViewController: controller)
         window.title = Localizer.text(.settingsTitle, language: settings.language)
         window.styleMask = [.titled, .closable]
-        window.setContentSize(NSSize(width: 760, height: 600))
+        window.setContentSize(NSSize(width: 820, height: 620))
         window.center()
         window.isReleasedWhenClosed = false
         window.delegate = self

@@ -8,6 +8,9 @@ enum LocalizedKey: String {
     case settingsDescription, appearance, behavior, sourceCode, license, general
     case generalSettingsDescription, behaviorSettingsDescription, startupSettingsDescription
     case storageSettingsDescription, updatesSettingsDescription
+    case shortcuts, shortcutsSettingsDescription, applicationShortcuts, historyShortcuts
+    case openPopoverShortcut, openSettingsShortcut, quitShortcut, selectItemShortcut
+    case recordShortcut, resetShortcut, resetShortcuts, shortcutError, shortcutModifierRequired, shortcutDuplicate
     case startup, launchAtLogin, launchAtLoginApproval, openLoginItems
     case launchAtLoginPromptTitle, launchAtLoginPromptMessage, enable, notNow
     case launchAtLoginError
@@ -27,7 +30,7 @@ enum Localizer {
         .settingsTitle: "ATO - Clipboard Manager Settings", .language: "Language",
         .displayMode: "Display mode", .grid: "Grid", .list: "List",
         .maxHistory: "Maximum history items", .automaticPaste: "Paste automatically on selection",
-        .automaticPasteShortcut: "Paste automatically when using ⌘1–⌘9",
+        .automaticPasteShortcut: "Paste automatically when using item shortcuts",
         .resetSettings: "Reset settings", .emptyHistory: "Copy text or an image to get started",
         .settingsDescription: "Customize how ATO displays and pastes your clipboard items.",
         .appearance: "Appearance and history", .behavior: "Paste behavior",
@@ -36,6 +39,15 @@ enum Localizer {
         .startupSettingsDescription: "Control how ATO starts with your Mac.",
         .storageSettingsDescription: "Keep clipboard history available between launches.",
         .updatesSettingsDescription: "Check your version and browse previous releases.",
+        .shortcuts: "Shortcuts", .shortcutsSettingsDescription: "Personalize every keyboard command used by ATO.",
+        .applicationShortcuts: "Application", .historyShortcuts: "Clipboard items",
+        .openPopoverShortcut: "Open clipboard history", .openSettingsShortcut: "Open Settings",
+        .quitShortcut: "Quit ATO", .selectItemShortcut: "Select item %d",
+        .recordShortcut: "Press shortcut…", .resetShortcut: "Restore this shortcut",
+        .resetShortcuts: "Restore Default Shortcuts",
+        .shortcutError: "Invalid shortcut",
+        .shortcutModifierRequired: "Use at least one modifier key: Command, Option, Control, or Shift.",
+        .shortcutDuplicate: "This shortcut is already assigned to “%@”.",
         .sourceCode: "Source code", .license: "License",
         .startup: "Startup", .launchAtLogin: "Launch ATO when you log in",
         .launchAtLoginApproval: "Approval is required in System Settings.",
@@ -64,7 +76,7 @@ enum Localizer {
         .settingsTitle: "Impostazioni ATO - Clipboard Manager", .language: "Lingua",
         .displayMode: "Vista elementi", .grid: "Griglia", .list: "Lista",
         .maxHistory: "Massimo numero di elementi", .automaticPaste: "Incolla automaticamente alla selezione",
-        .automaticPasteShortcut: "Incolla automaticamente usando ⌘1–⌘9",
+        .automaticPasteShortcut: "Incolla automaticamente usando le scorciatoie degli elementi",
         .resetSettings: "Ripristina impostazioni", .emptyHistory: "Copia un testo o un'immagine per iniziare",
         .settingsDescription: "Personalizza la visualizzazione e l'incolla degli elementi copiati.",
         .appearance: "Aspetto e cronologia", .behavior: "Comportamento incolla",
@@ -73,6 +85,15 @@ enum Localizer {
         .startupSettingsDescription: "Controlla come ATO si avvia insieme al Mac.",
         .storageSettingsDescription: "Mantieni la cronologia disponibile tra un avvio e l’altro.",
         .updatesSettingsDescription: "Controlla la versione e consulta le release precedenti.",
+        .shortcuts: "Scorciatoie", .shortcutsSettingsDescription: "Personalizza tutti i comandi da tastiera usati da ATO.",
+        .applicationShortcuts: "Applicazione", .historyShortcuts: "Elementi degli appunti",
+        .openPopoverShortcut: "Apri cronologia appunti", .openSettingsShortcut: "Apri Impostazioni",
+        .quitShortcut: "Chiudi ATO", .selectItemShortcut: "Seleziona elemento %d",
+        .recordShortcut: "Premi scorciatoia…", .resetShortcut: "Ripristina questa scorciatoia",
+        .resetShortcuts: "Ripristina scorciatoie predefinite",
+        .shortcutError: "Scorciatoia non valida",
+        .shortcutModifierRequired: "Usa almeno un modificatore: Comando, Opzione, Controllo o Maiuscole.",
+        .shortcutDuplicate: "Questa scorciatoia è già assegnata a “%@”.",
         .sourceCode: "Codice sorgente", .license: "Licenza",
         .startup: "Avvio", .launchAtLogin: "Avvia ATO quando accedi",
         .launchAtLoginApproval: "È necessaria l’approvazione nelle Impostazioni di Sistema.",

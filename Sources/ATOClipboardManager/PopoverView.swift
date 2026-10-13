@@ -5,6 +5,7 @@ struct PopoverView: View {
     @ObservedObject var store: ClipboardStore
     @ObservedObject var settings: AppSettings
     @ObservedObject var updateManager: UpdateManager
+    @ObservedObject var shortcutSettings: ShortcutSettings
     @State private var searchText = ""
     @State private var dismissedUpdateVersion: String?
 
@@ -130,7 +131,11 @@ struct PopoverView: View {
             } else {
                 LazyVGrid(columns: columns, spacing: 10) {
                     ForEach(Array(filteredItems.enumerated()), id: \.element.id) { index, item in
-                        ClipboardCard(item: item, shortcut: index < 9 ? index + 1 : nil, isList: settings.displayMode == .list) {
+                        ClipboardCard(
+                            item: item,
+                            shortcut: shortcutLabel(for: index),
+                            isList: settings.displayMode == .list
+                        ) {
                             select(item, settings.automaticPaste, true)
                         }
                     }
@@ -150,23 +155,32 @@ struct PopoverView: View {
             .buttonStyle(MenuItemButtonStyle())
 
             Button(action: openSettings) {
-                footerLabel(Localizer.text(.settings, language: settings.language), shortcut: "⌘⌥S")
+                footerLabel(
+                    Localizer.text(.settings, language: settings.language),
+                    shortcut: shortcutSettings.shortcut(for: .openSettings).displayString
+                )
             }
             .buttonStyle(MenuItemButtonStyle())
-            .keyboardShortcut("s", modifiers: [.command, .option])
 
             Divider()
                 .padding(.horizontal, 8)
                 .padding(.vertical, 4)
 
             Button(role: .destructive, action: quit) {
-                footerLabel(Localizer.text(.quit, language: settings.language), shortcut: "⌘Q")
+                footerLabel(
+                    Localizer.text(.quit, language: settings.language),
+                    shortcut: shortcutSettings.shortcut(for: .quit).displayString
+                )
             }
             .buttonStyle(MenuItemButtonStyle())
-            .keyboardShortcut("q", modifiers: .command)
         }
         .padding(.horizontal, 5)
         .padding(.vertical, 4)
+    }
+
+    private func shortcutLabel(for index: Int) -> String? {
+        guard let action = ShortcutAction.selectItem(at: index) else { return nil }
+        return shortcutSettings.shortcut(for: action).displayString
     }
     
     private func footerLabel(_ title: String, shortcut: String? = nil) -> some View {
@@ -187,7 +201,7 @@ struct PopoverView: View {
 
 private struct ClipboardCard: View {
     let item: ClipboardItem
-    let shortcut: Int?
+    let shortcut: String?
     let isList: Bool
     let action: () -> Void
 
@@ -207,7 +221,7 @@ private struct ClipboardCard: View {
                 }
                 .padding(6)
                 if let shortcut {
-                    Text("⌘\(shortcut)").font(.caption2).padding(.horizontal, 5).padding(.vertical, 2)
+                    Text(shortcut).font(.caption2).padding(.horizontal, 5).padding(.vertical, 2)
                         .background(.black.opacity(0.45), in: RoundedRectangle(cornerRadius: 4)).foregroundStyle(.white)
                         .padding(5)
                 }
