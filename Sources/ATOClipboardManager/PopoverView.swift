@@ -98,8 +98,8 @@ struct PopoverView: View {
             .buttonStyle(MenuItemButtonStyle())
             .keyboardShortcut("q", modifiers: .command)
         }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 6)
+        .padding(.horizontal, 5)
+        .padding(.vertical, 4)
     }
 
     private func footerLabel(_ title: String, shortcut: String? = nil) -> some View {
@@ -180,7 +180,6 @@ private struct MenuItemButtonStyle: ButtonStyle {
                 .background {
                     RoundedRectangle(cornerRadius: 5, style: .continuous)
                         .fill(isHighlighted ? Color.accentColor : Color.clear)
-                        .padding(.horizontal, 5)
                 }
                 .contentShape(Rectangle())
                 .onHover { isHovered = $0 }
