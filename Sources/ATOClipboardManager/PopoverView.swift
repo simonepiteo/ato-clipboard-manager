@@ -77,6 +77,12 @@ struct PopoverView: View {
         section == .history ? store.items : favoritesStore.items
     }
 
+    private func searchResultCount(for section: ClipboardSection) -> Int {
+        items(for: section).filter {
+            $0.searchableText.localizedCaseInsensitiveContains(searchText)
+        }.count
+    }
+
     private var visibleUpdate: AppRelease? {
         guard let release = updateManager.availableUpdate,
               dismissedUpdateVersion != release.version else { return nil }
@@ -218,6 +224,8 @@ struct PopoverView: View {
 
     private func sectionButton(_ section: ClipboardSection) -> some View {
         let isSelected = selectedSection == section
+        let resultCount = searchResultCount(for: section)
+        let showsSearchCount = !searchText.isEmpty && resultCount > 0
 
         return Button {
             withAnimation(.spring(response: 0.28, dampingFraction: 0.84)) {
@@ -230,14 +238,19 @@ struct PopoverView: View {
                 Text(Localizer.text(section == .history ? .history : .favorites, language: settings.language))
                     .font(.system(size: 12, weight: .semibold))
 
-                if isSelected && !searchText.isEmpty {
-                    Text("\(filteredItems.count)")
+                if showsSearchCount {
+                    Text("\(resultCount)")
                         .font(.system(size: 10, weight: .semibold).monospacedDigit())
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
-                        .background(Color.white.opacity(0.18), in: Capsule())
+                        .background(
+                            isSelected ? Color.white.opacity(0.18) : Color.primary.opacity(0.10),
+                            in: Capsule()
+                        )
+                        .transition(.scale(scale: 0.72).combined(with: .opacity))
                 }
             }
+            .animation(.spring(response: 0.22, dampingFraction: 0.78), value: showsSearchCount)
             .foregroundStyle(isSelected ? Color.white : Color.secondary)
             .padding(.horizontal, 10)
             .frame(height: 24)
