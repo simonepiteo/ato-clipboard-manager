@@ -6,7 +6,7 @@ struct PopoverView: View {
     @ObservedObject var settings: AppSettings
     @State private var searchText = ""
 
-    let select: (ClipboardItem, Bool) -> Void
+    let select: (ClipboardItem, Bool, Bool) -> Void
     let openSettings: () -> Void
     let quit: () -> Void
 
@@ -35,7 +35,7 @@ struct PopoverView: View {
             guard let index = notification.userInfo?["index"] as? Int,
                   filteredItems.indices.contains(index)
             else { return }
-            select(filteredItems[index], settings.automaticPasteShortcut)
+            select(filteredItems[index], settings.automaticPasteShortcut, false)
         }
     }
 
@@ -65,7 +65,7 @@ struct PopoverView: View {
                 LazyVGrid(columns: columns, spacing: 10) {
                     ForEach(Array(filteredItems.enumerated()), id: \.element.id) { index, item in
                         ClipboardCard(item: item, shortcut: index < 9 ? index + 1 : nil, isList: settings.displayMode == .list) {
-                            select(item, settings.automaticPaste)
+                            select(item, settings.automaticPaste, true)
                         }
                     }
                 }

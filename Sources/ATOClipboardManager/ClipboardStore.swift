@@ -34,7 +34,7 @@ final class ClipboardStore: ObservableObject {
     }
 
     @discardableResult
-    func copy(_ item: ClipboardItem) -> Bool {
+    func copy(_ item: ClipboardItem, moveToFront: Bool = true) -> Bool {
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
         let didWrite: Bool
@@ -53,9 +53,15 @@ final class ClipboardStore: ObservableObject {
         ignoredChangeCount = pasteboard.changeCount
         lastChangeCount = pasteboard.changeCount
 
+        if moveToFront {
+            promote(item)
+        }
+        return true
+    }
+
+    func promote(_ item: ClipboardItem) {
         buffer.insert(item, limit: settings.maxHistoryItems)
         items = buffer.items
-        return true
     }
 
     private func readPasteboardIfChanged() {

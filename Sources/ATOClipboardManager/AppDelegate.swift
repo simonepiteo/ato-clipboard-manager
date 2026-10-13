@@ -9,11 +9,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private let popover = NSPopover()
     private var settingsWindow: NSWindow?
-    private var globalMouseMonitor: Any?
     private var localKeyMonitor: Any?
     private var hotKeyManager: HotKeyManager?
     private var lastActiveApplication: NSRunningApplication?
     private var actionAfterPopoverCloses: (() -> Void)?
+    private var restorePopoverAnimationAfterClose = false
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
@@ -25,7 +25,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ notification: Notification) {
         clipboardStore.stop()
-        if let globalMouseMonitor { NSEvent.removeMonitor(globalMouseMonitor) }
         if let localKeyMonitor { NSEvent.removeMonitor(localKeyMonitor) }
     }
 
@@ -33,7 +32,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let view = PopoverView(
             store: clipboardStore,
             settings: settings,
-            select: { [weak self] item, paste in self?.select(item, paste: paste) },
+            select: { [weak self] item, paste, waitForClick in
+                self?.select(item, paste: paste, waitForClickCompletion: waitForClick)
+            },
             openSettings: { [weak self] in self?.openSettings() },
             quit: { NSApp.terminate(nil) }
         )
@@ -49,12 +50,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.button?.image = NSImage(systemSymbolName: "clipboard", accessibilityDescription: "ATO Clipboard Manager")
         statusItem.button?.target = self
         statusItem.button?.action = #selector(togglePopover)
-
-        globalMouseMonitor = NSEvent.addGlobalMonitorForEvents(matching: .leftMouseDown) { [weak self] _ in
-            Task { @MainActor in
-                if self?.popover.isShown == true { self?.popover.performClose(nil) }
-            }
-        }
     }
 
     private func configureKeyboardShortcuts() {
@@ -93,30 +88,47 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.activate(ignoringOtherApps: true)
     }
 
-    private func select(_ item: ClipboardItem, paste: Bool) {
-        guard clipboardStore.copy(item) else { return }
-        if paste {
-            closePopoverAndPaste()
-        } else {
-            closePopoverAndRestoreFocus()
+    private func select(_ item: ClipboardItem, paste: Bool, waitForClickCompletion: Bool) {
+        guard clipboardStore.copy(item, moveToFront: !waitForClickCompletion) else { return }
+
+        Task { @MainActor [weak self] in
+            if waitForClickCompletion {
+                try? await Task.sleep(nanoseconds: 50_000_000)
+            } else {
+                await Task.yield()
+            }
+
+            guard let self else { return }
+            if waitForClickCompletion {
+                self.clipboardStore.promote(item)
+            }
+            if paste {
+                self.closePopoverAndPaste(animated: waitForClickCompletion)
+            } else {
+                self.closePopoverAndRestoreFocus(animated: waitForClickCompletion)
+            }
         }
     }
 
-    private func closePopoverAndRestoreFocus(completion: (() -> Void)? = nil) {
+    private func closePopoverAndRestoreFocus(animated: Bool, completion: (() -> Void)? = nil) {
         actionAfterPopoverCloses = { [weak self] in
             self?.lastActiveApplication?.activate(options: [])
             completion?()
         }
 
         if popover.isShown {
+            if !animated {
+                restorePopoverAnimationAfterClose = popover.animates
+                popover.animates = false
+            }
             popover.performClose(nil)
         } else {
             performActionAfterPopoverCloses()
         }
     }
 
-    private func closePopoverAndPaste() {
-        closePopoverAndRestoreFocus { [weak self] in
+    private func closePopoverAndPaste(animated: Bool) {
+        closePopoverAndRestoreFocus(animated: animated) { [weak self] in
             self?.pasteIntoActiveApplication()
         }
     }
@@ -127,7 +139,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             AXIsProcessTrustedWithOptions(options)
             return
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+        DispatchQueue.main.asyncAfter(deadline: .now()) {
             let source = CGEventSource(stateID: .hidSystemState)
             let keyDown = CGEvent(keyboardEventSource: source, virtualKey: 9, keyDown: true)
             let keyUp = CGEvent(keyboardEventSource: source, virtualKey: 9, keyDown: false)
@@ -177,6 +189,10 @@ extension AppDelegate: NSWindowDelegate {
 
 extension AppDelegate: NSPopoverDelegate {
     func popoverDidClose(_ notification: Notification) {
+        if restorePopoverAnimationAfterClose {
+            popover.animates = true
+            restorePopoverAnimationAfterClose = false
+        }
         performActionAfterPopoverCloses()
     }
 }
