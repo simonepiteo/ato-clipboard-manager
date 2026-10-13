@@ -8,6 +8,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     let launchAtLogin = LaunchAtLoginManager()
     let updateManager = UpdateManager()
     let shortcutSettings = ShortcutSettings()
+    let accessibilityPermission = AccessibilityPermissionManager()
     lazy var clipboardStore = ClipboardStore(settings: settings)
 
     private var statusItem: NSStatusItem!
@@ -37,6 +38,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillTerminate(_ notification: Notification) {
         clipboardStore.stop()
         if let localKeyMonitor { NSEvent.removeMonitor(localKeyMonitor) }
+    }
+
+    func applicationDidBecomeActive(_ notification: Notification) {
+        accessibilityPermission.refresh()
     }
 
     private func configurePopover() {
@@ -151,6 +156,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 self.clipboardStore.promote(item)
             }
             if paste {
+                self.accessibilityPermission.refresh()
+                guard self.accessibilityPermission.isGranted else {
+                    self.closePopoverAndExplainAccessibility(animated: waitForClickCompletion)
+                    return
+                }
                 self.closePopoverAndPaste(animated: waitForClickCompletion)
             } else {
                 self.closePopoverAndRestoreFocus(animated: waitForClickCompletion)
@@ -181,12 +191,41 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    private func pasteIntoActiveApplication() {
-        guard AXIsProcessTrusted() else {
-            let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
-            AXIsProcessTrustedWithOptions(options)
-            return
+    private func closePopoverAndExplainAccessibility(animated: Bool) {
+        actionAfterPopoverCloses = { [weak self] in
+            self?.showAccessibilityPermissionExplanation()
         }
+
+        if popover.isShown {
+            if !animated {
+                restorePopoverAnimationAfterClose = popover.animates
+                popover.animates = false
+            }
+            popover.performClose(nil)
+        } else {
+            performActionAfterPopoverCloses()
+        }
+    }
+
+    private func showAccessibilityPermissionExplanation() {
+        let alert = NSAlert()
+        alert.alertStyle = .informational
+        alert.icon = NSImage(systemSymbolName: "hand.raised.fill", accessibilityDescription: nil)
+        alert.messageText = Localizer.text(.automaticPastePermissionTitle, language: settings.language)
+        alert.informativeText = Localizer.text(.automaticPastePermissionMessage, language: settings.language)
+        alert.addButton(withTitle: Localizer.text(.openAccessibilitySettings, language: settings.language))
+        alert.addButton(withTitle: Localizer.text(.notNow, language: settings.language))
+
+        NSApp.activate(ignoringOtherApps: true)
+        if alert.runModal() == .alertFirstButtonReturn {
+            accessibilityPermission.requestAndOpenSystemSettings()
+        } else {
+            lastActiveApplication?.activate(options: [])
+        }
+    }
+
+    private func pasteIntoActiveApplication() {
+        guard accessibilityPermission.isGranted else { return }
         DispatchQueue.main.asyncAfter(deadline: .now()) {
             let source = CGEventSource(stateID: .hidSystemState)
             let keyDown = CGEvent(keyboardEventSource: source, virtualKey: 9, keyDown: true)
@@ -216,7 +255,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 launchAtLogin: launchAtLogin,
                 clipboardStore: clipboardStore,
                 updateManager: updateManager,
-                shortcutSettings: shortcutSettings
+                shortcutSettings: shortcutSettings,
+                accessibilityPermission: accessibilityPermission
             )
         )
         let window = NSWindow(contentViewController: controller)

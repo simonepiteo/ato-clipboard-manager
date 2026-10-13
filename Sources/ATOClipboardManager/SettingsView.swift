@@ -7,6 +7,7 @@ struct SettingsView: View {
     @ObservedObject var clipboardStore: ClipboardStore
     @ObservedObject var updateManager: UpdateManager
     @ObservedObject var shortcutSettings: ShortcutSettings
+    @ObservedObject var accessibilityPermission: AccessibilityPermissionManager
     @State private var selectedTab: SettingsTab = .general
     @State private var showDeleteHistoryAfterDisabling = false
 
@@ -20,10 +21,12 @@ struct SettingsView: View {
         .tint(MacPalette.accent)
         .onAppear {
             launchAtLogin.refresh()
+            accessibilityPermission.refresh()
             Task { await updateManager.checkIfNeeded() }
         }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
             launchAtLogin.refresh()
+            accessibilityPermission.refresh()
         }
         .alert(
             Localizer.text(.launchAtLoginError, language: settings.language),
@@ -327,16 +330,63 @@ struct SettingsView: View {
         settingsPanel {
             toggleRow(
                 Localizer.text(.automaticPaste, language: settings.language),
-                isOn: $settings.automaticPaste
+                isOn: accessibilityAwareBinding($settings.automaticPaste)
             )
 
             panelDivider
 
             toggleRow(
                 Localizer.text(.automaticPasteShortcut, language: settings.language),
-                isOn: $settings.automaticPasteShortcut
+                isOn: accessibilityAwareBinding($settings.automaticPasteShortcut)
             )
+
+            if needsAccessibilityPermission {
+                panelDivider
+                accessibilityPermissionCallout
+            }
         }
+    }
+
+    private var needsAccessibilityPermission: Bool {
+        (settings.automaticPaste || settings.automaticPasteShortcut) && !accessibilityPermission.isGranted
+    }
+
+    private var accessibilityPermissionCallout: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: "hand.raised.fill")
+                .font(.system(size: 17))
+                .foregroundStyle(.orange)
+                .frame(width: 24)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(Localizer.text(.accessibilityPermissionRequired, language: settings.language))
+                    .font(.system(size: 13, weight: .semibold))
+                Text(Localizer.text(.accessibilityPermissionExplanation, language: settings.language))
+                    .font(.system(size: 12))
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            Spacer(minLength: 12)
+
+            Button(Localizer.text(.openAccessibilitySettings, language: settings.language)) {
+                accessibilityPermission.requestAndOpenSystemSettings()
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.small)
+        }
+    }
+
+    private func accessibilityAwareBinding(_ binding: Binding<Bool>) -> Binding<Bool> {
+        Binding(
+            get: { binding.wrappedValue },
+            set: { enabled in
+                binding.wrappedValue = enabled
+                if enabled {
+                    accessibilityPermission.refresh()
+                }
+            }
+        )
     }
 
     private var shortcutsSettings: some View {

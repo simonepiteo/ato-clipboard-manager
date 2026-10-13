@@ -106,25 +106,13 @@ The release build is created at `dist/ATO Clipboard Manager.app`. To create a DM
 ./scripts/build-dmg.sh
 ```
 
-### Create a release
-
-Release versions follow [Conventional Commits](https://www.conventionalcommits.org/): `fix:` creates a patch release, `feat:` a minor release, and `BREAKING CHANGE:` or `type!:` a major release.
-
-```sh
-./scripts/release.sh --dry-run
-./scripts/release.sh
-git push --follow-tags origin HEAD
-```
-
-The release script updates `VERSION` and `CHANGELOG.md`, then creates the release commit and annotated Git tag. You can override the detected bump with `./scripts/release.sh patch`, `minor`, or `major`.
-
 ### App updates
 
 ATO queries the public [GitHub Releases](https://github.com/simonepiteo/ato-clipboard-manager/releases) API at launch and, while it remains open, at least once every 24 hours. When a newer version is found, a red indicator appears beside the menu bar icon and a non-blocking banner in the popover offers to install it or postpone it. A manual check is always available under **Settings → Updates**. Release metadata is cached locally so the version history remains visible between launches.
 
 When a newer stable release includes a DMG, ATO can download it, verify that the contained app has the expected bundle identifier, version, and a valid code signature, then replace the running app and restart. The app must be running from an `.app` bundle in a folder the current user can modify. Draft and prerelease versions are not offered as automatic updates.
 
-Automatic paste requires Accessibility permission so ATO can simulate `⌘V` in the previously active app. macOS prompts for it when the feature is first used; it can also be enabled under **System Settings → Privacy & Security → Accessibility**.
+Automatic paste requires Accessibility permission so ATO can simulate `⌘V` in the previously active app. When permission is missing, Settings explains why it is needed and links directly to **System Settings → Privacy & Security → Accessibility**. Until permission is granted, ATO still copies the selected item and shows how to paste it manually.
 
 ### Run the tests
 

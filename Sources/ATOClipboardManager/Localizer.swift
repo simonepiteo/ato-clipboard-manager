@@ -22,6 +22,8 @@ enum LocalizedKey: String {
     case downloadAndInstall, downloadAndRestartHint, previousVersions, noVersionsLoaded
     case installed, releaseNotes, updateError
     case updateNow, installingUpdate, updateBadgeHint, later
+    case accessibilityPermissionRequired, accessibilityPermissionExplanation
+    case openAccessibilitySettings, automaticPastePermissionTitle, automaticPastePermissionMessage
 }
 
 enum Localizer {
@@ -68,7 +70,12 @@ enum Localizer {
         .installed: "Installed", .releaseNotes: "Open release notes", .updateError: "Couldn’t update ATO",
         .updateNow: "Update Now",
         .installingUpdate: "Downloading and installing…", .updateBadgeHint: "An ATO update is available",
-        .later: "Later"
+        .later: "Later",
+        .accessibilityPermissionRequired: "Accessibility permission required",
+        .accessibilityPermissionExplanation: "ATO uses Accessibility only to send ⌘V to the previously active app.",
+        .openAccessibilitySettings: "Open Accessibility Settings",
+        .automaticPastePermissionTitle: "Allow ATO to paste automatically?",
+        .automaticPastePermissionMessage: "The item has been copied, but ATO cannot paste it automatically without Accessibility permission.\n\nATO uses this permission only to send ⌘V to the app you were previously using. It does not use it to read what you type or control other Mac features.\n\nYou can grant access now, or return to the destination app and press ⌘V manually."
     ]
 
     private static let italian: [LocalizedKey: String] = [
@@ -114,7 +121,12 @@ enum Localizer {
         .installed: "Installata", .releaseNotes: "Apri note di rilascio", .updateError: "Impossibile aggiornare ATO",
         .updateNow: "Aggiorna ora",
         .installingUpdate: "Download e installazione…", .updateBadgeHint: "È disponibile un aggiornamento di ATO",
-        .later: "Più tardi"
+        .later: "Più tardi",
+        .accessibilityPermissionRequired: "Permesso Accessibilità richiesto",
+        .accessibilityPermissionExplanation: "ATO usa Accessibilità esclusivamente per inviare ⌘V all’app attiva in precedenza.",
+        .openAccessibilitySettings: "Apri Impostazioni Accessibilità",
+        .automaticPastePermissionTitle: "Consentire ad ATO di incollare automaticamente?",
+        .automaticPastePermissionMessage: "L’elemento è stato copiato, ma ATO non può incollarlo automaticamente senza il permesso Accessibilità.\n\nATO usa questo permesso esclusivamente per inviare ⌘V all’app che stavi usando. Non lo utilizza per leggere ciò che digiti o controllare altre funzioni del Mac.\n\nPuoi concedere il permesso ora oppure tornare all’app di destinazione e premere ⌘V manualmente."
     ]
 
     static func text(_ key: LocalizedKey, language: AppLanguage) -> String {
