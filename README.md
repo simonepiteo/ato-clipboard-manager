@@ -6,12 +6,6 @@ ATO Clipboard Manager is a modern, open-source clipboard manager for macOS, buil
 
 ---
 
-## 💻 Demo
-
-<img src="readme_example.gif" alt="Demo" width="800"/>
-
----
-
 ## ✨ Features
 
 ### Clipboard history
