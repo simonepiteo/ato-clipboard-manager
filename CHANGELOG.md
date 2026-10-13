@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.5.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v0.4.0...v0.5.0) (2026-10-13)
+
+### Features
+
+* Implement Accessibility Permission Manager and update SettingsView for permission handling ([4278e0a](https://github.com/simonepiteo/ato-clipboard-manager/commit/4278e0a5cb644454a3f60af5590964e23ce05715))
+* Refactor SettingsView to enhance layout and introduce settings sections ([a77a96b](https://github.com/simonepiteo/ato-clipboard-manager/commit/a77a96b4b41c67c8d17f18207fbe52d220b16268))
+* Update SettingsView to use MacPalette for improved color consistency ([30ce204](https://github.com/simonepiteo/ato-clipboard-manager/commit/30ce2042d528d993b6a8a863c51fb3ba77fa9017))
+* Implement customizable keyboard shortcuts and settings management ([5c03075](https://github.com/simonepiteo/ato-clipboard-manager/commit/5c03075bbcacb28c991b7c5e85aae304a568b6f4))
+
 ## [0.4.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v0.3.0...v0.4.0) (2026-10-13)
 
 ### Features
