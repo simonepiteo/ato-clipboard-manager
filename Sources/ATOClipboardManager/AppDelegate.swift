@@ -1,10 +1,12 @@
 import AppKit
+import Combine
 import SwiftUI
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     let settings = AppSettings()
     let launchAtLogin = LaunchAtLoginManager()
+    let updateManager = UpdateManager()
     lazy var clipboardStore = ClipboardStore(settings: settings)
 
     private var statusItem: NSStatusItem!
@@ -15,6 +17,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var lastActiveApplication: NSRunningApplication?
     private var actionAfterPopoverCloses: (() -> Void)?
     private var restorePopoverAnimationAfterClose = false
+    private var updateObservation: AnyCancellable?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
@@ -22,6 +25,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         configureStatusItem()
         configureKeyboardShortcuts()
         clipboardStore.start()
+        observeAvailableUpdates()
+        Task { await updateManager.checkIfNeeded(force: true) }
         DispatchQueue.main.async { [weak self] in
             self?.showLaunchAtLoginPromptIfNeeded()
         }
@@ -36,6 +41,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let view = PopoverView(
             store: clipboardStore,
             settings: settings,
+            updateManager: updateManager,
             select: { [weak self] item, paste, waitForClick in
                 self?.select(item, paste: paste, waitForClickCompletion: waitForClick)
             },
@@ -54,6 +60,28 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.button?.image = NSImage(systemSymbolName: "clipboard", accessibilityDescription: "ATO Clipboard Manager")
         statusItem.button?.target = self
         statusItem.button?.action = #selector(togglePopover)
+    }
+
+    private func observeAvailableUpdates() {
+        updateObservation = updateManager.$releases.sink { [weak self] releases in
+            guard let self else { return }
+            let installed = VersionNumber(self.updateManager.currentVersion)
+            let hasUpdate = self.updateManager.currentVersion != "development" && releases.contains {
+                VersionNumber($0.version) > installed && $0.dmgAsset != nil
+            }
+            self.statusItem.button?.attributedTitle = hasUpdate
+                ? NSAttributedString(
+                    string: " ●",
+                    attributes: [
+                        .foregroundColor: NSColor.systemRed,
+                        .font: NSFont.systemFont(ofSize: 8, weight: .bold)
+                    ]
+                )
+                : NSAttributedString(string: "")
+            self.statusItem.button?.toolTip = hasUpdate
+                ? Localizer.text(.updateBadgeHint, language: self.settings.language)
+                : "ATO Clipboard Manager"
+        }
     }
 
     private func configureKeyboardShortcuts() {
@@ -170,13 +198,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             rootView: SettingsView(
                 settings: settings,
                 launchAtLogin: launchAtLogin,
-                clipboardStore: clipboardStore
+                clipboardStore: clipboardStore,
+                updateManager: updateManager
             )
         )
         let window = NSWindow(contentViewController: controller)
         window.title = Localizer.text(.settingsTitle, language: settings.language)
         window.styleMask = [.titled, .closable]
-        window.setContentSize(NSSize(width: 560, height: 640))
+        window.setContentSize(NSSize(width: 580, height: 700))
         window.center()
         window.isReleasedWhenClosed = false
         window.delegate = self

@@ -12,6 +12,10 @@ enum LocalizedKey: String {
     case storage, persistHistory, historyFilePath, persistedHistoryLimit
     case deletePersistedHistory, deletePersistedHistoryTitle, deletePersistedHistoryMessage, delete
     case historyPersistenceError
+    case updates, checkForUpdates, updateAvailable, upToDate, lastChecked
+    case downloadAndInstall, downloadAndRestartHint, previousVersions, noVersionsLoaded
+    case installed, releaseNotes, updateError
+    case updateNow, installingUpdate, updateBadgeHint, later
 }
 
 enum Localizer {
@@ -34,7 +38,16 @@ enum Localizer {
         .historyFilePath: "File path", .persistedHistoryLimit: "Maximum saved items",
         .deletePersistedHistory: "Delete saved history", .deletePersistedHistoryTitle: "Delete saved history?",
         .deletePersistedHistoryMessage: "This permanently deletes the JSON history file. Items currently visible in ATO are not removed.",
-        .delete: "Delete", .historyPersistenceError: "Couldn’t update the saved history"
+        .delete: "Delete", .historyPersistenceError: "Couldn’t update the saved history",
+        .updates: "Updates", .checkForUpdates: "Check for Updates",
+        .updateAvailable: "Version %@ is available", .upToDate: "ATO is up to date",
+        .lastChecked: "Last checked: %@", .downloadAndInstall: "Download and Install",
+        .downloadAndRestartHint: "ATO will restart after installing the update.",
+        .previousVersions: "Previous versions", .noVersionsLoaded: "No release information loaded yet.",
+        .installed: "Installed", .releaseNotes: "Open release notes", .updateError: "Couldn’t update ATO",
+        .updateNow: "Update Now",
+        .installingUpdate: "Downloading and installing…", .updateBadgeHint: "An ATO update is available",
+        .later: "Later"
     ]
 
     private static let italian: [LocalizedKey: String] = [
@@ -56,7 +69,16 @@ enum Localizer {
         .historyFilePath: "Percorso file", .persistedHistoryLimit: "Massimo elementi salvati",
         .deletePersistedHistory: "Elimina cronologia salvata", .deletePersistedHistoryTitle: "Eliminare la cronologia salvata?",
         .deletePersistedHistoryMessage: "Questa azione elimina definitivamente il file JSON. Gli elementi attualmente visibili in ATO non vengono rimossi.",
-        .delete: "Elimina", .historyPersistenceError: "Impossibile aggiornare la cronologia salvata"
+        .delete: "Elimina", .historyPersistenceError: "Impossibile aggiornare la cronologia salvata",
+        .updates: "Aggiornamenti", .checkForUpdates: "Cerca aggiornamenti",
+        .updateAvailable: "È disponibile la versione %@", .upToDate: "ATO è aggiornato",
+        .lastChecked: "Ultimo controllo: %@", .downloadAndInstall: "Scarica e installa",
+        .downloadAndRestartHint: "ATO verrà riavviato dopo l’installazione.",
+        .previousVersions: "Versioni precedenti", .noVersionsLoaded: "Nessuna informazione sulle release caricata.",
+        .installed: "Installata", .releaseNotes: "Apri note di rilascio", .updateError: "Impossibile aggiornare ATO",
+        .updateNow: "Aggiorna ora",
+        .installingUpdate: "Download e installazione…", .updateBadgeHint: "È disponibile un aggiornamento di ATO",
+        .later: "Più tardi"
     ]
 
     static func text(_ key: LocalizedKey, language: AppLanguage) -> String {

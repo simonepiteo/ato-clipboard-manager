@@ -5,6 +5,7 @@ struct SettingsView: View {
     @ObservedObject var settings: AppSettings
     @ObservedObject var launchAtLogin: LaunchAtLoginManager
     @ObservedObject var clipboardStore: ClipboardStore
+    @ObservedObject var updateManager: UpdateManager
     @State private var showDeletePersistedHistoryConfirmation = false
 
     var body: some View {
@@ -88,6 +89,8 @@ struct SettingsView: View {
                     }
 
                     persistenceSection
+
+                    updatesSection
                 }
                 .padding(.trailing, 8)
             }
@@ -95,9 +98,12 @@ struct SettingsView: View {
             footer
         }
         .padding(24)
-        .frame(width: 560, height: 640)
+        .frame(width: 580, height: 700)
         .background(Color(nsColor: .windowBackgroundColor))
-        .onAppear(perform: launchAtLogin.refresh)
+        .onAppear {
+            launchAtLogin.refresh()
+            Task { await updateManager.checkIfNeeded() }
+        }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
             launchAtLogin.refresh()
         }
@@ -123,6 +129,17 @@ struct SettingsView: View {
         } message: {
             Text(clipboardStore.persistenceError ?? "")
         }
+        .alert(
+            Localizer.text(.updateError, language: settings.language),
+            isPresented: Binding(
+                get: { updateManager.errorMessage != nil },
+                set: { if !$0 { updateManager.errorMessage = nil } }
+            )
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(updateManager.errorMessage ?? "")
+        }
         .confirmationDialog(
             Localizer.text(.deletePersistedHistoryTitle, language: settings.language),
             isPresented: $showDeletePersistedHistoryConfirmation,
@@ -133,6 +150,108 @@ struct SettingsView: View {
             }
         } message: {
             Text(Localizer.text(.deletePersistedHistoryMessage, language: settings.language))
+        }
+    }
+
+    private var updatesSection: some View {
+        settingsSection(
+            Localizer.text(.updates, language: settings.language),
+            systemImage: "arrow.triangle.2.circlepath"
+        ) {
+            HStack(alignment: .center, spacing: 12) {
+                VStack(alignment: .leading, spacing: 3) {
+                    if let release = updateManager.availableUpdate {
+                        Text(String(
+                            format: Localizer.text(.updateAvailable, language: settings.language),
+                            release.version
+                        ))
+                        .font(.body.weight(.medium))
+                        Text(Localizer.text(.downloadAndRestartHint, language: settings.language))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text(Localizer.text(.upToDate, language: settings.language))
+                        if let lastChecked = updateManager.lastChecked {
+                            Text(String(
+                                format: Localizer.text(.lastChecked, language: settings.language),
+                                lastChecked.formatted(date: .abbreviated, time: .shortened)
+                            ))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+
+                Spacer()
+
+                if updateManager.isChecking || updateManager.isInstalling {
+                    ProgressView()
+                        .controlSize(.small)
+                }
+
+                if let release = updateManager.availableUpdate {
+                    Button(Localizer.text(.downloadAndInstall, language: settings.language)) {
+                        Task { await updateManager.install(release) }
+                    }
+                    .disabled(updateManager.isChecking || updateManager.isInstalling)
+
+                    Button {
+                        Task { await updateManager.checkIfNeeded(force: true) }
+                    } label: {
+                        Image(systemName: "arrow.clockwise")
+                    }
+                    .help(Localizer.text(.checkForUpdates, language: settings.language))
+                    .disabled(updateManager.isChecking || updateManager.isInstalling)
+                } else {
+                    Button(Localizer.text(.checkForUpdates, language: settings.language)) {
+                        Task { await updateManager.checkIfNeeded(force: true) }
+                    }
+                    .disabled(updateManager.isChecking || updateManager.isInstalling)
+                }
+            }
+
+            Divider()
+
+            VStack(alignment: .leading, spacing: 8) {
+                Text(Localizer.text(.previousVersions, language: settings.language))
+                    .font(.subheadline.weight(.medium))
+
+                if updateManager.releases.isEmpty {
+                    Text(Localizer.text(.noVersionsLoaded, language: settings.language))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                } else {
+                    ScrollView {
+                        LazyVStack(spacing: 0) {
+                            ForEach(updateManager.releases) { release in
+                                HStack(spacing: 10) {
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text("v\(release.version)")
+                                            .font(.callout.weight(.medium))
+                                        Text(release.publishedAt.formatted(date: .abbreviated, time: .omitted))
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    if VersionNumber(release.version) == VersionNumber(updateManager.currentVersion) {
+                                        Text(Localizer.text(.installed, language: settings.language))
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Link(destination: release.pageURL) {
+                                        Image(systemName: "arrow.up.right.square")
+                                    }
+                                    .help(Localizer.text(.releaseNotes, language: settings.language))
+                                }
+                                .padding(.vertical, 7)
+                                if release.id != updateManager.releases.last?.id { Divider() }
+                            }
+                        }
+                    }
+                    .frame(height: 120)
+                }
+            }
         }
     }
 

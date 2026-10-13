@@ -27,6 +27,9 @@ ATO Clipboard Manager is a modern, open-source clipboard manager for macOS, buil
 - Optionally launch ATO automatically when you log in
 - Optionally persist history to a configurable JSON file and restore it on startup
 - Configure separate limits for visible and saved history, and delete the saved file from Settings
+- Check GitHub Releases for updates at startup, when Settings opens, and at least once a day
+- Download, verify, install, and restart into a newer DMG release directly from Settings
+- Browse a scrollable list of current and previous releases with links to their release notes
 - Native macOS menu bar and popover integration
 - Persistent preferences with `UserDefaults`
 - English and Italian localization
@@ -46,7 +49,7 @@ Clipboard history is stored in memory by default and is cleared when the app qui
 - [ ] Pin favorite items
 - [ ] Customizable keyboard shortcuts
 - [ ] Rich media support (files, links, etc.)
-- [ ] Auto-update support
+- [x] Auto-update support
 
 ---
 
@@ -97,6 +100,12 @@ git push --follow-tags origin HEAD
 ```
 
 The release script updates `VERSION` and `CHANGELOG.md`, then creates the release commit and annotated Git tag. You can override the detected bump with `./scripts/release.sh patch`, `minor`, or `major`.
+
+### App updates
+
+ATO queries the public [GitHub Releases](https://github.com/simonepiteo/ato-clipboard-manager/releases) API at launch and, while it remains open, at least once every 24 hours. When a newer version is found, a red indicator appears beside the menu bar icon and a non-blocking banner in the popover offers to install it or postpone it. A manual check is always available under **Settings → Updates**. Release metadata is cached locally so the version history remains visible between launches.
+
+When a newer stable release includes a DMG, ATO can download it, verify that the contained app has the expected bundle identifier, version, and a valid code signature, then replace the running app and restart. The app must be running from an `.app` bundle in a folder the current user can modify. Draft and prerelease versions are not offered as automatic updates.
 
 Automatic paste requires Accessibility permission so ATO can simulate `⌘V` in the previously active app. macOS prompts for it when the feature is first used; it can also be enabled under **System Settings → Privacy & Security → Accessibility**.
 

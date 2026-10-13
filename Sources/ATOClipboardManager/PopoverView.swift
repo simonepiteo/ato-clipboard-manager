@@ -4,7 +4,9 @@ import SwiftUI
 struct PopoverView: View {
     @ObservedObject var store: ClipboardStore
     @ObservedObject var settings: AppSettings
+    @ObservedObject var updateManager: UpdateManager
     @State private var searchText = ""
+    @State private var dismissedUpdateVersion: String?
 
     let select: (ClipboardItem, Bool, Bool) -> Void
     let openSettings: () -> Void
@@ -25,6 +27,10 @@ struct PopoverView: View {
         VStack(spacing: 0) {
             searchBar
             Divider()
+            if let release = visibleUpdate {
+                updateBanner(release)
+                Divider()
+            }
             history
             Divider()
             footerActions
@@ -37,6 +43,66 @@ struct PopoverView: View {
             else { return }
             select(filteredItems[index], settings.automaticPasteShortcut, false)
         }
+    }
+
+    private var visibleUpdate: AppRelease? {
+        guard let release = updateManager.availableUpdate,
+              dismissedUpdateVersion != release.version else { return nil }
+        return release
+    }
+
+    private func updateBanner(_ release: AppRelease) -> some View {
+        HStack(spacing: 9) {
+            if updateManager.isInstalling {
+                ProgressView()
+                    .controlSize(.small)
+                Text(Localizer.text(.installingUpdate, language: settings.language))
+                    .font(.callout.weight(.medium))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            } else {
+                Image(systemName: "arrow.down.circle.fill")
+                    .foregroundStyle(Color.accentColor)
+
+                if let errorMessage = updateManager.errorMessage {
+                    Text(errorMessage)
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                        .lineLimit(1)
+                        .help(errorMessage)
+                } else {
+                    Text(String(
+                        format: Localizer.text(.updateAvailable, language: settings.language),
+                        release.version
+                    ))
+                    .font(.callout.weight(.semibold))
+                    .lineLimit(1)
+                }
+            }
+
+            Spacer(minLength: 4)
+
+            if !updateManager.isInstalling {
+                Button(Localizer.text(.updateNow, language: settings.language)) {
+                    Task { await updateManager.install(release) }
+                }
+                .buttonStyle(.borderedProminent)
+            }
+
+            Button {
+                dismissedUpdateVersion = release.version
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.caption.weight(.semibold))
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(.secondary)
+            .help(Localizer.text(.later, language: settings.language))
+            .disabled(updateManager.isInstalling)
+        }
+        .controlSize(.small)
+        .padding(10)
+        .background(Color.accentColor.opacity(0.08))
     }
 
     private var searchBar: some View {
