@@ -24,6 +24,21 @@ final class HistoryBufferTests: XCTestCase {
     }
 
     @MainActor
+    func testThemeDefaultsPersistsAndResetsToSystem() {
+        let suiteName = "AppThemeSettingsTests.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let settings = AppSettings(defaults: defaults)
+
+        XCTAssertEqual(settings.theme, .system)
+        settings.theme = .dark
+        XCTAssertEqual(AppSettings(defaults: defaults).theme, .dark)
+
+        settings.reset()
+        XCTAssertEqual(settings.theme, .system)
+    }
+
+    @MainActor
     func testLaunchAtLoginPromptIsOnlyShownOnce() {
         let suiteName = "AppSettingsTests.\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: suiteName)!

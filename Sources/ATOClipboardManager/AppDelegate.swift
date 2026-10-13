@@ -22,12 +22,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var restorePopoverAnimationAfterClose = false
     private var updateObservation: AnyCancellable?
     private var shortcutObservation: AnyCancellable?
+    private var themeObservation: AnyCancellable?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
+        applyTheme(settings.theme)
         configurePopover()
         configureStatusItem()
         configureKeyboardShortcuts()
+        observeTheme()
         clipboardStore.start()
         observeAvailableUpdates()
         Task { await updateManager.checkIfNeeded(force: true) }
@@ -70,6 +73,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.button?.image = NSImage(systemSymbolName: "clipboard", accessibilityDescription: "ATO Clipboard Manager")
         statusItem.button?.target = self
         statusItem.button?.action = #selector(togglePopover)
+    }
+
+    private func observeTheme() {
+        themeObservation = settings.$theme
+            .removeDuplicates()
+            .sink { [weak self] theme in
+                self?.applyTheme(theme)
+            }
+    }
+
+    private func applyTheme(_ theme: AppTheme) {
+        let appearance = theme.appearance
+        NSApp.appearance = appearance
+        popover.contentViewController?.view.appearance = appearance
+        settingsWindow?.appearance = appearance
     }
 
     private func observeAvailableUpdates() {

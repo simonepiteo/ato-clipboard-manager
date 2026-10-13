@@ -4,6 +4,7 @@ import Foundation
 final class AppSettings: ObservableObject {
     private enum Key {
         static let language = "language"
+        static let theme = "theme"
         static let displayMode = "displayMode"
         static let maxHistoryItems = "maxHistoryItems"
         static let automaticPaste = "automaticPaste"
@@ -19,6 +20,7 @@ final class AppSettings: ObservableObject {
     private let defaults: UserDefaults
 
     @Published var language: AppLanguage { didSet { defaults.set(language.rawValue, forKey: Key.language) } }
+    @Published var theme: AppTheme { didSet { defaults.set(theme.rawValue, forKey: Key.theme) } }
     @Published var displayMode: DisplayMode { didSet { defaults.set(displayMode.rawValue, forKey: Key.displayMode) } }
     @Published var maxHistoryItems: Int {
         didSet {
@@ -50,6 +52,7 @@ final class AppSettings: ObservableObject {
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         language = AppLanguage(rawValue: defaults.string(forKey: Key.language) ?? "") ?? .english
+        theme = AppTheme(rawValue: defaults.string(forKey: Key.theme) ?? "") ?? .system
         displayMode = DisplayMode(rawValue: defaults.string(forKey: Key.displayMode) ?? "") ?? .grid
         let savedLimit = defaults.object(forKey: Key.maxHistoryItems) as? Int
         let historyLimit = Self.clampHistoryLimit(savedLimit ?? Self.defaultMaxHistoryItems)
@@ -82,6 +85,7 @@ final class AppSettings: ObservableObject {
 
     func reset() {
         language = .english
+        theme = .system
         displayMode = .grid
         maxHistoryItems = Self.defaultMaxHistoryItems
         automaticPaste = false

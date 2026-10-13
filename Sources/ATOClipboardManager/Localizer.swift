@@ -2,7 +2,7 @@ import Foundation
 
 enum LocalizedKey: String {
     case search, clearHistory, settings, quit
-    case settingsTitle, language, displayMode, grid, list
+    case settingsTitle, language, theme, systemTheme, lightTheme, darkTheme, displayMode, grid, list
     case maxHistory, automaticPaste, automaticPasteShortcut
     case resetSettings, emptyHistory, version
     case settingsDescription, appearance, behavior, sourceCode, license, general
@@ -33,6 +33,7 @@ enum Localizer {
     private static let english: [LocalizedKey: String] = [
         .search: "Search…", .clearHistory: "Clear history", .settings: "Settings…", .quit: "Quit",
         .settingsTitle: "ATO - Clipboard Manager Settings", .language: "Language",
+        .theme: "Theme", .systemTheme: "System", .lightTheme: "Light", .darkTheme: "Dark",
         .displayMode: "Display mode", .grid: "Grid", .list: "List",
         .maxHistory: "Maximum history items", .automaticPaste: "Paste automatically on selection",
         .automaticPasteShortcut: "Paste automatically when using item shortcuts",
@@ -90,6 +91,7 @@ enum Localizer {
     private static let italian: [LocalizedKey: String] = [
         .search: "Cerca…", .clearHistory: "Cancella cronologia", .settings: "Impostazioni…", .quit: "Chiudi",
         .settingsTitle: "Impostazioni ATO - Clipboard Manager", .language: "Lingua",
+        .theme: "Tema", .systemTheme: "Sistema", .lightTheme: "Chiaro", .darkTheme: "Scuro",
         .displayMode: "Vista elementi", .grid: "Griglia", .list: "Lista",
         .maxHistory: "Massimo numero di elementi", .automaticPaste: "Incolla automaticamente alla selezione",
         .automaticPasteShortcut: "Incolla automaticamente usando le scorciatoie degli elementi",

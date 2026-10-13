@@ -298,6 +298,19 @@ struct SettingsView: View {
 
                     panelDivider
 
+                    settingRow(Localizer.text(.theme, language: settings.language)) {
+                        Picker("", selection: $settings.theme) {
+                            Text(Localizer.text(.systemTheme, language: settings.language)).tag(AppTheme.system)
+                            Text(Localizer.text(.lightTheme, language: settings.language)).tag(AppTheme.light)
+                            Text(Localizer.text(.darkTheme, language: settings.language)).tag(AppTheme.dark)
+                        }
+                        .pickerStyle(.segmented)
+                        .labelsHidden()
+                        .frame(width: 210)
+                    }
+
+                    panelDivider
+
                     settingRow(Localizer.text(.displayMode, language: settings.language)) {
                         Picker("", selection: $settings.displayMode) {
                             Text(Localizer.text(.grid, language: settings.language)).tag(DisplayMode.grid)

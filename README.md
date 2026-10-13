@@ -34,7 +34,7 @@ ATO Clipboard Manager is a modern, open-source clipboard manager for macOS, buil
 
 ### Personalization
 
-- Choose the app language, display mode, history size, and automatic paste behavior.
+- Choose the app language, system/light/dark theme, display mode, history size, and automatic paste behavior.
 - Launch ATO automatically when you log in.
 - Use the app in English or Italian.
 - Keep preferences between launches with `UserDefaults`.
