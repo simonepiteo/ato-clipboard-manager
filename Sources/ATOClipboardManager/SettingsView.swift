@@ -353,6 +353,13 @@ struct SettingsView: View {
                 isOn: accessibilityAwareBinding($settings.automaticPasteShortcut)
             )
 
+            panelDivider
+
+            toggleRow(
+                Localizer.text(.automaticPasteOnReturn, language: settings.language),
+                isOn: accessibilityAwareBinding($settings.automaticPasteOnReturn)
+            )
+
             if needsAccessibilityPermission {
                 panelDivider
                 accessibilityPermissionCallout
@@ -361,7 +368,8 @@ struct SettingsView: View {
     }
 
     private var needsAccessibilityPermission: Bool {
-        (settings.automaticPaste || settings.automaticPasteShortcut) && !accessibilityPermission.isGranted
+        (settings.automaticPaste || settings.automaticPasteShortcut || settings.automaticPasteOnReturn)
+            && !accessibilityPermission.isGranted
     }
 
     private var accessibilityPermissionCallout: some View {

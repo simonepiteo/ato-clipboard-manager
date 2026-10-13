@@ -11,6 +11,7 @@ struct PopoverView: View {
     @State private var searchText = ""
     @State private var dismissedUpdateVersion: String?
     @State private var selectedSection: ClipboardSection = .history
+    @State private var keyboardSelectedItemID: UUID?
     @Namespace private var sectionSelectionNamespace
 
     let select: (ClipboardItem, Bool, Bool) -> Void
@@ -59,6 +60,23 @@ struct PopoverView: View {
             else { return }
             withAnimation(.spring(response: 0.28, dampingFraction: 0.84)) {
                 selectedSection = section
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .navigateClipboardHistory)) { notification in
+            guard let rawValue = notification.userInfo?["command"] as? String,
+                  let command = ClipboardKeyboardCommand(rawValue: rawValue)
+            else { return }
+            handleKeyboardCommand(command)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .resetClipboardKeyboardSelection)) { _ in
+            keyboardSelectedItemID = nil
+        }
+        .onChange(of: searchText) { _ in keyboardSelectedItemID = nil }
+        .onChange(of: selectedSection) { _ in keyboardSelectedItemID = nil }
+        .onChange(of: filteredItems.map(\.id)) { itemIDs in
+            guard let keyboardSelectedItemID, itemIDs.contains(keyboardSelectedItemID) else {
+                self.keyboardSelectedItemID = nil
+                return
             }
         }
         .alert(
@@ -169,51 +187,97 @@ struct PopoverView: View {
     }
 
     private var history: some View {
-        ScrollView {
-            if filteredItems.isEmpty {
-                VStack(spacing: 8) {
-                    Image(systemName: selectedSection == .history ? "clipboard" : "pin")
-                        .font(.system(size: 32))
-                        .foregroundStyle(.secondary)
-                    Text(emptyStateText)
-                        .multilineTextAlignment(.center).foregroundStyle(.secondary)
-                }
-                .frame(maxWidth: .infinity, minHeight: 330)
-            } else {
-                LazyVGrid(columns: columns, spacing: 10) {
-                    ForEach(Array(filteredItems.enumerated()), id: \.element.id) { index, item in
-                        ClipboardCard(
-                            item: item,
-                            shortcut: shortcutLabel(for: index),
-                            isList: settings.displayMode == .list,
-                            language: settings.language,
-                            showsFavoriteIndicator: selectedSection == .history && favoritesStore.contains(item),
-                            isFavorite: favoritesStore.contains(item),
-                            toggleFavorite: { favoritesStore.toggle(item) },
-                            favoriteActionTitle: Localizer.text(
-                                favoritesStore.contains(item) ? .removeFromFavorites : .addToFavorites,
-                                language: settings.language
-                            ),
-                            deleteFromHistory: {
-                                guard !favoritesStore.contains(item) else { return }
-                                store.delete(item)
-                            },
-                            deleteActionTitle: Localizer.text(
-                                favoritesStore.contains(item) ? .unpinBeforeDeleting : .deleteFromHistory,
-                                language: settings.language
-                            )
-                        ) {
-                            select(item, settings.automaticPaste, true)
+        ScrollViewReader { proxy in
+            ScrollView {
+                if filteredItems.isEmpty {
+                    VStack(spacing: 8) {
+                        Image(systemName: selectedSection == .history ? "clipboard" : "pin")
+                            .font(.system(size: 32))
+                            .foregroundStyle(.secondary)
+                        Text(emptyStateText)
+                            .multilineTextAlignment(.center).foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity, minHeight: 330)
+                } else {
+                    LazyVGrid(columns: columns, spacing: 10) {
+                        ForEach(Array(filteredItems.enumerated()), id: \.element.id) { index, item in
+                            ClipboardCard(
+                                item: item,
+                                shortcut: shortcutLabel(for: index),
+                                isList: settings.displayMode == .list,
+                                language: settings.language,
+                                isKeyboardSelected: keyboardSelectedItemID == item.id,
+                                showsFavoriteIndicator: selectedSection == .history && favoritesStore.contains(item),
+                                isFavorite: favoritesStore.contains(item),
+                                toggleFavorite: { favoritesStore.toggle(item) },
+                                favoriteActionTitle: Localizer.text(
+                                    favoritesStore.contains(item) ? .removeFromFavorites : .addToFavorites,
+                                    language: settings.language
+                                ),
+                                deleteFromHistory: {
+                                    guard !favoritesStore.contains(item) else { return }
+                                    store.delete(item)
+                                },
+                                deleteActionTitle: Localizer.text(
+                                    favoritesStore.contains(item) ? .unpinBeforeDeleting : .deleteFromHistory,
+                                    language: settings.language
+                                )
+                            ) {
+                                select(item, settings.automaticPaste, true)
+                            }
+                            .id(item.id)
                         }
                     }
+                    .padding(.horizontal, 10)
+                    .padding(.top, 10)
+                    .padding(.bottom, 56)
                 }
-                .padding(.horizontal, 10)
-                .padding(.top, 10)
-                .padding(.bottom, 56)
+            }
+            .onChange(of: keyboardSelectedItemID) { itemID in
+                guard let itemID else { return }
+                withAnimation(.easeOut(duration: 0.12)) {
+                    proxy.scrollTo(itemID, anchor: .center)
+                }
             }
         }
         .frame(maxHeight: .infinity)
         .background(Color.black.opacity(0.08))
+    }
+
+    private func handleKeyboardCommand(_ command: ClipboardKeyboardCommand) {
+        guard !filteredItems.isEmpty else { return }
+
+        if command == .select {
+            guard let keyboardSelectedItemID,
+                  let item = filteredItems.first(where: { $0.id == keyboardSelectedItemID })
+            else { return }
+            select(item, settings.automaticPasteOnReturn, false)
+            return
+        }
+
+        guard let selectedItemID = keyboardSelectedItemID else {
+            self.keyboardSelectedItemID = filteredItems[0].id
+            return
+        }
+
+        let currentIndex = filteredItems.firstIndex { $0.id == selectedItemID }
+        guard let currentIndex else {
+            self.keyboardSelectedItemID = filteredItems[0].id
+            return
+        }
+        let columnCount = settings.displayMode == .grid ? 3 : 1
+        let delta: Int
+        switch command {
+        case .moveLeft: delta = -1
+        case .moveRight: delta = 1
+        case .moveUp: delta = -columnCount
+        case .moveDown: delta = columnCount
+        case .select: return
+        }
+
+        let proposedIndex = currentIndex + delta
+        let nextIndex = min(max(proposedIndex, 0), filteredItems.count - 1)
+        keyboardSelectedItemID = filteredItems[nextIndex].id
     }
 
     private var emptyStateText: String {
@@ -347,6 +411,7 @@ private struct ClipboardCard: View {
     let shortcut: String?
     let isList: Bool
     let language: AppLanguage
+    let isKeyboardSelected: Bool
     let showsFavoriteIndicator: Bool
     let isFavorite: Bool
     let toggleFavorite: () -> Void
@@ -399,7 +464,8 @@ private struct ClipboardCard: View {
             .frame(height: 98)
             .contentShape(Rectangle())
         }
-        .buttonStyle(CardButtonStyle())
+        .buttonStyle(CardButtonStyle(isKeyboardSelected: isKeyboardSelected))
+        .accessibilityAddTraits(isKeyboardSelected ? .isSelected : [])
         .contextMenu {
             Button(action: toggleFavorite) {
                 Label(favoriteActionTitle, systemImage: isFavorite ? "pin.slash" : "pin")
@@ -501,24 +567,34 @@ private enum ClipboardSection: String {
 }
 
 private struct CardButtonStyle: ButtonStyle {
+    let isKeyboardSelected: Bool
+
     func makeBody(configuration: Configuration) -> some View {
-        CardButton(configuration: configuration)
+        CardButton(configuration: configuration, isKeyboardSelected: isKeyboardSelected)
     }
 
     private struct CardButton: View {
         let configuration: Configuration
+        let isKeyboardSelected: Bool
         @State private var isHovered = false
 
         private var isHighlighted: Bool {
-            isHovered || configuration.isPressed
+            isHovered || configuration.isPressed || isKeyboardSelected
         }
 
         var body: some View {
             configuration.label
-                .background(configuration.isPressed ? Color.accentColor.opacity(0.35) : Color.black.opacity(0.10))
+                .background(
+                    configuration.isPressed
+                        ? Color.accentColor.opacity(0.35)
+                        : isKeyboardSelected ? Color.accentColor.opacity(0.22) : Color.black.opacity(0.10)
+                )
                 .overlay {
                     RoundedRectangle(cornerRadius: 6)
-                        .stroke(isHighlighted ? Color.accentColor : Color.secondary.opacity(0.35))
+                        .stroke(
+                            isHighlighted ? Color.accentColor : Color.secondary.opacity(0.35),
+                            lineWidth: isKeyboardSelected ? 2 : 1
+                        )
                 }
                 .clipShape(RoundedRectangle(cornerRadius: 6))
                 .onHover { isHovered = $0 }

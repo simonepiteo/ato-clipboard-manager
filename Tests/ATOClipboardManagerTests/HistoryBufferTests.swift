@@ -61,4 +61,19 @@ final class HistoryBufferTests: XCTestCase {
         settings.markLaunchAtLoginPromptAsShown()
         XCTAssertFalse(settings.shouldShowLaunchAtLoginPrompt)
     }
+
+    @MainActor
+    func testReturnPasteSettingPersistsAndResetsDisabled() {
+        let suiteName = "ReturnPasteSettingsTests.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let settings = AppSettings(defaults: defaults)
+
+        XCTAssertFalse(settings.automaticPasteOnReturn)
+        settings.automaticPasteOnReturn = true
+        XCTAssertTrue(AppSettings(defaults: defaults).automaticPasteOnReturn)
+
+        settings.reset()
+        XCTAssertFalse(settings.automaticPasteOnReturn)
+    }
 }

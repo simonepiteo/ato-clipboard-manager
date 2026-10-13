@@ -123,8 +123,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         localKeyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             guard let self else { return event }
-            guard !(NSApp.keyWindow?.firstResponder is ShortcutRecorderButton),
-                  let action = self.shortcutSettings.action(matching: event) else { return event }
+            guard !(NSApp.keyWindow?.firstResponder is ShortcutRecorderButton) else { return event }
+
+            let commandModifiers = event.modifierFlags.intersection([.command, .option, .control, .shift])
+            if self.popover.isShown, commandModifiers.isEmpty,
+               let command = ClipboardKeyboardCommand(event: event) {
+                NotificationCenter.default.post(
+                    name: .navigateClipboardHistory,
+                    object: nil,
+                    userInfo: ["command": command.rawValue]
+                )
+                return nil
+            }
+
+            guard let action = self.shortcutSettings.action(matching: event) else { return event }
 
             if let index = action.itemIndex {
                 NotificationCenter.default.post(
@@ -166,6 +178,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         lastActiveApplication = NSWorkspace.shared.frontmostApplication
         popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
         NSApp.activate(ignoringOtherApps: true)
+        NotificationCenter.default.post(name: .resetClipboardKeyboardSelection, object: nil)
     }
 
     private func select(_ item: ClipboardItem, paste: Bool, waitForClickCompletion: Bool) {
@@ -342,6 +355,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 extension Notification.Name {
     static let selectClipboardHistoryItem = Notification.Name("selectClipboardHistoryItem")
     static let switchClipboardSection = Notification.Name("switchClipboardSection")
+    static let navigateClipboardHistory = Notification.Name("navigateClipboardHistory")
+    static let resetClipboardKeyboardSelection = Notification.Name("resetClipboardKeyboardSelection")
+}
+
+enum ClipboardKeyboardCommand: String {
+    case moveLeft, moveRight, moveUp, moveDown, select
+
+    init?(event: NSEvent) {
+        switch event.keyCode {
+        case 123: self = .moveLeft
+        case 124: self = .moveRight
+        case 125: self = .moveDown
+        case 126: self = .moveUp
+        case 36, 76: self = .select
+        default: return nil
+        }
+    }
 }
 
 extension AppDelegate: NSWindowDelegate {

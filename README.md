@@ -57,7 +57,7 @@ The following options are available from Settings:
 - **Language:** use ATO in English or Italian.
 - **Layout:** choose between grid and list display modes.
 - **History:** configure visible and saved history limits, and optionally enable persistent history.
-- **Paste behavior:** enable or disable automatic paste.
+- **Paste behavior:** independently enable automatic paste for clicks, item shortcuts, and Return after keyboard navigation.
 - **Startup:** launch ATO automatically when logging in to macOS.
 
 General preferences are retained between launches with `UserDefaults`.

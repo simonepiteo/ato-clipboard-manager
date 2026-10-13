@@ -9,6 +9,7 @@ final class AppSettings: ObservableObject {
         static let maxHistoryItems = "maxHistoryItems"
         static let automaticPaste = "automaticPaste"
         static let automaticPasteShortcut = "automaticPasteShortcut"
+        static let automaticPasteOnReturn = "automaticPasteOnReturn"
         static let launchAtLoginPromptShown = "launchAtLoginPromptShown"
         static let persistHistory = "persistHistory"
         static let maxPersistedHistoryItems = "maxPersistedHistoryItems"
@@ -37,6 +38,9 @@ final class AppSettings: ObservableObject {
     }
     @Published var automaticPaste: Bool { didSet { defaults.set(automaticPaste, forKey: Key.automaticPaste) } }
     @Published var automaticPasteShortcut: Bool { didSet { defaults.set(automaticPasteShortcut, forKey: Key.automaticPasteShortcut) } }
+    @Published var automaticPasteOnReturn: Bool {
+        didSet { defaults.set(automaticPasteOnReturn, forKey: Key.automaticPasteOnReturn) }
+    }
     @Published var persistHistory: Bool { didSet { defaults.set(persistHistory, forKey: Key.persistHistory) } }
     @Published var maxPersistedHistoryItems: Int {
         didSet {
@@ -59,6 +63,7 @@ final class AppSettings: ObservableObject {
         maxHistoryItems = historyLimit
         automaticPaste = defaults.bool(forKey: Key.automaticPaste)
         automaticPasteShortcut = defaults.object(forKey: Key.automaticPasteShortcut) as? Bool ?? true
+        automaticPasteOnReturn = defaults.bool(forKey: Key.automaticPasteOnReturn)
         persistHistory = defaults.bool(forKey: Key.persistHistory)
         let savedPersistedLimit = defaults.object(forKey: Key.maxPersistedHistoryItems) as? Int
         maxPersistedHistoryItems = Self.clampPersistedHistoryLimit(
@@ -90,5 +95,6 @@ final class AppSettings: ObservableObject {
         maxHistoryItems = Self.defaultMaxHistoryItems
         automaticPaste = false
         automaticPasteShortcut = true
+        automaticPasteOnReturn = false
     }
 }

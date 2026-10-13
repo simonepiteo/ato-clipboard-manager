@@ -3,7 +3,7 @@ import Foundation
 enum LocalizedKey: String {
     case search, clearHistory, settings, quit
     case settingsTitle, language, theme, systemTheme, lightTheme, darkTheme, displayMode, grid, list
-    case maxHistory, automaticPaste, automaticPasteShortcut
+    case maxHistory, automaticPaste, automaticPasteShortcut, automaticPasteOnReturn
     case resetSettings, emptyHistory, version
     case settingsDescription, appearance, behavior, sourceCode, license, general
     case generalSettingsDescription, behaviorSettingsDescription, startupSettingsDescription
@@ -39,6 +39,7 @@ enum Localizer {
         .displayMode: "Display mode", .grid: "Grid", .list: "List",
         .maxHistory: "Maximum history items", .automaticPaste: "Paste automatically on selection",
         .automaticPasteShortcut: "Paste automatically when using item shortcuts",
+        .automaticPasteOnReturn: "Paste automatically when pressing Return",
         .resetSettings: "Reset settings", .emptyHistory: "Copy text, an image, or files to get started",
         .settingsDescription: "Customize how ATO displays and pastes your clipboard items.",
         .appearance: "Appearance and history", .behavior: "Paste behavior",
@@ -99,6 +100,7 @@ enum Localizer {
         .displayMode: "Vista elementi", .grid: "Griglia", .list: "Lista",
         .maxHistory: "Massimo numero di elementi", .automaticPaste: "Incolla automaticamente alla selezione",
         .automaticPasteShortcut: "Incolla automaticamente usando le scorciatoie degli elementi",
+        .automaticPasteOnReturn: "Incolla automaticamente premendo Invio",
         .resetSettings: "Ripristina impostazioni", .emptyHistory: "Copia un testo, un’immagine o dei file per iniziare",
         .settingsDescription: "Personalizza la visualizzazione e l'incolla degli elementi copiati.",
         .appearance: "Aspetto e cronologia", .behavior: "Comportamento incolla",
