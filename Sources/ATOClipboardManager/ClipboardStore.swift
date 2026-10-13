@@ -33,19 +33,29 @@ final class ClipboardStore: ObservableObject {
         items = buffer.items
     }
 
-    func copy(_ item: ClipboardItem) {
+    @discardableResult
+    func copy(_ item: ClipboardItem) -> Bool {
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
+        let didWrite: Bool
         switch item.content {
         case let .text(value):
-            pasteboard.setString(value, forType: .string)
+            didWrite = pasteboard.setString(value, forType: .string)
         case let .image(data):
             if let image = NSImage(data: data) {
-                pasteboard.writeObjects([image])
+                didWrite = pasteboard.writeObjects([image])
+            } else {
+                didWrite = false
             }
         }
+
+        guard didWrite else { return false }
         ignoredChangeCount = pasteboard.changeCount
         lastChangeCount = pasteboard.changeCount
+
+        buffer.insert(item, limit: settings.maxHistoryItems)
+        items = buffer.items
+        return true
     }
 
     private func readPasteboardIfChanged() {

@@ -13,6 +13,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var localKeyMonitor: Any?
     private var hotKeyManager: HotKeyManager?
     private var lastActiveApplication: NSRunningApplication?
+    private var actionAfterPopoverCloses: (() -> Void)?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
@@ -40,6 +41,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         popover.contentViewController = NSHostingController(rootView: view)
         popover.behavior = .transient
         popover.animates = true
+        popover.delegate = self
     }
 
     private func configureStatusItem() {
@@ -92,13 +94,34 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func select(_ item: ClipboardItem, paste: Bool) {
-        clipboardStore.copy(item)
-        if paste { closePopoverAndPaste() }
+        guard clipboardStore.copy(item) else { return }
+        if paste {
+            closePopoverAndPaste()
+        } else {
+            closePopoverAndRestoreFocus()
+        }
+    }
+
+    private func closePopoverAndRestoreFocus(completion: (() -> Void)? = nil) {
+        actionAfterPopoverCloses = { [weak self] in
+            self?.lastActiveApplication?.activate(options: [])
+            completion?()
+        }
+
+        if popover.isShown {
+            popover.performClose(nil)
+        } else {
+            performActionAfterPopoverCloses()
+        }
     }
 
     private func closePopoverAndPaste() {
-        popover.performClose(nil)
-        lastActiveApplication?.activate(options: [])
+        closePopoverAndRestoreFocus { [weak self] in
+            self?.pasteIntoActiveApplication()
+        }
+    }
+
+    private func pasteIntoActiveApplication() {
         guard AXIsProcessTrusted() else {
             let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
             AXIsProcessTrustedWithOptions(options)
@@ -113,6 +136,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             keyDown?.post(tap: .cghidEventTap)
             keyUp?.post(tap: .cghidEventTap)
         }
+    }
+
+    private func performActionAfterPopoverCloses() {
+        let action = actionAfterPopoverCloses
+        actionAfterPopoverCloses = nil
+        action?()
     }
 
     private func openSettings() {
@@ -143,5 +172,11 @@ extension Notification.Name {
 extension AppDelegate: NSWindowDelegate {
     func windowWillClose(_ notification: Notification) {
         settingsWindow = nil
+    }
+}
+
+extension AppDelegate: NSPopoverDelegate {
+    func popoverDidClose(_ notification: Notification) {
+        performActionAfterPopoverCloses()
     }
 }

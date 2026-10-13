@@ -91,6 +91,7 @@ struct PopoverView: View {
 
             Divider()
                 .padding(.horizontal, 8)
+                .padding(.vertical, 4)
 
             Button(role: .destructive, action: quit) {
                 footerLabel(Localizer.text(.quit, language: settings.language), shortcut: "⌘Q")
@@ -101,7 +102,7 @@ struct PopoverView: View {
         .padding(.horizontal, 5)
         .padding(.vertical, 4)
     }
-
+    
     private func footerLabel(_ title: String, shortcut: String? = nil) -> some View {
         HStack {
             Text(title)
@@ -154,10 +155,28 @@ private struct ClipboardCard: View {
 
 private struct CardButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .background(configuration.isPressed ? Color.accentColor.opacity(0.35) : Color.black.opacity(0.10))
-            .overlay(RoundedRectangle(cornerRadius: 6).stroke(configuration.isPressed ? Color.accentColor : Color.secondary.opacity(0.35)))
-            .clipShape(RoundedRectangle(cornerRadius: 6))
+        CardButton(configuration: configuration)
+    }
+
+    private struct CardButton: View {
+        let configuration: Configuration
+        @State private var isHovered = false
+
+        private var isHighlighted: Bool {
+            isHovered || configuration.isPressed
+        }
+
+        var body: some View {
+            configuration.label
+                .background(configuration.isPressed ? Color.accentColor.opacity(0.35) : Color.black.opacity(0.10))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 6)
+                        .stroke(isHighlighted ? Color.accentColor : Color.secondary.opacity(0.35))
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+                .onHover { isHovered = $0 }
+                .animation(.easeOut(duration: 0.08), value: isHighlighted)
+        }
     }
 }
 
@@ -178,8 +197,8 @@ private struct MenuItemButtonStyle: ButtonStyle {
             configuration.label
                 .foregroundStyle(isHighlighted ? Color.white : Color.primary)
                 .background {
-                    RoundedRectangle(cornerRadius: 5, style: .continuous)
-                        .fill(isHighlighted ? Color.accentColor : Color.clear)
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(isHighlighted ? Color.accentColor.opacity(0.7) : Color.clear)
                 }
                 .contentShape(Rectangle())
                 .onHover { isHovered = $0 }
