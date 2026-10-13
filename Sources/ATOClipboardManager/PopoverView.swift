@@ -6,16 +6,19 @@ struct PopoverView: View {
     @ObservedObject var settings: AppSettings
     @ObservedObject var updateManager: UpdateManager
     @ObservedObject var shortcutSettings: ShortcutSettings
+    @ObservedObject var favoritesStore: FavoritesStore
     @State private var searchText = ""
     @State private var dismissedUpdateVersion: String?
+    @State private var selectedSection: ClipboardSection = .history
 
     let select: (ClipboardItem, Bool, Bool) -> Void
     let openSettings: () -> Void
     let quit: () -> Void
 
     private var filteredItems: [ClipboardItem] {
-        guard !searchText.isEmpty else { return store.items }
-        return store.items.filter { $0.searchableText.localizedCaseInsensitiveContains(searchText) }
+        let items = items(for: selectedSection)
+        guard !searchText.isEmpty else { return items }
+        return items.filter { $0.searchableText.localizedCaseInsensitiveContains(searchText) }
     }
 
     private var columns: [GridItem] {
@@ -32,11 +35,15 @@ struct PopoverView: View {
                 updateBanner(release)
                 Divider()
             }
-            history
+            ZStack(alignment: .bottom) {
+                history
+                sectionSwitcher
+                    .padding(.bottom, 12)
+            }
             Divider()
             footerActions
         }
-        .frame(width: 350, height: 436)
+        .frame(width: 350, height: 500)
         .background(.ultraThinMaterial)
         .onReceive(NotificationCenter.default.publisher(for: .selectClipboardHistoryItem)) { notification in
             guard let index = notification.userInfo?["index"] as? Int,
@@ -44,6 +51,27 @@ struct PopoverView: View {
             else { return }
             select(filteredItems[index], settings.automaticPasteShortcut, false)
         }
+        .onReceive(NotificationCenter.default.publisher(for: .switchClipboardSection)) { notification in
+            guard let rawValue = notification.userInfo?["section"] as? String,
+                  let section = ClipboardSection(rawValue: rawValue)
+            else { return }
+            selectedSection = section
+        }
+        .alert(
+            Localizer.text(.favoritesPersistenceError, language: settings.language),
+            isPresented: Binding(
+                get: { favoritesStore.persistenceError != nil },
+                set: { if !$0 { favoritesStore.persistenceError = nil } }
+            )
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(favoritesStore.persistenceError ?? "")
+        }
+    }
+
+    private func items(for section: ClipboardSection) -> [ClipboardItem] {
+        section == .history ? store.items : favoritesStore.items
     }
 
     private var visibleUpdate: AppRelease? {
@@ -123,28 +151,100 @@ struct PopoverView: View {
         ScrollView {
             if filteredItems.isEmpty {
                 VStack(spacing: 8) {
-                    Image(systemName: "clipboard").font(.system(size: 32)).foregroundStyle(.secondary)
-                    Text(Localizer.text(.emptyHistory, language: settings.language))
+                    Image(systemName: selectedSection == .history ? "clipboard" : "star")
+                        .font(.system(size: 32))
+                        .foregroundStyle(.secondary)
+                    Text(emptyStateText)
                         .multilineTextAlignment(.center).foregroundStyle(.secondary)
                 }
-                .frame(maxWidth: .infinity, minHeight: 285)
+                .frame(maxWidth: .infinity, minHeight: 330)
             } else {
                 LazyVGrid(columns: columns, spacing: 10) {
                     ForEach(Array(filteredItems.enumerated()), id: \.element.id) { index, item in
                         ClipboardCard(
                             item: item,
                             shortcut: shortcutLabel(for: index),
-                            isList: settings.displayMode == .list
+                            isList: settings.displayMode == .list,
+                            showsFavoriteIndicator: selectedSection == .history && favoritesStore.contains(item),
+                            isFavorite: favoritesStore.contains(item),
+                            toggleFavorite: { favoritesStore.toggle(item) },
+                            favoriteActionTitle: Localizer.text(
+                                favoritesStore.contains(item) ? .removeFromFavorites : .addToFavorites,
+                                language: settings.language
+                            )
                         ) {
                             select(item, settings.automaticPaste, true)
                         }
                     }
                 }
-                .padding(10)
+                .padding(.horizontal, 10)
+                .padding(.top, 10)
+                .padding(.bottom, 56)
             }
         }
         .frame(maxHeight: .infinity)
         .background(Color.black.opacity(0.08))
+    }
+
+    private var emptyStateText: String {
+        if !searchText.isEmpty {
+            return Localizer.text(.noSearchResults, language: settings.language)
+        }
+        return Localizer.text(
+            selectedSection == .history ? .emptyHistory : .emptyFavorites,
+            language: settings.language
+        )
+    }
+
+    private var sectionSwitcher: some View {
+        HStack(spacing: 5) {
+            sectionButton(.history)
+            sectionButton(.favorites)
+        }
+        .padding(4)
+        .background(
+            .regularMaterial,
+            in: RoundedRectangle(cornerRadius: 18, style: .continuous)
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(Color.primary.opacity(0.24), lineWidth: 0.5)
+        }
+        .shadow(color: .black.opacity(0.28), radius: 10, y: 4)
+    }
+
+    private func sectionButton(_ section: ClipboardSection) -> some View {
+        let isSelected = selectedSection == section
+
+        return Button {
+            withAnimation(.easeOut(duration: 0.14)) {
+                selectedSection = section
+            }
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: section == .history ? "clock.arrow.circlepath" : "star.fill")
+                    .font(.system(size: 11, weight: .semibold))
+                Text(Localizer.text(section == .history ? .history : .favorites, language: settings.language))
+                    .font(.system(size: 12, weight: .semibold))
+
+                if isSelected && !searchText.isEmpty {
+                    Text("\(filteredItems.count)")
+                        .font(.system(size: 10, weight: .semibold).monospacedDigit())
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(Color.white.opacity(0.18), in: Capsule())
+                }
+            }
+            .foregroundStyle(isSelected ? Color.white : Color.secondary)
+            .padding(.horizontal, 10)
+            .frame(height: 24)
+            .background(
+                isSelected ? Color.accentColor.opacity(0.7) : Color.clear,
+                in: RoundedRectangle(cornerRadius: 18, style: .continuous)
+            )
+            .contentShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        }
+        .buttonStyle(.plain)
     }
 
     private var footerActions: some View {
@@ -203,11 +303,15 @@ private struct ClipboardCard: View {
     let item: ClipboardItem
     let shortcut: String?
     let isList: Bool
+    let showsFavoriteIndicator: Bool
+    let isFavorite: Bool
+    let toggleFavorite: () -> Void
+    let favoriteActionTitle: String
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            ZStack(alignment: .bottomTrailing) {
+            ZStack {
                 Group {
                     switch item.content {
                     case let .text(text):
@@ -220,17 +324,41 @@ private struct ClipboardCard: View {
                     }
                 }
                 .padding(6)
+
+                if showsFavoriteIndicator {
+                    Image(systemName: "star.fill")
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .padding(6)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
+                }
+
                 if let shortcut {
-                    Text(shortcut).font(.caption2).padding(.horizontal, 5).padding(.vertical, 2)
-                        .background(.black.opacity(0.45), in: RoundedRectangle(cornerRadius: 4)).foregroundStyle(.white)
+                    Text(shortcut)
+                        .font(.caption2)
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 2)
+                        .background(.black.opacity(0.45), in: RoundedRectangle(cornerRadius: 4))
+                        .foregroundStyle(.white)
                         .padding(5)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                 }
             }
             .frame(height: 98)
             .contentShape(Rectangle())
         }
         .buttonStyle(CardButtonStyle())
+        .contextMenu {
+            Button(action: toggleFavorite) {
+                Label(favoriteActionTitle, systemImage: isFavorite ? "star.slash" : "star")
+            }
+        }
     }
+}
+
+private enum ClipboardSection: String {
+    case history
+    case favorites
 }
 
 private struct CardButtonStyle: ButtonStyle {

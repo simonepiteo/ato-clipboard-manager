@@ -9,6 +9,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     let updateManager = UpdateManager()
     let shortcutSettings = ShortcutSettings()
     let accessibilityPermission = AccessibilityPermissionManager()
+    let favoritesStore = FavoritesStore()
     lazy var clipboardStore = ClipboardStore(settings: settings)
 
     private var statusItem: NSStatusItem!
@@ -50,13 +51,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             settings: settings,
             updateManager: updateManager,
             shortcutSettings: shortcutSettings,
+            favoritesStore: favoritesStore,
             select: { [weak self] item, paste, waitForClick in
                 self?.select(item, paste: paste, waitForClickCompletion: waitForClick)
             },
             openSettings: { [weak self] in self?.openSettings() },
             quit: { NSApp.terminate(nil) }
         )
-        popover.contentSize = NSSize(width: 350, height: 436)
+        popover.contentSize = NSSize(width: 350, height: 500)
         popover.contentViewController = NSHostingController(rootView: view)
         popover.behavior = .transient
         popover.animates = true
@@ -116,6 +118,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
 
             switch action {
+            case .showHistory, .showFavorites:
+                NotificationCenter.default.post(
+                    name: .switchClipboardSection,
+                    object: nil,
+                    userInfo: ["section": action == .showFavorites ? "favorites" : "history"]
+                )
+                return nil
             case .openSettings:
                 Task { @MainActor in self.openSettings() }
                 return nil
@@ -314,6 +323,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
 extension Notification.Name {
     static let selectClipboardHistoryItem = Notification.Name("selectClipboardHistoryItem")
+    static let switchClipboardSection = Notification.Name("switchClipboardSection")
 }
 
 extension AppDelegate: NSWindowDelegate {

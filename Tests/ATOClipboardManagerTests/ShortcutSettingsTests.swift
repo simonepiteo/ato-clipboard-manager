@@ -28,6 +28,8 @@ final class ShortcutSettingsTests: XCTestCase {
         let json = try String(contentsOf: fileURL, encoding: .utf8)
         XCTAssertTrue(json.contains("\"version\" : 1"))
         XCTAssertTrue(json.contains("\"togglePopover\""))
+        XCTAssertTrue(json.contains("\"showHistory\""))
+        XCTAssertTrue(json.contains("\"showFavorites\""))
     }
 
     @MainActor

@@ -20,6 +20,7 @@ ATO Clipboard Manager is a modern, open-source clipboard manager for macOS, buil
 - Search text entries instantly.
 - Switch between grid and list layouts.
 - Move any selected item to the top of the history.
+- Save frequently used items as Favorites and switch between History and Favorites from the popover.
 - Configure separate limits for visible items and saved history.
 - Keep history in memory only, or persist it privately and restore it at startup.
 
@@ -28,6 +29,7 @@ ATO Clipboard Manager is a modern, open-source clipboard manager for macOS, buil
 - Open ATO from the macOS menu bar or with a customizable global shortcut (default: `⌘⇧V`).
 - Select the first nine items with customizable shortcuts (defaults: `⌘1`–`⌘9`).
 - Customize every app shortcut, including Settings, Quit, and item selection.
+- Use customizable shortcuts to switch between the History and Favorites tabs.
 - Optionally paste the selected item directly into the previously active app.
 
 ### Personalization
@@ -53,6 +55,8 @@ Clipboard history is stored in memory by default and is cleared when the app qui
 
 Keyboard shortcuts are stored in `~/.ato/shortcut.json`. ATO rejects duplicate assignments and lets you restore all default shortcuts from Settings.
 
+Favorites are stored privately in `~/.ato/favorites.json` and remain available independently of clipboard history.
+
 ---
 
 ## 🛠️ Roadmap / To-Do
@@ -63,7 +67,7 @@ Keyboard shortcuts are stored in `~/.ato/shortcut.json`. ATO rejects duplicate a
 - [x] Auto-paste mode
 - [x] Run at startup
 - [x] Optional JSON history persistence
-- [ ] Pin favorite items
+- [x] Pin favorite items
 - [x] Customizable keyboard shortcuts
 - [ ] Rich media support (files, links, etc.)
 - [x] Auto-update support

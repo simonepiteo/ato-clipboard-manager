@@ -10,6 +10,7 @@ enum LocalizedKey: String {
     case storageSettingsDescription, updatesSettingsDescription
     case shortcuts, shortcutsSettingsDescription, applicationShortcuts, historyShortcuts
     case openPopoverShortcut, openSettingsShortcut, quitShortcut, selectItemShortcut
+    case showHistoryShortcut, showFavoritesShortcut
     case recordShortcut, resetShortcut, resetShortcuts, shortcutError, shortcutModifierRequired, shortcutDuplicate
     case startup, launchAtLogin, launchAtLoginApproval, openLoginItems
     case launchAtLoginPromptTitle, launchAtLoginPromptMessage, enable, notNow
@@ -24,6 +25,8 @@ enum LocalizedKey: String {
     case updateNow, installingUpdate, updateBadgeHint, later
     case accessibilityPermissionRequired, accessibilityPermissionExplanation
     case openAccessibilitySettings, automaticPastePermissionTitle, automaticPastePermissionMessage
+    case history, favorites, emptyFavorites, noSearchResults
+    case addToFavorites, removeFromFavorites, favoritesPersistenceError
 }
 
 enum Localizer {
@@ -45,6 +48,7 @@ enum Localizer {
         .applicationShortcuts: "Application", .historyShortcuts: "Clipboard items",
         .openPopoverShortcut: "Open clipboard history", .openSettingsShortcut: "Open Settings",
         .quitShortcut: "Quit ATO", .selectItemShortcut: "Select item %d",
+        .showHistoryShortcut: "Show History tab", .showFavoritesShortcut: "Show Favorites tab",
         .recordShortcut: "Press shortcut…", .resetShortcut: "Restore this shortcut",
         .resetShortcuts: "Restore Default Shortcuts",
         .shortcutError: "Invalid shortcut",
@@ -75,7 +79,12 @@ enum Localizer {
         .accessibilityPermissionExplanation: "ATO uses Accessibility only to send ⌘V to the previously active app.",
         .openAccessibilitySettings: "Open Accessibility Settings",
         .automaticPastePermissionTitle: "Allow ATO to paste automatically?",
-        .automaticPastePermissionMessage: "The item has been copied, but ATO cannot paste it automatically without Accessibility permission.\n\nATO uses this permission only to send ⌘V to the app you were previously using. It does not use it to read what you type or control other Mac features.\n\nYou can grant access now, or return to the destination app and press ⌘V manually."
+        .automaticPastePermissionMessage: "The item has been copied, but ATO cannot paste it automatically without Accessibility permission.\n\nATO uses this permission only to send ⌘V to the app you were previously using. It does not use it to read what you type or control other Mac features.\n\nYou can grant access now, or return to the destination app and press ⌘V manually.",
+        .history: "History", .favorites: "Favorites",
+        .emptyFavorites: "Right-click an item to add it to Favorites",
+        .noSearchResults: "No matching items",
+        .addToFavorites: "Add to Favorites", .removeFromFavorites: "Remove from Favorites",
+        .favoritesPersistenceError: "Couldn’t update Favorites"
     ]
 
     private static let italian: [LocalizedKey: String] = [
@@ -96,6 +105,7 @@ enum Localizer {
         .applicationShortcuts: "Applicazione", .historyShortcuts: "Elementi degli appunti",
         .openPopoverShortcut: "Apri cronologia appunti", .openSettingsShortcut: "Apri Impostazioni",
         .quitShortcut: "Chiudi ATO", .selectItemShortcut: "Seleziona elemento %d",
+        .showHistoryShortcut: "Mostra tab Cronologia", .showFavoritesShortcut: "Mostra tab Preferiti",
         .recordShortcut: "Premi scorciatoia…", .resetShortcut: "Ripristina questa scorciatoia",
         .resetShortcuts: "Ripristina scorciatoie predefinite",
         .shortcutError: "Scorciatoia non valida",
@@ -126,7 +136,12 @@ enum Localizer {
         .accessibilityPermissionExplanation: "ATO usa Accessibilità esclusivamente per inviare ⌘V all’app attiva in precedenza.",
         .openAccessibilitySettings: "Apri Impostazioni Accessibilità",
         .automaticPastePermissionTitle: "Consentire ad ATO di incollare automaticamente?",
-        .automaticPastePermissionMessage: "L’elemento è stato copiato, ma ATO non può incollarlo automaticamente senza il permesso Accessibilità.\n\nATO usa questo permesso esclusivamente per inviare ⌘V all’app che stavi usando. Non lo utilizza per leggere ciò che digiti o controllare altre funzioni del Mac.\n\nPuoi concedere il permesso ora oppure tornare all’app di destinazione e premere ⌘V manualmente."
+        .automaticPastePermissionMessage: "L’elemento è stato copiato, ma ATO non può incollarlo automaticamente senza il permesso Accessibilità.\n\nATO usa questo permesso esclusivamente per inviare ⌘V all’app che stavi usando. Non lo utilizza per leggere ciò che digiti o controllare altre funzioni del Mac.\n\nPuoi concedere il permesso ora oppure tornare all’app di destinazione e premere ⌘V manualmente.",
+        .history: "Cronologia", .favorites: "Preferiti",
+        .emptyFavorites: "Fai clic destro su un elemento per aggiungerlo ai Preferiti",
+        .noSearchResults: "Nessun elemento corrispondente",
+        .addToFavorites: "Aggiungi ai Preferiti", .removeFromFavorites: "Rimuovi dai Preferiti",
+        .favoritesPersistenceError: "Impossibile aggiornare i Preferiti"
     ]
 
     static func text(_ key: LocalizedKey, language: AppLanguage) -> String {

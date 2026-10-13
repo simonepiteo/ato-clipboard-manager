@@ -3,6 +3,32 @@ import XCTest
 @testable import ATOClipboardManager
 
 final class HistoryPersistenceTests: XCTestCase {
+    @MainActor
+    func testFavoritesAreToggledAndRestored() throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("FavoritesStoreTests-\(UUID().uuidString)", isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let path = directory.appendingPathComponent("favorites.json").path
+        let first = ClipboardItem(content: .text("first"))
+        let second = ClipboardItem(content: .text("second"))
+
+        let store = FavoritesStore(filePath: path)
+        store.toggle(first)
+        store.toggle(second)
+
+        XCTAssertEqual(store.items.map(\.searchableText), ["second", "first"])
+        XCTAssertTrue(store.contains(first))
+        XCTAssertEqual(FavoritesStore(filePath: path).items.map(\.searchableText), ["second", "first"])
+        XCTAssertEqual(
+            try FileManager.default.attributesOfItem(atPath: path)[.posixPermissions] as? Int,
+            0o600
+        )
+
+        store.toggle(first)
+        XCTAssertFalse(store.contains(first))
+        XCTAssertEqual(FavoritesStore(filePath: path).items.map(\.searchableText), ["second"])
+    }
+
     func testJSONRoundTripAndDeletion() throws {
         let directory = FileManager.default.temporaryDirectory
             .appendingPathComponent("HistoryPersistenceTests-\(UUID().uuidString)", isDirectory: true)

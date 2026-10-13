@@ -399,6 +399,10 @@ struct SettingsView: View {
 
                     shortcutRow(.togglePopover)
                     panelDivider
+                    shortcutRow(.showHistory)
+                    panelDivider
+                    shortcutRow(.showFavorites)
+                    panelDivider
                     shortcutRow(.openSettings)
                     panelDivider
                     shortcutRow(.quit)
@@ -658,6 +662,10 @@ struct SettingsView: View {
             Localizer.text(.openSettingsShortcut, language: settings.language)
         case .quit:
             Localizer.text(.quitShortcut, language: settings.language)
+        case .showHistory:
+            Localizer.text(.showHistoryShortcut, language: settings.language)
+        case .showFavorites:
+            Localizer.text(.showFavoritesShortcut, language: settings.language)
         default:
             String(
                 format: Localizer.text(.selectItemShortcut, language: settings.language),
