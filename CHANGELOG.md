@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.2.1](https://github.com/simonepiteo/ato-clipboard-manager/compare/v1.2.0...v1.2.1) (2026-10-13)
+
+### Other Changes
+
+* Revise README to enhance feature descriptions and improve clarity on clipboard management functionalities ([fe49e56](https://github.com/simonepiteo/ato-clipboard-manager/commit/fe49e56506d97195112b3172e46a447581898551))
+
 ## [1.2.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v1.1.0...v1.2.0) (2026-10-13)
 
 ### Features
