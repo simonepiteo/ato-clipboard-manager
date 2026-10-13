@@ -274,43 +274,51 @@ struct SettingsView: View {
             behaviorSettings
         case .shortcuts:
             shortcutsSettings
-        case .startup:
-            startupSettings
-        case .storage:
-            storageSettings
         case .updates:
             updatesSettings
         }
     }
 
     private var generalSettings: some View {
-        settingsPanel {
-            settingRow(Localizer.text(.language, language: settings.language)) {
-                Picker("", selection: $settings.language) {
-                    ForEach(AppLanguage.allCases) { language in
-                        Text(language.displayName).tag(language)
+        VStack(alignment: .leading, spacing: 20) {
+            settingsSection(Localizer.text(.general, language: settings.language)) {
+                settingsPanel {
+                    settingRow(Localizer.text(.language, language: settings.language)) {
+                        Picker("", selection: $settings.language) {
+                            ForEach(AppLanguage.allCases) { language in
+                                Text(language.displayName).tag(language)
+                            }
+                        }
+                        .labelsHidden()
+                        .frame(width: 170)
+                    }
+
+                    panelDivider
+
+                    settingRow(Localizer.text(.displayMode, language: settings.language)) {
+                        Picker("", selection: $settings.displayMode) {
+                            Text(Localizer.text(.grid, language: settings.language)).tag(DisplayMode.grid)
+                            Text(Localizer.text(.list, language: settings.language)).tag(DisplayMode.list)
+                        }
+                        .pickerStyle(.segmented)
+                        .labelsHidden()
+                        .frame(width: 170)
+                    }
+
+                    panelDivider
+
+                    settingRow(Localizer.text(.maxHistory, language: settings.language)) {
+                        numericInput(value: $settings.maxHistoryItems, range: 1...100)
                     }
                 }
-                .labelsHidden()
-                .frame(width: 170)
             }
 
-            panelDivider
-
-            settingRow(Localizer.text(.displayMode, language: settings.language)) {
-                Picker("", selection: $settings.displayMode) {
-                    Text(Localizer.text(.grid, language: settings.language)).tag(DisplayMode.grid)
-                    Text(Localizer.text(.list, language: settings.language)).tag(DisplayMode.list)
-                }
-                .pickerStyle(.segmented)
-                .labelsHidden()
-                .frame(width: 170)
+            settingsSection(Localizer.text(.startup, language: settings.language)) {
+                startupSettings
             }
 
-            panelDivider
-
-            settingRow(Localizer.text(.maxHistory, language: settings.language)) {
-                numericInput(value: $settings.maxHistoryItems, range: 1...100)
+            settingsSection(Localizer.text(.storage, language: settings.language)) {
+                storageSettings
             }
         }
     }
@@ -627,6 +635,21 @@ struct SettingsView: View {
         }
     }
 
+    private func settingsSection<Content: View>(
+        _ title: String,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(MacPalette.mute)
+                .padding(.leading, 4)
+
+            content()
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
     private func settingRow<Control: View>(
         _ title: String,
         @ViewBuilder control: () -> Control
@@ -684,7 +707,7 @@ struct SettingsView: View {
 }
 
 private enum SettingsTab: String, CaseIterable, Identifiable {
-    case general, behavior, shortcuts, startup, storage, updates
+    case general, behavior, shortcuts, updates
 
     var id: String { rawValue }
 
@@ -693,8 +716,6 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
         case .general: "slider.horizontal.3"
         case .behavior: "command"
         case .shortcuts: "keyboard"
-        case .startup: "power"
-        case .storage: "externaldrive"
         case .updates: "arrow.triangle.2.circlepath"
         }
     }
@@ -704,8 +725,6 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
         case .general: Localizer.text(.general, language: language)
         case .behavior: Localizer.text(.behavior, language: language)
         case .shortcuts: Localizer.text(.shortcuts, language: language)
-        case .startup: Localizer.text(.startup, language: language)
-        case .storage: Localizer.text(.storage, language: language)
         case .updates: Localizer.text(.updates, language: language)
         }
     }
@@ -715,8 +734,6 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
         case .general: Localizer.text(.generalSettingsDescription, language: language)
         case .behavior: Localizer.text(.behaviorSettingsDescription, language: language)
         case .shortcuts: Localizer.text(.shortcutsSettingsDescription, language: language)
-        case .startup: Localizer.text(.startupSettingsDescription, language: language)
-        case .storage: Localizer.text(.storageSettingsDescription, language: language)
         case .updates: Localizer.text(.updatesSettingsDescription, language: language)
         }
     }
