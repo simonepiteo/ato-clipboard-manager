@@ -4,7 +4,8 @@ set -euo pipefail
 
 PROJECT_ROOT="${0:A:h:h}"
 APP_NAME="ATO Clipboard Manager"
-DMG_NAME="ATO-Clipboard-Manager-0.1.3.dmg"
+VERSION="$(tr -d '[:space:]' < "$PROJECT_ROOT/VERSION")"
+DMG_NAME="ATO-Clipboard-Manager-$VERSION.dmg"
 APP_BUNDLE="$PROJECT_ROOT/dist/$APP_NAME.app"
 DMG_PATH="$PROJECT_ROOT/dist/$DMG_NAME"
 DMG_STAGE="$PROJECT_ROOT/.build/dmg-stage"

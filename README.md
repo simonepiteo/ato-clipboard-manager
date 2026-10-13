@@ -82,6 +82,18 @@ The release build is created at `dist/ATO Clipboard Manager.app`. To create a DM
 ./scripts/build-dmg.sh
 ```
 
+### Create a release
+
+Release versions follow [Conventional Commits](https://www.conventionalcommits.org/): `fix:` creates a patch release, `feat:` a minor release, and `BREAKING CHANGE:` or `type!:` a major release.
+
+```sh
+./scripts/release.sh --dry-run
+./scripts/release.sh
+git push --follow-tags origin HEAD
+```
+
+The release script updates `VERSION` and `CHANGELOG.md`, then creates the release commit and annotated Git tag. You can override the detected bump with `./scripts/release.sh patch`, `minor`, or `major`.
+
 Automatic paste requires Accessibility permission so ATO can simulate `⌘V` in the previously active app. macOS prompts for it when the feature is first used; it can also be enabled under **System Settings → Privacy & Security → Accessibility**.
 
 ### Run the tests

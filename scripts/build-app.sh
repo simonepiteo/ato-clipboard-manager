@@ -5,11 +5,16 @@ set -euo pipefail
 PROJECT_ROOT="${0:A:h:h}"
 APP_NAME="ATO Clipboard Manager"
 BUNDLE_IDENTIFIER="com.simonepiteo.ato-clipboard-manager"
-VERSION="0.1.3"
+VERSION="$(tr -d '[:space:]' < "$PROJECT_ROOT/VERSION")"
 APP_BUNDLE="$PROJECT_ROOT/dist/$APP_NAME.app"
 CONTENTS="$APP_BUNDLE/Contents"
 ICON_SOURCE="$PROJECT_ROOT/macos/atoClipboardManager-macOS/Assets.xcassets/AppIcon.appiconset/ATO_1024.png"
 CACHE_ROOT="$PROJECT_ROOT/.build/caches"
+
+if [[ ! "$VERSION" =~ '^[0-9]+\.[0-9]+\.[0-9]+$' ]]; then
+  print -u2 "Invalid version in VERSION: $VERSION"
+  exit 1
+fi
 
 mkdir -p "$CACHE_ROOT/clang" "$CACHE_ROOT/swiftpm"
 export CLANG_MODULE_CACHE_PATH="$CACHE_ROOT/clang"
