@@ -1,7 +1,7 @@
 import Foundation
 
 enum LocalizedKey: String {
-    case search, clearHistory, settings, quit
+    case search, actions, clearHistory, settings, quit
     case settingsTitle, language, displayMode, grid, list
     case maxHistory, automaticPaste, automaticPasteShortcut
     case resetSettings, emptyHistory, version
@@ -9,7 +9,7 @@ enum LocalizedKey: String {
 
 enum Localizer {
     private static let english: [LocalizedKey: String] = [
-        .search: "Search…", .clearHistory: "Clear history", .settings: "Settings…", .quit: "Quit",
+        .search: "Search…", .actions: "Actions", .clearHistory: "Clear history", .settings: "Settings…", .quit: "Quit",
         .settingsTitle: "ATO - Clipboard Manager Settings", .language: "Language:",
         .displayMode: "Display mode:", .grid: "Grid", .list: "List",
         .maxHistory: "Maximum history items:", .automaticPaste: "Paste automatically on selection",
@@ -19,7 +19,7 @@ enum Localizer {
     ]
 
     private static let italian: [LocalizedKey: String] = [
-        .search: "Cerca…", .clearHistory: "Cancella cronologia", .settings: "Impostazioni…", .quit: "Chiudi",
+        .search: "Cerca…", .actions: "Azioni", .clearHistory: "Cancella cronologia", .settings: "Impostazioni…", .quit: "Chiudi",
         .settingsTitle: "Impostazioni ATO - Clipboard Manager", .language: "Lingua:",
         .displayMode: "Vista elementi:", .grid: "Griglia", .list: "Lista",
         .maxHistory: "Massimo numero di elementi:", .automaticPaste: "Incolla automaticamente alla selezione",

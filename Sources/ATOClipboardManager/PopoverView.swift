@@ -77,13 +77,33 @@ struct PopoverView: View {
     }
 
     private var menu: some View {
-        VStack(spacing: 0) {
-            MenuButton(title: Localizer.text(.clearHistory, language: settings.language), action: store.clear)
-            MenuButton(title: Localizer.text(.settings, language: settings.language), shortcut: "⌘⌥S", action: openSettings)
-            Divider().padding(.horizontal, 8)
-            MenuButton(title: Localizer.text(.quit, language: settings.language), action: quit)
+        Menu {
+            Button(action: store.clear) {
+                Label(Localizer.text(.clearHistory, language: settings.language), systemImage: "trash")
+            }
+
+            Button(action: openSettings) {
+                Label(Localizer.text(.settings, language: settings.language), systemImage: "gearshape")
+            }
+            .keyboardShortcut("s", modifiers: [.command, .option])
+
+            Divider()
+
+            Button(role: .destructive, action: quit) {
+                Label(Localizer.text(.quit, language: settings.language), systemImage: "power")
+            }
+            .keyboardShortcut("q", modifiers: .command)
+        } label: {
+            HStack {
+                Label(Localizer.text(.actions, language: settings.language), systemImage: "ellipsis.circle")
+                Spacer()
+            }
+            .contentShape(Rectangle())
         }
-        .padding(.vertical, 4)
+        .menuStyle(.borderlessButton)
+        .menuIndicator(.visible)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(8)
     }
 }
 
@@ -127,23 +147,5 @@ private struct CardButtonStyle: ButtonStyle {
             .background(configuration.isPressed ? Color.accentColor.opacity(0.35) : Color.black.opacity(0.10))
             .overlay(RoundedRectangle(cornerRadius: 6).stroke(configuration.isPressed ? Color.accentColor : Color.secondary.opacity(0.35)))
             .clipShape(RoundedRectangle(cornerRadius: 6))
-    }
-}
-
-private struct MenuButton: View {
-    let title: String
-    var shortcut: String? = nil
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            HStack {
-                Text(title)
-                Spacer()
-                if let shortcut { Text(shortcut).foregroundStyle(.secondary) }
-            }
-            .contentShape(Rectangle()).padding(.horizontal, 12).padding(.vertical, 5)
-        }
-        .buttonStyle(.plain)
     }
 }
