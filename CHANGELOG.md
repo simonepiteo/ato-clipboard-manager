@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.3.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v0.2.0...v0.3.0) (2026-10-13)
+
+### Features
+
+* add script for publishing releases with version bumping and GitHub integration ([3bcbd2f](https://github.com/simonepiteo/ato-clipboard-manager/commit/3bcbd2fa3667326ffd613ed723d5ab6037cac5e0))
+
 ## [0.2.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v0.1.3...v0.2.0) (2026-10-13)
 
 ### Features
