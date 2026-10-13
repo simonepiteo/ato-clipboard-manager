@@ -38,7 +38,7 @@ Clipboard history is stored in memory only and is cleared when the app quits.
 - [x] Customizable settings
 - [x] Search clipboard history
 - [x] Auto-paste mode
-- [ ] Run at startup
+- [x] Run at startup
 - [ ] Pin favorite items
 - [ ] Customizable keyboard shortcuts
 - [ ] Rich media support (files, links, etc.)
