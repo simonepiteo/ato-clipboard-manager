@@ -4,6 +4,7 @@ import SwiftUI
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     let settings = AppSettings()
+    let launchAtLogin = LaunchAtLoginManager()
     lazy var clipboardStore = ClipboardStore(settings: settings)
 
     private var statusItem: NSStatusItem!
@@ -21,6 +22,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         configureStatusItem()
         configureKeyboardShortcuts()
         clipboardStore.start()
+        DispatchQueue.main.async { [weak self] in
+            self?.showLaunchAtLoginPromptIfNeeded()
+        }
     }
 
     func applicationWillTerminate(_ notification: Notification) {
@@ -162,11 +166,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             NSApp.activate(ignoringOtherApps: true)
             return
         }
-        let controller = NSHostingController(rootView: SettingsView(settings: settings))
+        let controller = NSHostingController(
+            rootView: SettingsView(settings: settings, launchAtLogin: launchAtLogin)
+        )
         let window = NSWindow(contentViewController: controller)
         window.title = Localizer.text(.settingsTitle, language: settings.language)
         window.styleMask = [.titled, .closable]
-        window.setContentSize(NSSize(width: 520, height: 440))
+        window.setContentSize(NSSize(width: 520, height: 540))
         window.center()
         window.isReleasedWhenClosed = false
         window.delegate = self
@@ -174,6 +180,45 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         popover.performClose(nil)
         window.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
+    }
+
+    private func showLaunchAtLoginPromptIfNeeded() {
+        guard settings.shouldShowLaunchAtLoginPrompt else { return }
+        settings.markLaunchAtLoginPromptAsShown()
+
+        let alert = NSAlert()
+        alert.alertStyle = .informational
+        alert.messageText = Localizer.text(.launchAtLoginPromptTitle, language: settings.language)
+        alert.informativeText = Localizer.text(.launchAtLoginPromptMessage, language: settings.language)
+        alert.addButton(withTitle: Localizer.text(.enable, language: settings.language))
+        alert.addButton(withTitle: Localizer.text(.notNow, language: settings.language))
+
+        NSApp.activate(ignoringOtherApps: true)
+        if alert.runModal() == .alertFirstButtonReturn {
+            launchAtLogin.setEnabled(true)
+            showLaunchAtLoginFollowUpIfNeeded()
+        }
+    }
+
+    private func showLaunchAtLoginFollowUpIfNeeded() {
+        if let errorMessage = launchAtLogin.errorMessage {
+            let alert = NSAlert()
+            alert.alertStyle = .warning
+            alert.messageText = Localizer.text(.launchAtLoginError, language: settings.language)
+            alert.informativeText = errorMessage
+            alert.runModal()
+            return
+        }
+
+        guard launchAtLogin.requiresApproval else { return }
+        let alert = NSAlert()
+        alert.alertStyle = .informational
+        alert.messageText = Localizer.text(.launchAtLoginApproval, language: settings.language)
+        alert.addButton(withTitle: Localizer.text(.openLoginItems, language: settings.language))
+        alert.addButton(withTitle: Localizer.text(.notNow, language: settings.language))
+        if alert.runModal() == .alertFirstButtonReturn {
+            launchAtLogin.openSystemSettings()
+        }
     }
 }
 

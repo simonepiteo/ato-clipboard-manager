@@ -22,4 +22,16 @@ final class HistoryBufferTests: XCTestCase {
         XCTAssertEqual(AppSettings.clampHistoryLimit(0), 1)
         XCTAssertEqual(AppSettings.clampHistoryLimit(120), 100)
     }
+
+    @MainActor
+    func testLaunchAtLoginPromptIsOnlyShownOnce() {
+        let suiteName = "AppSettingsTests.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let settings = AppSettings(defaults: defaults)
+
+        XCTAssertTrue(settings.shouldShowLaunchAtLoginPrompt)
+        settings.markLaunchAtLoginPromptAsShown()
+        XCTAssertFalse(settings.shouldShowLaunchAtLoginPrompt)
+    }
 }

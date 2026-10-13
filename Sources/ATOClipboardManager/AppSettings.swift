@@ -8,6 +8,7 @@ final class AppSettings: ObservableObject {
         static let maxHistoryItems = "maxHistoryItems"
         static let automaticPaste = "automaticPaste"
         static let automaticPasteShortcut = "automaticPasteShortcut"
+        static let launchAtLoginPromptShown = "launchAtLoginPromptShown"
     }
 
     static let defaultMaxHistoryItems = 20
@@ -40,6 +41,14 @@ final class AppSettings: ObservableObject {
 
     nonisolated static func clampHistoryLimit(_ value: Int) -> Int {
         min(max(value, 1), 100)
+    }
+
+    var shouldShowLaunchAtLoginPrompt: Bool {
+        !defaults.bool(forKey: Key.launchAtLoginPromptShown)
+    }
+
+    func markLaunchAtLoginPromptAsShown() {
+        defaults.set(true, forKey: Key.launchAtLoginPromptShown)
     }
 
     func reset() {

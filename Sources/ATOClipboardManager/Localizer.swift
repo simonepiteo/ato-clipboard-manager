@@ -6,6 +6,9 @@ enum LocalizedKey: String {
     case maxHistory, automaticPaste, automaticPasteShortcut
     case resetSettings, emptyHistory, version
     case settingsDescription, appearance, behavior, sourceCode, license
+    case startup, launchAtLogin, launchAtLoginApproval, openLoginItems
+    case launchAtLoginPromptTitle, launchAtLoginPromptMessage, enable, notNow
+    case launchAtLoginError
 }
 
 enum Localizer {
@@ -18,7 +21,12 @@ enum Localizer {
         .resetSettings: "Reset settings", .emptyHistory: "Copy text or an image to get started",
         .settingsDescription: "Customize how ATO displays and pastes your clipboard items.",
         .appearance: "Appearance and history", .behavior: "Paste behavior",
-        .sourceCode: "Source code", .license: "License"
+        .sourceCode: "Source code", .license: "License",
+        .startup: "Startup", .launchAtLogin: "Launch ATO when you log in",
+        .launchAtLoginApproval: "Approval is required in System Settings.",
+        .openLoginItems: "Open Login Items", .launchAtLoginPromptTitle: "Launch ATO at login?",
+        .launchAtLoginPromptMessage: "ATO can start automatically when you log in, so your clipboard history is always ready.",
+        .enable: "Enable", .notNow: "Not now", .launchAtLoginError: "Couldn’t update the login item"
     ]
 
     private static let italian: [LocalizedKey: String] = [
@@ -30,7 +38,12 @@ enum Localizer {
         .resetSettings: "Ripristina impostazioni", .emptyHistory: "Copia un testo o un'immagine per iniziare",
         .settingsDescription: "Personalizza la visualizzazione e l'incolla degli elementi copiati.",
         .appearance: "Aspetto e cronologia", .behavior: "Comportamento incolla",
-        .sourceCode: "Codice sorgente", .license: "Licenza"
+        .sourceCode: "Codice sorgente", .license: "Licenza",
+        .startup: "Avvio", .launchAtLogin: "Avvia ATO quando accedi",
+        .launchAtLoginApproval: "È necessaria l’approvazione nelle Impostazioni di Sistema.",
+        .openLoginItems: "Apri Elementi login", .launchAtLoginPromptTitle: "Avviare ATO all’accesso?",
+        .launchAtLoginPromptMessage: "ATO può avviarsi automaticamente quando accedi, così la cronologia degli appunti è sempre pronta.",
+        .enable: "Attiva", .notNow: "Non ora", .launchAtLoginError: "Impossibile aggiornare l’elemento di login"
     ]
 
     static func text(_ key: LocalizedKey, language: AppLanguage) -> String {

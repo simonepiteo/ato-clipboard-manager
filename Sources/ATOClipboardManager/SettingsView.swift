@@ -3,6 +3,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @ObservedObject var settings: AppSettings
+    @ObservedObject var launchAtLogin: LaunchAtLoginManager
 
     var body: some View {
         VStack(spacing: 20) {
@@ -56,11 +57,52 @@ struct SettingsView: View {
                 )
             }
 
+            settingsSection(
+                Localizer.text(.startup, language: settings.language),
+                systemImage: "power"
+            ) {
+                toggleRow(
+                    Localizer.text(.launchAtLogin, language: settings.language),
+                    isOn: Binding(
+                        get: { launchAtLogin.isEnabled },
+                        set: launchAtLogin.setEnabled
+                    )
+                )
+
+                if launchAtLogin.requiresApproval {
+                    HStack {
+                        Text(Localizer.text(.launchAtLoginApproval, language: settings.language))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Button(Localizer.text(.openLoginItems, language: settings.language)) {
+                            launchAtLogin.openSystemSettings()
+                        }
+                        .controlSize(.small)
+                    }
+                }
+            }
+
             footer
         }
         .padding(24)
-        .frame(width: 520, height: 440)
+        .frame(width: 520, height: 540)
         .background(Color(nsColor: .windowBackgroundColor))
+        .onAppear(perform: launchAtLogin.refresh)
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+            launchAtLogin.refresh()
+        }
+        .alert(
+            Localizer.text(.launchAtLoginError, language: settings.language),
+            isPresented: Binding(
+                get: { launchAtLogin.errorMessage != nil },
+                set: { if !$0 { launchAtLogin.errorMessage = nil } }
+            )
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(launchAtLogin.errorMessage ?? "")
+        }
     }
 
     private var header: some View {
