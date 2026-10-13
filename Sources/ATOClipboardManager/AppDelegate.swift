@@ -205,7 +205,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let window = NSWindow(contentViewController: controller)
         window.title = Localizer.text(.settingsTitle, language: settings.language)
         window.styleMask = [.titled, .closable]
-        window.setContentSize(NSSize(width: 580, height: 700))
+        window.setContentSize(NSSize(width: 760, height: 600))
         window.center()
         window.isReleasedWhenClosed = false
         window.delegate = self

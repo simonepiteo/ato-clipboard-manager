@@ -5,7 +5,9 @@ enum LocalizedKey: String {
     case settingsTitle, language, displayMode, grid, list
     case maxHistory, automaticPaste, automaticPasteShortcut
     case resetSettings, emptyHistory, version
-    case settingsDescription, appearance, behavior, sourceCode, license
+    case settingsDescription, appearance, behavior, sourceCode, license, general
+    case generalSettingsDescription, behaviorSettingsDescription, startupSettingsDescription
+    case storageSettingsDescription, updatesSettingsDescription
     case startup, launchAtLogin, launchAtLoginApproval, openLoginItems
     case launchAtLoginPromptTitle, launchAtLoginPromptMessage, enable, notNow
     case launchAtLoginError
@@ -29,6 +31,11 @@ enum Localizer {
         .resetSettings: "Reset settings", .emptyHistory: "Copy text or an image to get started",
         .settingsDescription: "Customize how ATO displays and pastes your clipboard items.",
         .appearance: "Appearance and history", .behavior: "Paste behavior",
+        .general: "General", .generalSettingsDescription: "Language, layout, and visible clipboard history.",
+        .behaviorSettingsDescription: "Choose what happens after selecting a clipboard item.",
+        .startupSettingsDescription: "Control how ATO starts with your Mac.",
+        .storageSettingsDescription: "Keep clipboard history available between launches.",
+        .updatesSettingsDescription: "Check your version and browse previous releases.",
         .sourceCode: "Source code", .license: "License",
         .startup: "Startup", .launchAtLogin: "Launch ATO when you log in",
         .launchAtLoginApproval: "Approval is required in System Settings.",
@@ -61,6 +68,11 @@ enum Localizer {
         .resetSettings: "Ripristina impostazioni", .emptyHistory: "Copia un testo o un'immagine per iniziare",
         .settingsDescription: "Personalizza la visualizzazione e l'incolla degli elementi copiati.",
         .appearance: "Aspetto e cronologia", .behavior: "Comportamento incolla",
+        .general: "Generali", .generalSettingsDescription: "Lingua, layout e cronologia visibile degli appunti.",
+        .behaviorSettingsDescription: "Scegli cosa accade dopo la selezione di un elemento.",
+        .startupSettingsDescription: "Controlla come ATO si avvia insieme al Mac.",
+        .storageSettingsDescription: "Mantieni la cronologia disponibile tra un avvio e l’altro.",
+        .updatesSettingsDescription: "Controlla la versione e consulta le release precedenti.",
         .sourceCode: "Codice sorgente", .license: "Licenza",
         .startup: "Avvio", .launchAtLogin: "Avvia ATO quando accedi",
         .launchAtLoginApproval: "È necessaria l’approvazione nelle Impostazioni di Sistema.",
