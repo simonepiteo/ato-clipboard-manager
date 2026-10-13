@@ -44,7 +44,7 @@ struct PopoverView: View {
             Divider()
             footerActions
         }
-        .frame(width: 350, height: 500)
+        .frame(width: 350, height: 440)
         .background(.ultraThinMaterial)
         .onReceive(NotificationCenter.default.publisher(for: .selectClipboardHistoryItem)) { notification in
             guard let index = notification.userInfo?["index"] as? Int,

@@ -61,7 +61,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             openSettings: { [weak self] in self?.openSettings() },
             quit: { NSApp.terminate(nil) }
         )
-        popover.contentSize = NSSize(width: 350, height: 500)
+        popover.contentSize = NSSize(width: 350, height: 440)
         popover.contentViewController = NSHostingController(rootView: view)
         popover.behavior = .transient
         popover.animates = true
