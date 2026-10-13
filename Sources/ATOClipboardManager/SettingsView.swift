@@ -1,47 +1,151 @@
+import AppKit
 import SwiftUI
 
 struct SettingsView: View {
     @ObservedObject var settings: AppSettings
 
     var body: some View {
-        VStack(spacing: 16) {
-            Grid(alignment: .leading, horizontalSpacing: 24, verticalSpacing: 14) {
-                GridRow {
-                    Text(Localizer.text(.language, language: settings.language))
+        VStack(spacing: 20) {
+            header
+
+            settingsSection(
+                Localizer.text(.appearance, language: settings.language),
+                systemImage: "rectangle.grid.2x2"
+            ) {
+                settingRow(Localizer.text(.language, language: settings.language)) {
                     Picker("", selection: $settings.language) {
-                        ForEach(AppLanguage.allCases) { language in Text(language.displayName).tag(language) }
-                    }.labelsHidden().frame(width: 150)
+                        ForEach(AppLanguage.allCases) { language in
+                            Text(language.displayName).tag(language)
+                        }
+                    }
+                    .labelsHidden()
+                    .frame(width: 160)
                 }
-                GridRow {
-                    Text(Localizer.text(.displayMode, language: settings.language))
+
+                settingRow(Localizer.text(.displayMode, language: settings.language)) {
                     Picker("", selection: $settings.displayMode) {
                         Text(Localizer.text(.grid, language: settings.language)).tag(DisplayMode.grid)
                         Text(Localizer.text(.list, language: settings.language)).tag(DisplayMode.list)
-                    }.labelsHidden().frame(width: 150)
+                    }
+                    .pickerStyle(.segmented)
+                    .labelsHidden()
+                    .frame(width: 160)
                 }
-                GridRow {
-                    Text(Localizer.text(.maxHistory, language: settings.language))
-                    Stepper(value: $settings.maxHistoryItems, in: 1...100) { Text("\(settings.maxHistoryItems)") }
-                        .frame(width: 150)
+
+                settingRow(Localizer.text(.maxHistory, language: settings.language)) {
+                    Stepper(value: $settings.maxHistoryItems, in: 1...100) {
+                        Text("\(settings.maxHistoryItems)")
+                            .monospacedDigit()
+                            .frame(minWidth: 28, alignment: .trailing)
+                    }
+                    .frame(width: 110)
                 }
             }
 
-            Toggle(Localizer.text(.automaticPaste, language: settings.language), isOn: $settings.automaticPaste)
-            Toggle(Localizer.text(.automaticPasteShortcut, language: settings.language), isOn: $settings.automaticPasteShortcut)
-            Divider()
-            HStack {
-                Link(destination: URL(string: "https://github.com/simonepiteo/ato-clipboard-manager")!) {
-                    Image(systemName: "chevron.left.forwardslash.chevron.right")
-                }
-                Link(destination: URL(string: "https://github.com/simonepiteo/ato-clipboard-manager/blob/main/LICENSE")!) {
-                    Image(systemName: "doc.text")
-                }
-                Text(Localizer.text(.version, language: settings.language)).foregroundStyle(.secondary)
-                Spacer()
-                Button(Localizer.text(.resetSettings, language: settings.language), action: settings.reset)
+            settingsSection(
+                Localizer.text(.behavior, language: settings.language),
+                systemImage: "command"
+            ) {
+                toggleRow(
+                    Localizer.text(.automaticPaste, language: settings.language),
+                    isOn: $settings.automaticPaste
+                )
+                toggleRow(
+                    Localizer.text(.automaticPasteShortcut, language: settings.language),
+                    isOn: $settings.automaticPasteShortcut
+                )
+            }
+
+            footer
+        }
+        .padding(24)
+        .frame(width: 520, height: 440)
+        .background(Color(nsColor: .windowBackgroundColor))
+    }
+
+    private var header: some View {
+        HStack(spacing: 14) {
+            Image(systemName: "clipboard.fill")
+                .font(.system(size: 24, weight: .semibold))
+                .foregroundStyle(Color.accentColor)
+                .frame(width: 48, height: 48)
+                .background(Color.accentColor.opacity(0.13), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text("ATO Clipboard Manager")
+                    .font(.title2.weight(.semibold))
+                Text(Localizer.text(.settingsDescription, language: settings.language))
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+        }
+    }
+
+    private var footer: some View {
+        HStack(spacing: 14) {
+            Text(Localizer.text(.version, language: settings.language))
+                .foregroundStyle(.secondary)
+
+            Link(destination: URL(string: "https://github.com/simonepiteo/ato-clipboard-manager")!) {
+                Label(Localizer.text(.sourceCode, language: settings.language), systemImage: "chevron.left.forwardslash.chevron.right")
+            }
+
+            Link(destination: URL(string: "https://github.com/simonepiteo/ato-clipboard-manager/blob/main/LICENSE")!) {
+                Label(Localizer.text(.license, language: settings.language), systemImage: "doc.text")
+            }
+
+            Spacer()
+
+            Button(Localizer.text(.resetSettings, language: settings.language), action: settings.reset)
+        }
+        .font(.callout)
+    }
+
+    private func settingsSection<Content: View>(
+        _ title: String,
+        systemImage: String,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label(title, systemImage: systemImage)
+                .font(.headline)
+                .foregroundStyle(.secondary)
+
+            VStack(spacing: 12) {
+                content()
+            }
+            .padding(14)
+            .background(Color(nsColor: .controlBackgroundColor), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .stroke(Color.primary.opacity(0.08))
             }
         }
-        .padding(22)
-        .frame(width: 440, height: 310)
+    }
+
+    private func settingRow<Control: View>(
+        _ title: String,
+        @ViewBuilder control: () -> Control
+    ) -> some View {
+        HStack {
+            Text(title)
+            Spacer()
+            control()
+        }
+        .frame(minHeight: 24)
+    }
+
+    private func toggleRow(_ title: String, isOn: Binding<Bool>) -> some View {
+        HStack(spacing: 16) {
+            Text(title)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 12)
+            Toggle("", isOn: isOn)
+                .toggleStyle(.switch)
+                .labelsHidden()
+        }
+        .frame(minHeight: 24)
     }
 }
