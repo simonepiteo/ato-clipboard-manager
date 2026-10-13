@@ -8,51 +8,85 @@ ATO Clipboard Manager is a modern, open-source clipboard manager for macOS, buil
 
 ## ✨ Features
 
+ATO provides a native, menu bar–first workflow for capturing, finding, and reusing clipboard content on macOS.
+
 ### Clipboard history
 
-- Capture and browse copied text, images, folders, and files of any type.
-- Keep a multi-file Finder selection together in one card, with native file icons, filenames, and a clear item count.
-- Search the selected History or Pinned section, with live result counts for both tabs.
-- Switch between grid and list layouts.
-- Move any selected item to the top of the history.
-- Pin or unpin items from their context menu and switch between History and Pinned from the popover.
-- Delete individual history items from their context menu; pinned items must be unpinned first.
-- Configure separate limits for visible items and saved history.
-- Keep history in memory only, or persist it privately and restore it at startup.
+#### Supported content
 
-### Quick access and shortcuts
+ATO captures and displays:
 
-- Open ATO from the macOS menu bar or with a customizable global shortcut (default: `⌘⇧V`).
-- Select the first nine items with customizable shortcuts (defaults: `⌘1`–`⌘9`).
-- Customize every app shortcut, including Settings, Quit, and item selection.
-- Use customizable shortcuts to switch between History and Pinned (defaults: `⌘⇧H` and `⌘⇧F`).
-- Optionally paste the selected item directly into the previously active app.
+- Text and images.
+- Folders and files of any type.
+- Finder selections containing multiple files. Each selection is preserved as a single history item and displays native file icons, filenames, and the total item count.
 
-### Personalization
+#### Browsing and search
 
-- Follow the macOS appearance by default, or choose a persistent light or dark theme.
-- Choose the app language, display mode, history size, and automatic paste behavior.
-- Launch ATO automatically when you log in.
-- Use the app in English or Italian.
-- Keep preferences between launches with `UserDefaults`.
+- Browse items in either a grid or list layout.
+- Search within the active **History** or **Pinned** section.
+- View the number of matching results in both sections while searching.
+- Configure separate limits for the number of items shown and the number retained in saved history.
+
+#### Item management
+
+- Move an item to the top of the history.
+- Pin or unpin an item from its context menu.
+- Switch between **History** and **Pinned** directly from the popover.
+- Delete individual history items from their context menu. Pinned items must be unpinned before they can be deleted.
+
+### Quick access and keyboard shortcuts
+
+ATO can be opened from the macOS menu bar or controlled entirely with customizable keyboard shortcuts.
+
+| Action | Default shortcut |
+| --- | --- |
+| Open ATO | `⌘⇧V` |
+| Select one of the first nine items | `⌘1`–`⌘9` |
+| Switch to History | `⌘⇧H` |
+| Switch to Pinned | `⌘⇧F` |
+
+Shortcuts for item selection, Settings, Quit, and section navigation can all be reassigned. ATO prevents duplicate assignments and provides an option to restore the default configuration.
+
+When automatic paste is enabled, selecting an item also pastes it into the previously active application. Otherwise, the item is only copied to the system clipboard.
+
+### Personalization and preferences
+
+The following options are available from Settings:
+
+- **Appearance:** follow the macOS system appearance or use a persistent light or dark theme.
+- **Language:** use ATO in English or Italian.
+- **Layout:** choose between grid and list display modes.
+- **History:** configure visible and saved history limits, and optionally enable persistent history.
+- **Paste behavior:** enable or disable automatic paste.
+- **Startup:** launch ATO automatically when logging in to macOS.
+
+General preferences are retained between launches with `UserDefaults`.
+
+### History and pinned-item persistence
+
+Clipboard history is kept in memory by default and cleared when ATO quits. Persistent history can be enabled in Settings; when enabled, ATO restores saved items at startup.
+
+Pinned items are stored separately and remain available independently of clipboard history.
+
+| Data | Location | Behavior |
+| --- | --- | --- |
+| Clipboard history | `~/.ato/history.json` | Created only when persistent history is enabled. When persistence is disabled, ATO asks whether to keep or delete the existing file. |
+| Pinned items | `~/.ato/favorites.json` | Stored privately and retained between launches. |
+| Keyboard shortcuts | `~/.ato/shortcut.json` | Stores custom shortcut assignments. |
 
 ### Updates
 
-- Check GitHub Releases automatically at startup, when Settings opens if a check is due, and at least once a day.
-- Check for updates manually from Settings.
-- Download, verify, install, and restart into a newer DMG release.
-- Browse a scrollable list of current and previous releases with links to their release notes.
+ATO integrates with GitHub Releases to keep the application up to date:
+
+- Automatically checks at startup, when Settings opens if a check is due, and at least once every 24 hours while running.
+- Supports manual update checks from Settings.
+- Displays current and previous versions in a scrollable release list, with links to release notes.
+- Downloads, verifies, and installs newer DMG releases, then restarts into the updated application.
 
 ### Native macOS experience
 
-- Built natively with SwiftUI and AppKit, with no third-party dependencies.
-- Designed around the macOS menu bar and a lightweight popover.
-
-Clipboard history is stored in memory by default and is cleared when the app quits. JSON persistence can be enabled in Settings; ATO stores it at `~/.ato/history.json`. When persistence is disabled, ATO asks whether the existing file should be kept or deleted.
-
-Keyboard shortcuts are stored in `~/.ato/shortcut.json`. ATO rejects duplicate assignments and lets you restore all default shortcuts from Settings.
-
-Pinned items are stored privately in `~/.ato/favorites.json` and remain available independently of clipboard history.
+- Built with SwiftUI and AppKit, with no third-party dependencies.
+- Designed as a lightweight menu bar application with a native popover interface.
 
 ---
 
