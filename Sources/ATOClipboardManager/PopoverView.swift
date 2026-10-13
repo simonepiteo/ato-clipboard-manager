@@ -27,7 +27,7 @@ struct PopoverView: View {
             Divider()
             history
             Divider()
-            menu
+            footerActions
         }
         .frame(width: 350, height: 436)
         .background(.ultraThinMaterial)
@@ -76,34 +76,44 @@ struct PopoverView: View {
         .background(Color.black.opacity(0.08))
     }
 
-    private var menu: some View {
-        Menu {
+    private var footerActions: some View {
+        VStack(spacing: 0) {
             Button(action: store.clear) {
-                Label(Localizer.text(.clearHistory, language: settings.language), systemImage: "trash")
+                footerLabel(Localizer.text(.clearHistory, language: settings.language))
             }
+            .buttonStyle(.borderless)
 
             Button(action: openSettings) {
-                Label(Localizer.text(.settings, language: settings.language), systemImage: "gearshape")
+                footerLabel(Localizer.text(.settings, language: settings.language), shortcut: "⌘⌥S")
             }
+            .buttonStyle(.borderless)
             .keyboardShortcut("s", modifiers: [.command, .option])
 
             Divider()
+                .padding(.horizontal, 8)
 
             Button(role: .destructive, action: quit) {
-                Label(Localizer.text(.quit, language: settings.language), systemImage: "power")
+                footerLabel(Localizer.text(.quit, language: settings.language), shortcut: "⌘Q")
             }
+            .buttonStyle(.borderless)
             .keyboardShortcut("q", modifiers: .command)
-        } label: {
-            HStack {
-                Label(Localizer.text(.actions, language: settings.language), systemImage: "ellipsis.circle")
-                Spacer()
-            }
-            .contentShape(Rectangle())
         }
-        .menuStyle(.borderlessButton)
-        .menuIndicator(.visible)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(8)
+        .padding(.vertical, 4)
+    }
+
+    private func footerLabel(_ title: String, shortcut: String? = nil) -> some View {
+        HStack {
+            Text(title)
+            Spacer()
+            if let shortcut {
+                Text(shortcut)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .contentShape(Rectangle())
+        .padding(.horizontal, 12)
+        .padding(.vertical, 5)
+        .frame(maxWidth: .infinity)
     }
 }
 
