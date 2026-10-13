@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.0.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v0.5.0...v1.0.0) (2026-10-13)
+
+### Features
+
+* Add search result count display in section buttons of PopoverView ([c535c65](https://github.com/simonepiteo/ato-clipboard-manager/commit/c535c65ba95b95ea274165437a5a3b86edc7ad6b))
+* Update README and localization for Favorites to Pinned terminology; enhance SettingsView layout ([e5a8b62](https://github.com/simonepiteo/ato-clipboard-manager/commit/e5a8b62f0f3822737e05fadad4d90f44fa46f57e))
+* Add Favorites functionality and shortcuts for History and Favorites tabs ([4ca9f73](https://github.com/simonepiteo/ato-clipboard-manager/commit/4ca9f73acd0a7aa516093a261279f5a3b12eab47))
+
 ## [0.5.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v0.4.0...v0.5.0) (2026-10-13)
 
 ### Features
