@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.1.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v1.0.0...v1.1.0) (2026-10-13)
+
+### Features
+
+* Enhance README with detailed search functionality and theme options ([556f132](https://github.com/simonepiteo/ato-clipboard-manager/commit/556f1322f01a3803750da70e27b8ae3447851013))
+* Adjust popover and frame size for improved UI layout ([8376965](https://github.com/simonepiteo/ato-clipboard-manager/commit/83769657385e161ed6a2b4aee6ce6fec8c1390f3))
+* Implement theme selection and persistence in settings ([cdb82f1](https://github.com/simonepiteo/ato-clipboard-manager/commit/cdb82f1e9a9d9649a0a349600f4628afb65f16bb))
+
+### Bug Fixes
+
+* Clarify update check conditions in README ([ed4920f](https://github.com/simonepiteo/ato-clipboard-manager/commit/ed4920f1985c1411e765e2a885da2365decb1429))
+
+### Other Changes
+
+* Remove demo section and associated GIF from README ([9067bad](https://github.com/simonepiteo/ato-clipboard-manager/commit/9067bad88a4e090de48369b12aabbc06ed1ed41b))
+
 ## [1.0.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v0.5.0...v1.0.0) (2026-10-13)
 
 ### Features
