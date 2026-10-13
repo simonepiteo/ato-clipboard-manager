@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.2.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v0.1.3...v0.2.0) (2026-10-13)
+
+### Features
+
+* add release script and version management for automated releases ([8226124](https://github.com/simonepiteo/ato-clipboard-manager/commit/8226124bdbeaa625eb80caa98ad888fcff620849))
+* enhance settings view layout and localization support ([c99c268](https://github.com/simonepiteo/ato-clipboard-manager/commit/c99c2682014bf16aee0079d20fc5baf2d18bd681))
+* update README for clarity and localization improvements ([7a84d1c](https://github.com/simonepiteo/ato-clipboard-manager/commit/7a84d1c2b8152bb6c2301d64abd29606b43ed6fb))
+* enhance clipboard item selection and popover behavior ([a569539](https://github.com/simonepiteo/ato-clipboard-manager/commit/a569539008773ab43a045e8ee2b975575481d7e6))
+* enhance popover behavior and clipboard management ([743f735](https://github.com/simonepiteo/ato-clipboard-manager/commit/743f735296608bd196edb4d26385928b5951118b))
+* rewrite app as native Swift ([9d6b44d](https://github.com/simonepiteo/ato-clipboard-manager/commit/9d6b44d48a2a0af783fbc1e4fdbba2b4749fc547))
+
+### Bug Fixes
+
+* babel ([9039194](https://github.com/simonepiteo/ato-clipboard-manager/commit/9039194250258a2794b465a93bd6908e29268845))
+* copied item model ([122c038](https://github.com/simonepiteo/ato-clipboard-manager/commit/122c038e6aca889e91fead3bc0ee244cfccebf61))
+
+### Other Changes
+
+* match native menu spacing ([7bab470](https://github.com/simonepiteo/ato-clipboard-manager/commit/7bab470b3aa5fbad653749415e10060df59e39d7))
+* add spacing around footer actions ([abc4050](https://github.com/simonepiteo/ato-clipboard-manager/commit/abc40503b6550d64f2ac2e62c3f16a9f03aa920d))
+* add native menu hover highlighting ([5f75231](https://github.com/simonepiteo/ato-clipboard-manager/commit/5f752319b8633f69907d2fea12f042279b52cfad))
+* keep footer actions visible with native controls ([a481ade](https://github.com/simonepiteo/ato-clipboard-manager/commit/a481ade7c24a3ef5bf506a9aae48074b1362b4a1))
+* use native menu for footer actions ([7e3db0d](https://github.com/simonepiteo/ato-clipboard-manager/commit/7e3db0d8c23c79090177337611a9fe56f5f699b3))
+* folder refactor ([4c69cf1](https://github.com/simonepiteo/ato-clipboard-manager/commit/4c69cf1e1eb78160b2e9d0a7ce6f48eabe5bf793))
+* readme ([fc02bab](https://github.com/simonepiteo/ato-clipboard-manager/commit/fc02babb1031c491e7224a579ddd46682ffb01ed))
+* updated Info.plist version ([7de42bc](https://github.com/simonepiteo/ato-clipboard-manager/commit/7de42bc91e3ec70557708d5d00062ebc6a7dbb5b))
+
 ## [0.1.3](https://github.com/simonepiteo/ato-clipboard-manager/compare/v0.1.2...v0.1.3) (2025-06-23)
 
 
