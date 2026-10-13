@@ -17,10 +17,10 @@ ATO Clipboard Manager is a modern, open-source clipboard manager for macOS, buil
 ### Clipboard history
 
 - Capture and browse copied text and images.
-- Search text entries instantly.
+- Search the selected History or Pinned section, with live result counts for both tabs.
 - Switch between grid and list layouts.
 - Move any selected item to the top of the history.
-- Pin frequently used items and switch between History and Pinned from the popover.
+- Pin or unpin items from their context menu and switch between History and Pinned from the popover.
 - Configure separate limits for visible items and saved history.
 - Keep history in memory only, or persist it privately and restore it at startup.
 
@@ -29,12 +29,13 @@ ATO Clipboard Manager is a modern, open-source clipboard manager for macOS, buil
 - Open ATO from the macOS menu bar or with a customizable global shortcut (default: `⌘⇧V`).
 - Select the first nine items with customizable shortcuts (defaults: `⌘1`–`⌘9`).
 - Customize every app shortcut, including Settings, Quit, and item selection.
-- Use customizable shortcuts to switch between the History and Pinned tabs.
+- Use customizable shortcuts to switch between History and Pinned (defaults: `⌘⇧H` and `⌘⇧F`).
 - Optionally paste the selected item directly into the previously active app.
 
 ### Personalization
 
-- Choose the app language, system/light/dark theme, display mode, history size, and automatic paste behavior.
+- Follow the macOS appearance by default, or choose a persistent light or dark theme.
+- Choose the app language, display mode, history size, and automatic paste behavior.
 - Launch ATO automatically when you log in.
 - Use the app in English or Italian.
 - Keep preferences between launches with `UserDefaults`.
@@ -70,8 +71,8 @@ Pinned items are stored privately in `~/.ato/favorites.json` and remain availabl
 - [x] Pin clipboard items
 - [x] Customizable keyboard shortcuts
 - [x] Auto-update support
+- [x] System, light, and dark themes
 - [ ] Rich media support (files, links, etc.)
-- [ ] Light/Dark themes
 
 ---
 
@@ -111,9 +112,11 @@ The release build is created at `dist/ATO Clipboard Manager.app`. To create a DM
 ./scripts/build-dmg.sh
 ```
 
+The installer is created at `dist/ATO-Clipboard-Manager-<version>.dmg`.
+
 ### App updates
 
-ATO queries the public [GitHub Releases](https://github.com/simonepiteo/ato-clipboard-manager/releases) API at launch and, while it remains open, at least once every 24 hours. When a newer version is found, a red indicator appears beside the menu bar icon and a non-blocking banner in the popover offers to install it or postpone it. A manual check is always available under **Settings → Updates**. Release metadata is cached locally so the version history remains visible between launches.
+ATO queries the public [GitHub Releases](https://github.com/simonepiteo/ato-clipboard-manager/releases) API at launch, when Settings opens if a check is due, and, while it remains open, at least once every 24 hours. When a newer version is found, a red indicator appears beside the menu bar icon and a non-blocking banner in the popover offers to install it or postpone it. A manual check is always available under **Settings → Updates**. Release metadata is cached locally so the version history remains visible between launches.
 
 When a newer stable release includes a DMG, ATO can download it, verify that the contained app has the expected bundle identifier, version, and a valid code signature, then replace the running app and restart. The app must be running from an `.app` bundle in a folder the current user can modify. Draft and prerelease versions are not offered as automatic updates.
 
