@@ -16,9 +16,8 @@ struct SettingsView: View {
             detail
         }
         .frame(width: 820, height: 620)
-        .background(RaycastPalette.canvas)
-        .tint(RaycastPalette.accentRed)
-        .preferredColorScheme(.dark)
+        .background(MacPalette.canvas)
+        .tint(MacPalette.accent)
         .onAppear {
             launchAtLogin.refresh()
             Task { await updateManager.checkIfNeeded() }
@@ -99,7 +98,7 @@ struct SettingsView: View {
                         RoundedRectangle(cornerRadius: 10, style: .continuous)
                             .fill(
                                 LinearGradient(
-                                    colors: [RaycastPalette.accentRed, RaycastPalette.accentRedDeep],
+                                    colors: [MacPalette.accent, MacPalette.accentDeep],
                                     startPoint: .topLeading,
                                     endPoint: .bottomTrailing
                                 )
@@ -114,10 +113,10 @@ struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("ATO")
                         .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(RaycastPalette.ink)
+                        .foregroundStyle(MacPalette.ink)
                     Text("Clipboard Manager")
                         .font(.system(size: 11, weight: .medium))
-                        .foregroundStyle(RaycastPalette.mute)
+                        .foregroundStyle(MacPalette.mute)
                 }
                 Spacer(minLength: 0)
             }
@@ -136,26 +135,26 @@ struct SettingsView: View {
 
             HStack(spacing: 7) {
                 Circle()
-                    .fill(RaycastPalette.accentGreen)
+                    .fill(MacPalette.positive)
                     .frame(width: 6, height: 6)
                 Text(Localizer.text(.version, language: settings.language))
                     .font(.system(size: 12, weight: .medium))
-                    .foregroundStyle(RaycastPalette.mute)
+                    .foregroundStyle(MacPalette.mute)
                 Spacer()
             }
             .padding(.horizontal, 18)
             .frame(height: 52)
             .overlay(alignment: .top) {
                 Rectangle()
-                    .fill(RaycastPalette.hairline)
+                    .fill(MacPalette.hairline)
                     .frame(height: 1)
             }
         }
         .frame(width: 210)
-        .background(RaycastPalette.sidebar)
+        .background(MacPalette.sidebar)
         .overlay(alignment: .trailing) {
             Rectangle()
-                .fill(RaycastPalette.hairline)
+                .fill(MacPalette.hairline)
                 .frame(width: 1)
         }
     }
@@ -173,17 +172,17 @@ struct SettingsView: View {
                 Image(systemName: tab.systemImage)
                     .font(.system(size: 13, weight: .semibold))
                     .frame(width: 20)
-                    .foregroundStyle(isSelected ? RaycastPalette.ink : RaycastPalette.mute)
+                    .foregroundStyle(isSelected ? MacPalette.accent : MacPalette.mute)
 
                 Text(tab.title(language: settings.language))
                     .font(.system(size: 13, weight: isSelected ? .semibold : .medium))
-                    .foregroundStyle(isSelected ? RaycastPalette.ink : RaycastPalette.body)
+                    .foregroundStyle(isSelected ? MacPalette.ink : MacPalette.body)
 
                 Spacer(minLength: 0)
 
                 if showsUpdateIndicator {
                     Circle()
-                        .fill(RaycastPalette.accentRed)
+                        .fill(MacPalette.notification)
                         .frame(width: 5, height: 5)
                         .accessibilityHidden(true)
                 }
@@ -192,7 +191,7 @@ struct SettingsView: View {
             .frame(height: 38)
             .background {
                 RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .fill(isSelected ? RaycastPalette.selected : Color.clear)
+                    .fill(isSelected ? MacPalette.selected : Color.clear)
             }
             .contentShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         }
@@ -219,30 +218,30 @@ struct SettingsView: View {
             HStack(spacing: 13) {
                 Image(systemName: selectedTab.systemImage)
                     .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(RaycastPalette.ink)
+                    .foregroundStyle(MacPalette.accent)
                     .frame(width: 34, height: 34)
-                    .background(RaycastPalette.surfaceElevated, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                    .background(MacPalette.surfaceElevated, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
                     .overlay {
                         RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .stroke(RaycastPalette.hairline)
+                            .stroke(MacPalette.hairline)
                     }
 
                 VStack(alignment: .leading, spacing: 3) {
                     Text(selectedTab.title(language: settings.language))
                         .font(.system(size: 19, weight: .semibold))
-                        .foregroundStyle(RaycastPalette.ink)
+                        .foregroundStyle(MacPalette.ink)
                     Text(selectedTab.description(language: settings.language))
                         .font(.system(size: 12))
-                        .foregroundStyle(RaycastPalette.mute)
+                        .foregroundStyle(MacPalette.mute)
                 }
                 Spacer()
             }
             .padding(.horizontal, 26)
             .frame(height: 78)
-            .background(RaycastPalette.surface)
+            .background(MacPalette.surface)
             .overlay(alignment: .bottom) {
                 Rectangle()
-                    .fill(RaycastPalette.hairline)
+                    .fill(MacPalette.hairline)
                     .frame(height: 1)
             }
 
@@ -252,15 +251,15 @@ struct SettingsView: View {
                     .padding(.vertical, 24)
                     .frame(maxWidth: .infinity, alignment: .topLeading)
             }
-            .background(RaycastPalette.canvas)
+            .background(MacPalette.canvas)
 
             footer
                 .padding(.horizontal, 22)
                 .frame(height: 52)
-                .background(RaycastPalette.surface)
+                .background(MacPalette.surface)
                 .overlay(alignment: .top) {
                     Rectangle()
-                        .fill(RaycastPalette.hairline)
+                        .fill(MacPalette.hairline)
                         .frame(height: 1)
                 }
         }
@@ -338,7 +337,7 @@ struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     Text(Localizer.text(.applicationShortcuts, language: settings.language))
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(RaycastPalette.ink)
+                        .foregroundStyle(MacPalette.ink)
 
                     shortcutRow(.togglePopover)
                     panelDivider
@@ -352,7 +351,7 @@ struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     Text(Localizer.text(.historyShortcuts, language: settings.language))
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(RaycastPalette.ink)
+                        .foregroundStyle(MacPalette.ink)
 
                     ForEach(Array(1...9), id: \.self) { number in
                         if let action = ShortcutAction.selectItem(at: number - 1) {
@@ -495,7 +494,7 @@ struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     Text(Localizer.text(.previousVersions, language: settings.language))
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(RaycastPalette.ink)
+                        .foregroundStyle(MacPalette.ink)
 
                     if updateManager.releases.isEmpty {
                         Text(Localizer.text(.noVersionsLoaded, language: settings.language))
@@ -539,16 +538,17 @@ struct SettingsView: View {
             Link(destination: URL(string: "https://github.com/simonepiteo/ato-clipboard-manager")!) {
                 Label(Localizer.text(.sourceCode, language: settings.language), systemImage: "chevron.left.forwardslash.chevron.right")
             }
-            .foregroundStyle(RaycastPalette.mute)
+            .foregroundStyle(MacPalette.mute)
 
             Link(destination: URL(string: "https://github.com/simonepiteo/ato-clipboard-manager/blob/main/LICENSE")!) {
                 Label(Localizer.text(.license, language: settings.language), systemImage: "doc.text")
             }
-            .foregroundStyle(RaycastPalette.mute)
+            .foregroundStyle(MacPalette.mute)
 
             Spacer()
 
             Button(Localizer.text(.resetSettings, language: settings.language), action: settings.reset)
+                .foregroundStyle(MacPalette.notification)
         }
         .font(.system(size: 12, weight: .medium))
     }
@@ -610,7 +610,7 @@ struct SettingsView: View {
 
     private var panelDivider: some View {
         Rectangle()
-            .fill(RaycastPalette.hairline)
+            .fill(MacPalette.hairline)
             .frame(height: 1)
             .padding(.vertical, 4)
     }
@@ -620,10 +620,10 @@ struct SettingsView: View {
             content()
         }
         .padding(16)
-        .background(RaycastPalette.surfaceElevated, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .background(MacPalette.surfaceElevated, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .stroke(RaycastPalette.hairline)
+                .stroke(MacPalette.hairline)
         }
     }
 
@@ -634,7 +634,7 @@ struct SettingsView: View {
         HStack(spacing: 16) {
             Text(title)
                 .font(.system(size: 13))
-                .foregroundStyle(RaycastPalette.body)
+                .foregroundStyle(MacPalette.body)
             Spacer(minLength: 16)
             control()
         }
@@ -645,7 +645,7 @@ struct SettingsView: View {
         HStack(spacing: 16) {
             Text(title)
                 .font(.system(size: 13))
-                .foregroundStyle(RaycastPalette.body)
+                .foregroundStyle(MacPalette.body)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 16)
             Toggle("", isOn: isOn)
@@ -735,33 +735,34 @@ private struct NumericStepButtonStyle: ButtonStyle {
             configuration.label
                 .font(.system(size: 13, weight: .medium))
                 .frame(width: 34, height: 26)
-                .foregroundStyle(isEnabled ? RaycastPalette.ink : RaycastPalette.ash)
+                .foregroundStyle(isEnabled ? MacPalette.ink : MacPalette.ash)
                 .background {
                     RoundedRectangle(cornerRadius: 6, style: .continuous)
-                        .fill(configuration.isPressed ? RaycastPalette.selectedStrong : RaycastPalette.selected)
+                        .fill(configuration.isPressed ? MacPalette.selectedStrong : MacPalette.selected)
                 }
                 .overlay {
                     RoundedRectangle(cornerRadius: 6, style: .continuous)
-                        .stroke(RaycastPalette.hairline)
+                        .stroke(MacPalette.hairline)
                 }
                 .contentShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
         }
     }
 }
 
-private enum RaycastPalette {
-    static let canvas = Color(red: 0.027, green: 0.031, blue: 0.039)
-    static let sidebar = Color(red: 0.039, green: 0.043, blue: 0.051)
-    static let surface = Color(red: 0.051, green: 0.051, blue: 0.051)
-    static let surfaceElevated = Color(red: 0.071, green: 0.071, blue: 0.071)
-    static let selected = Color.white.opacity(0.075)
-    static let selectedStrong = Color.white.opacity(0.13)
-    static let hairline = Color.white.opacity(0.085)
-    static let ink = Color(red: 0.957, green: 0.957, blue: 0.965)
-    static let body = Color(red: 0.804, green: 0.804, blue: 0.804)
-    static let mute = Color(red: 0.612, green: 0.612, blue: 0.616)
-    static let ash = Color(red: 0.416, green: 0.420, blue: 0.424)
-    static let accentRed = Color(red: 1.0, green: 0.38, blue: 0.38)
-    static let accentRedDeep = Color(red: 0.63, green: 0.075, blue: 0.102)
-    static let accentGreen = Color(red: 0.349, green: 0.831, blue: 0.600)
+private enum MacPalette {
+    static let canvas = Color(nsColor: .windowBackgroundColor)
+    static let sidebar = Color(nsColor: .underPageBackgroundColor)
+    static let surface = Color(nsColor: .windowBackgroundColor)
+    static let surfaceElevated = Color(nsColor: .controlBackgroundColor)
+    static let selected = Color(nsColor: .selectedContentBackgroundColor).opacity(0.16)
+    static let selectedStrong = Color(nsColor: .selectedContentBackgroundColor).opacity(0.26)
+    static let hairline = Color(nsColor: .separatorColor)
+    static let ink = Color(nsColor: .labelColor)
+    static let body = Color(nsColor: .labelColor)
+    static let mute = Color(nsColor: .secondaryLabelColor)
+    static let ash = Color(nsColor: .tertiaryLabelColor)
+    static let accent = Color(nsColor: .controlAccentColor)
+    static let accentDeep = Color(nsColor: .systemBlue)
+    static let positive = Color(nsColor: .systemGreen)
+    static let notification = Color(nsColor: .systemRed)
 }
