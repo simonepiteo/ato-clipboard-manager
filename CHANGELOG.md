@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.4.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v1.3.0...v1.4.0) (2026-10-14)
+
+### Features
+
+* Implement accessibility permission panel and related UI components ([920d660](https://github.com/simonepiteo/ato-clipboard-manager/commit/920d6607d1878acae13f9d4f005bde0651b45252))
+
 ## [1.3.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v1.2.1...v1.3.0) (2026-10-13)
 
 ### Features
