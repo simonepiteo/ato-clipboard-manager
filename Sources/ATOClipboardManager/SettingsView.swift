@@ -373,28 +373,53 @@ struct SettingsView: View {
     }
 
     private var accessibilityPermissionCallout: some View {
-        HStack(alignment: .top, spacing: 12) {
-            Image(systemName: "hand.raised.fill")
-                .font(.system(size: 17))
-                .foregroundStyle(.orange)
-                .frame(width: 24)
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .top, spacing: 12) {
+                Image(systemName: "hand.raised.fill")
+                    .font(.system(size: 17))
+                    .foregroundStyle(.orange)
+                    .frame(width: 24)
 
-            VStack(alignment: .leading, spacing: 4) {
-                Text(Localizer.text(.accessibilityPermissionRequired, language: settings.language))
-                    .font(.system(size: 13, weight: .semibold))
-                Text(Localizer.text(.accessibilityPermissionExplanation, language: settings.language))
-                    .font(.system(size: 12))
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(Localizer.text(.accessibilityPermissionRequired, language: settings.language))
+                        .font(.system(size: 13, weight: .semibold))
+                    Text(Localizer.text(.accessibilityPermissionExplanation, language: settings.language))
+                        .font(.system(size: 12))
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Spacer(minLength: 12)
+
+                Button(Localizer.text(.openAccessibilitySettings, language: settings.language)) {
+                    accessibilityPermission.openSystemSettings()
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.small)
             }
 
-            Spacer(minLength: 12)
+            HStack(spacing: 12) {
+                DraggableApplicationIcon(
+                    accessibilityLabel: Localizer.text(.draggableATOIcon, language: settings.language)
+                )
+                .frame(width: 46, height: 46)
 
-            Button(Localizer.text(.openAccessibilitySettings, language: settings.language)) {
-                accessibilityPermission.requestAndOpenSystemSettings()
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(Localizer.text(.dragATOToAccessibility, language: settings.language))
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(MacPalette.body)
+                    Text(Localizer.text(.dragATOToAccessibilityHint, language: settings.language))
+                        .font(.system(size: 11))
+                        .foregroundStyle(MacPalette.mute)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.small)
+            .padding(10)
+            .background(MacPalette.selected, in: RoundedRectangle(cornerRadius: 9, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 9, style: .continuous)
+                    .stroke(MacPalette.hairline)
+            }
         }
     }
 

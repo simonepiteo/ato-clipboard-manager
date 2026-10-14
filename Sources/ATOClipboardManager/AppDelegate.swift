@@ -20,6 +20,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var lastActiveApplication: NSRunningApplication?
     private var actionAfterPopoverCloses: (() -> Void)?
     private var restorePopoverAnimationAfterClose = false
+    private var accessibilityPermissionPanel: AccessibilityPermissionPanelController?
     private var updateObservation: AnyCancellable?
     private var shortcutObservation: AnyCancellable?
     private var themeObservation: AnyCancellable?
@@ -88,6 +89,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.appearance = appearance
         popover.contentViewController?.view.appearance = appearance
         settingsWindow?.appearance = appearance
+        accessibilityPermissionPanel?.appearance = appearance
     }
 
     private func observeAvailableUpdates() {
@@ -248,20 +250,27 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func showAccessibilityPermissionExplanation() {
-        let alert = NSAlert()
-        alert.alertStyle = .informational
-        alert.icon = NSImage(systemSymbolName: "hand.raised.fill", accessibilityDescription: nil)
-        alert.messageText = Localizer.text(.automaticPastePermissionTitle, language: settings.language)
-        alert.informativeText = Localizer.text(.automaticPastePermissionMessage, language: settings.language)
-        alert.addButton(withTitle: Localizer.text(.openAccessibilitySettings, language: settings.language))
-        alert.addButton(withTitle: Localizer.text(.notNow, language: settings.language))
-
-        NSApp.activate(ignoringOtherApps: true)
-        if alert.runModal() == .alertFirstButtonReturn {
-            accessibilityPermission.requestAndOpenSystemSettings()
-        } else {
-            lastActiveApplication?.activate(options: [])
+        if let accessibilityPermissionPanel {
+            accessibilityPermissionPanel.show()
+            return
         }
+
+        let panel = AccessibilityPermissionPanelController(
+            permission: accessibilityPermission,
+            language: settings.language,
+            appearance: settings.theme.appearance,
+            openSystemSettings: { [weak self] in
+                self?.accessibilityPermission.openSystemSettings()
+            },
+            dismiss: { [weak self] restoreFocus in
+                self?.accessibilityPermissionPanel = nil
+                if restoreFocus {
+                    self?.lastActiveApplication?.activate(options: [])
+                }
+            }
+        )
+        accessibilityPermissionPanel = panel
+        panel.show()
     }
 
     private func pasteIntoActiveApplication() {

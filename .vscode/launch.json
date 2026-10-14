@@ -1,0 +1,24 @@
+{
+  "configurations": [
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:ato-clipboard-manager}",
+      "name": "Debug ATOClipboardManager",
+      "target": "ATOClipboardManager",
+      "configuration": "debug",
+      "preLaunchTask": "swift: Build Debug ATOClipboardManager"
+    },
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:ato-clipboard-manager}",
+      "name": "Release ATOClipboardManager",
+      "target": "ATOClipboardManager",
+      "configuration": "release",
+      "preLaunchTask": "swift: Build Release ATOClipboardManager"
+    }
+  ]
+}

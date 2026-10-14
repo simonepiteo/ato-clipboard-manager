@@ -25,6 +25,7 @@ enum LocalizedKey: String {
     case updateNow, installingUpdate, updateBadgeHint, later
     case accessibilityPermissionRequired, accessibilityPermissionExplanation
     case openAccessibilitySettings, automaticPastePermissionTitle, automaticPastePermissionMessage
+    case dragATOToAccessibility, dragATOToAccessibilityHint, draggableATOIcon
     case history, favorites, emptyFavorites, noSearchResults
     case addToFavorites, removeFromFavorites, favoritesPersistenceError
     case deleteFromHistory, unpinBeforeDeleting
@@ -82,6 +83,9 @@ enum Localizer {
         .accessibilityPermissionRequired: "Accessibility permission required",
         .accessibilityPermissionExplanation: "ATO uses Accessibility only to send ⌘V to the previously active app.",
         .openAccessibilitySettings: "Open Accessibility Settings",
+        .dragATOToAccessibility: "Drag ATO into the Accessibility list",
+        .dragATOToAccessibilityHint: "Open Accessibility Settings, then drag this app icon into the list and enable its switch.",
+        .draggableATOIcon: "ATO app icon. Drag it into the Accessibility list.",
         .automaticPastePermissionTitle: "Allow ATO to paste automatically?",
         .automaticPastePermissionMessage: "The item has been copied, but ATO cannot paste it automatically without Accessibility permission.\n\nATO uses this permission only to send ⌘V to the app you were previously using. It does not use it to read what you type or control other Mac features.\n\nYou can grant access now, or return to the destination app and press ⌘V manually.",
         .history: "History", .favorites: "Pinned",
@@ -143,6 +147,9 @@ enum Localizer {
         .accessibilityPermissionRequired: "Permesso Accessibilità richiesto",
         .accessibilityPermissionExplanation: "ATO usa Accessibilità esclusivamente per inviare ⌘V all’app attiva in precedenza.",
         .openAccessibilitySettings: "Apri Impostazioni Accessibilità",
+        .dragATOToAccessibility: "Trascina ATO nell’elenco Accessibilità",
+        .dragATOToAccessibilityHint: "Apri le impostazioni, poi trascina questa icona nell’elenco e attiva l’interruttore.",
+        .draggableATOIcon: "Icona dell’app ATO. Trascinala nell’elenco Accessibilità.",
         .automaticPastePermissionTitle: "Consentire ad ATO di incollare automaticamente?",
         .automaticPastePermissionMessage: "L’elemento è stato copiato, ma ATO non può incollarlo automaticamente senza il permesso Accessibilità.\n\nATO usa questo permesso esclusivamente per inviare ⌘V all’app che stavi usando. Non lo utilizza per leggere ciò che digiti o controllare altre funzioni del Mac.\n\nPuoi concedere il permesso ora oppure tornare all’app di destinazione e premere ⌘V manualmente.",
         .history: "Cronologia", .favorites: "Fissati",
