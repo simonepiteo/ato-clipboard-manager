@@ -34,7 +34,7 @@ ATO captures and displays:
 - Switch between **History** and **Pinned** directly from the popover.
 - Delete individual history items from their context menu. Pinned items must be unpinned before they can be deleted.
 - Choose **Select** from an item’s context menu to enter multiple selection. Click cards or use the arrow keys and Return to select or deselect them without copying.
-- In selection mode, use the toolbar below search to select or deselect all visible items, pin or unpin the selection, or delete it. Unpin all selected items before deleting; use the **×** button to leave selection mode.
+- In selection mode, use the toolbar below search to select or deselect all visible items, pin or unpin the selection, or delete it. Unpin all selected items before deleting; use the **×** button or Escape to leave selection mode and clear the card focus while keeping the popover open.
 - The configured pin shortcut (default `⌘P`) also toggles the selected group: it pins all selected items when any are unpinned, and unpins them when all are pinned.
 
 ### Quick access and keyboard shortcuts
@@ -46,6 +46,7 @@ ATO can be opened from the macOS menu bar or controlled entirely with customizab
 | Open ATO | `⌘⇧V` |
 | Select one of the first nine items | `⌘1`–`⌘9` |
 | Pin or unpin the keyboard-selected item | `⌘P` |
+| Enter selection mode | `⌘⇧M` |
 | Switch to History | `⌘⇧H` |
 | Switch to Pinned | `⌘⇧F` |
 

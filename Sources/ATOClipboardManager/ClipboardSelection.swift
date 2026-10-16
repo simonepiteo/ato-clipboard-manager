@@ -4,9 +4,9 @@ struct ClipboardSelection {
     private(set) var isActive = false
     private(set) var itemIDs = Set<UUID>()
 
-    mutating func begin(with itemID: UUID) {
+    mutating func begin(with itemID: UUID? = nil) {
         isActive = true
-        itemIDs.insert(itemID)
+        if let itemID { itemIDs.insert(itemID) }
     }
 
     mutating func toggle(_ itemID: UUID) {
@@ -31,4 +31,10 @@ struct ClipboardSelection {
         isActive = false
         itemIDs.removeAll()
     }
+}
+
+// Notification delivery is synchronous, so the event monitor can decide whether
+// Escape was consumed before AppKit handles it as a request to close the popover.
+final class ClipboardSelectionExitRequest {
+    var wasHandled = false
 }

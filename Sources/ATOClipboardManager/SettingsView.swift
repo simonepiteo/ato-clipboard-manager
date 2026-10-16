@@ -457,6 +457,8 @@ struct SettingsView: View {
 
             settingsSection(Localizer.text(.historyShortcuts, language: settings.language)) {
                 settingsPanel(compact: true) {
+                    shortcutRow(.enterSelectionMode)
+                    panelDivider
                     shortcutRow(.toggleSelectedItemPin)
                     panelDivider
                     ForEach(Array(1...9), id: \.self) { number in
@@ -756,6 +758,8 @@ struct SettingsView: View {
             Localizer.text(.showFavoritesShortcut, language: settings.language)
         case .toggleSelectedItemPin:
             Localizer.text(.toggleSelectedItemPinShortcut, language: settings.language)
+        case .enterSelectionMode:
+            Localizer.text(.enterSelectionModeShortcut, language: settings.language)
         default:
             String(
                 format: Localizer.text(.selectItemShortcut, language: settings.language),

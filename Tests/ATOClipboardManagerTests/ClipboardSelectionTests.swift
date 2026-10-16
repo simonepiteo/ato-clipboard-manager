@@ -3,6 +3,16 @@ import XCTest
 @testable import ATOClipboardManager
 
 final class ClipboardSelectionTests: XCTestCase {
+    func testSelectionModeCanStartWithoutFocusingOrSelectingAnyCard() {
+        var selection = ClipboardSelection()
+        selection.begin()
+        XCTAssertTrue(selection.isActive)
+        XCTAssertTrue(selection.itemIDs.isEmpty)
+        selection.end()
+        XCTAssertFalse(selection.isActive)
+        XCTAssertTrue(selection.itemIDs.isEmpty)
+    }
+
     func testSelectionMustBeActivatedAndStaysActiveWhenEmpty() {
         let first = UUID()
         let second = UUID()

@@ -7,6 +7,7 @@ enum ShortcutAction: String, Codable, CaseIterable, Identifiable {
     case showHistory
     case showFavorites
     case toggleSelectedItemPin
+    case enterSelectionMode
     case openSettings
     case quit
     case selectItem1, selectItem2, selectItem3, selectItem4, selectItem5
@@ -193,6 +194,7 @@ final class ShortcutSettings: ObservableObject {
         .showHistory: AppShortcut(keyCode: UInt16(kVK_ANSI_H), key: "H", modifiers: [.command, .shift]),
         .showFavorites: AppShortcut(keyCode: UInt16(kVK_ANSI_F), key: "F", modifiers: [.command, .shift]),
         .toggleSelectedItemPin: AppShortcut(keyCode: UInt16(kVK_ANSI_P), key: "P", modifiers: [.command]),
+        .enterSelectionMode: AppShortcut(keyCode: UInt16(kVK_ANSI_M), key: "M", modifiers: [.command, .shift]),
         .openSettings: AppShortcut(keyCode: UInt16(kVK_ANSI_S), key: "S", modifiers: [.command, .option]),
         .quit: AppShortcut(keyCode: UInt16(kVK_ANSI_Q), key: "Q", modifiers: [.command]),
         .selectItem1: AppShortcut(keyCode: UInt16(kVK_ANSI_1), key: "1", modifiers: [.command]),

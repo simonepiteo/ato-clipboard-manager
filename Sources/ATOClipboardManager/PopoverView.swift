@@ -90,10 +90,15 @@ struct PopoverView: View {
             handleKeyboardCommand(command)
         }
         .onReceive(NotificationCenter.default.publisher(for: .resetClipboardKeyboardSelection)) { _ in
-            keyboardSelectedItemID = nil
-            selection.end()
+            exitSelectionMode()
         }
-        .onDisappear { selection.end() }
+        .onReceive(NotificationCenter.default.publisher(for: .exitClipboardSelection)) { notification in
+            guard selection.isActive,
+                  let request = notification.object as? ClipboardSelectionExitRequest else { return }
+            request.wasHandled = true
+            exitSelectionMode()
+        }
+        .onDisappear { exitSelectionMode() }
         .onChange(of: searchText) { _ in keyboardSelectedItemID = nil }
         .onChange(of: selectedSection) { _ in keyboardSelectedItemID = nil }
         .onChange(of: filteredItems.map(\.id)) { itemIDs in
@@ -279,6 +284,11 @@ struct PopoverView: View {
     }
 
     private func handleKeyboardCommand(_ command: ClipboardKeyboardCommand) {
+        if command == .beginSelection {
+            guard !selection.isActive else { return }
+            selection.begin(with: keyboardSelectedItemID)
+            return
+        }
         guard !filteredItems.isEmpty else { return }
 
         if command == .togglePin, selection.isActive {
@@ -315,7 +325,7 @@ struct PopoverView: View {
         case .moveRight: delta = 1
         case .moveUp: delta = -columnCount
         case .moveDown: delta = columnCount
-        case .select, .togglePin: return
+        case .select, .togglePin, .beginSelection: return
         }
 
         let proposedIndex = currentIndex + delta
@@ -334,6 +344,11 @@ struct PopoverView: View {
 
     private var selectedItems: [ClipboardItem] {
         filteredItems.filter { selection.itemIDs.contains($0.id) }
+    }
+
+    private func exitSelectionMode() {
+        keyboardSelectedItemID = nil
+        selection.end()
     }
 
     private var selectionToolbar: some View {
@@ -366,8 +381,7 @@ struct PopoverView: View {
                 store.delete(selected)
             }
             selectionToolbarButton(.exitSelectionMode, icon: "xmark.circle.fill") {
-                keyboardSelectedItemID = nil
-                selection.end()
+                exitSelectionMode()
             }
         }
         .controlSize(.small)

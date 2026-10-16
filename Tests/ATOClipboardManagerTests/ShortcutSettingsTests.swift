@@ -1,8 +1,53 @@
+import AppKit
 import Carbon.HIToolbox
 import XCTest
 @testable import ATOClipboardManager
 
 final class ShortcutSettingsTests: XCTestCase {
+    @MainActor
+    func testSelectionModeShortcutMatchesCustomizedAssignmentAfterRelaunch() throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("SelectionShortcutTests-\(UUID().uuidString)", isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let persistence = ShortcutPersistence(fileURL: directory.appendingPathComponent("shortcut.json"))
+        let settings = ShortcutSettings(persistence: persistence)
+        let defaultShortcut = AppShortcut(keyCode: UInt16(kVK_ANSI_M), key: "M", modifiers: [.command, .shift])
+        XCTAssertEqual(settings.shortcut(for: .enterSelectionMode), defaultShortcut)
+
+        let custom = AppShortcut(keyCode: UInt16(kVK_ANSI_B), key: "B", modifiers: [.command, .option])
+        settings.set(custom, for: .enterSelectionMode)
+        let restored = ShortcutSettings(persistence: persistence)
+        let event = try XCTUnwrap(NSEvent.keyEvent(
+            with: .keyDown, location: .zero, modifierFlags: [.command, .option],
+            timestamp: 0, windowNumber: 0, context: nil,
+            characters: "b", charactersIgnoringModifiers: "b", isARepeat: false,
+            keyCode: UInt16(kVK_ANSI_B)
+        ))
+        XCTAssertEqual(restored.action(matching: event), .enterSelectionMode)
+        restored.set(custom, for: .quit)
+        XCTAssertEqual(restored.issue, .duplicate(.enterSelectionMode))
+        restored.reset(.enterSelectionMode)
+        XCTAssertEqual(restored.shortcut(for: .enterSelectionMode), defaultShortcut)
+    }
+
+    @MainActor
+    func testSelectionModeShortcutIsAddedWithoutReplacingExistingAssignments() throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("SelectionShortcutMigrationTests-\(UUID().uuidString)", isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let persistence = ShortcutPersistence(fileURL: directory.appendingPathComponent("shortcut.json"))
+        var saved = ShortcutSettings.defaultShortcuts
+        saved.removeValue(forKey: .enterSelectionMode)
+        let customPin = AppShortcut(keyCode: UInt16(kVK_ANSI_P), key: "P", modifiers: [.command, .option])
+        saved[.toggleSelectedItemPin] = customPin
+        try persistence.save(saved)
+
+        let settings = ShortcutSettings(persistence: persistence)
+        XCTAssertNil(settings.issue)
+        XCTAssertEqual(settings.shortcut(for: .toggleSelectedItemPin), customPin)
+        XCTAssertEqual(settings.shortcut(for: .enterSelectionMode), ShortcutSettings.defaultShortcuts[.enterSelectionMode])
+    }
+
     @MainActor
     func testPinShortcutDefaultsToCommandPAndCanBeCustomizedAndRestored() throws {
         let directory = FileManager.default.temporaryDirectory

@@ -12,6 +12,7 @@ enum LocalizedKey: String {
     case openPopoverShortcut, openSettingsShortcut, quitShortcut, selectItemShortcut
     case showHistoryShortcut, showFavoritesShortcut
     case toggleSelectedItemPinShortcut
+    case enterSelectionModeShortcut
     case recordShortcut, resetShortcut, resetShortcuts, shortcutError, shortcutModifierRequired, shortcutDuplicate
     case startup, launchAtLogin, launchAtLoginApproval, openLoginItems
     case launchAtLoginPromptTitle, launchAtLoginPromptMessage, enable, notNow
@@ -59,6 +60,7 @@ enum Localizer {
         .quitShortcut: "Quit ATO", .selectItemShortcut: "Select item %d",
         .showHistoryShortcut: "Show History tab", .showFavoritesShortcut: "Show Pinned tab",
         .toggleSelectedItemPinShortcut: "Pin or unpin selected item",
+        .enterSelectionModeShortcut: "Enter selection mode",
         .recordShortcut: "Press shortcut…", .resetShortcut: "Restore this shortcut",
         .resetShortcuts: "Restore Default Shortcuts",
         .shortcutError: "Invalid shortcut",
@@ -129,6 +131,7 @@ enum Localizer {
         .quitShortcut: "Chiudi ATO", .selectItemShortcut: "Seleziona elemento %d",
         .showHistoryShortcut: "Mostra tab Cronologia", .showFavoritesShortcut: "Mostra tab Fissati",
         .toggleSelectedItemPinShortcut: "Fissa o rimuovi il pin dall’elemento selezionato",
+        .enterSelectionModeShortcut: "Entra in modalità selezione",
         .recordShortcut: "Premi scorciatoia…", .resetShortcut: "Ripristina questa scorciatoia",
         .resetShortcuts: "Ripristina scorciatoie predefinite",
         .shortcutError: "Scorciatoia non valida",
