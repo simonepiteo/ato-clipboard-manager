@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.7.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v1.6.0...v1.7.0) (2026-10-16)
+
+### Features
+
+* Implement multi-selection functionality with toolbar actions in clipboard manager ([17181ba](https://github.com/simonepiteo/ato-clipboard-manager/commit/17181ba67d078d225ab47457ec1399fe11553ceb))
+* Update settings panel to support compact mode and adjust spacing ([1c44034](https://github.com/simonepiteo/ato-clipboard-manager/commit/1c4403498e3cebc31c2e8f810159a291e7928566))
+
 ## [1.6.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v1.5.0...v1.6.0) (2026-10-16)
 
 ### Features
