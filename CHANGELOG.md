@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.8.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v1.7.0...v1.8.0) (2026-10-16)
+
+### Features
+
+* Add local code signing setup and integrate into build scripts ([34756aa](https://github.com/simonepiteo/ato-clipboard-manager/commit/34756aa3247a6156e03988c441c35c5f51646750))
+
 ## [1.7.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v1.6.0...v1.7.0) (2026-10-16)
 
 ### Features
