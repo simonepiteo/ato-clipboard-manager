@@ -289,7 +289,7 @@ struct SettingsView: View {
     private var generalSettings: some View {
         VStack(alignment: .leading, spacing: 20) {
             settingsSection(Localizer.text(.general, language: settings.language)) {
-                settingsPanel {
+                settingsPanel(compact: true) {
                     settingRow(Localizer.text(.language, language: settings.language)) {
                         Picker("", selection: $settings.language) {
                             ForEach(AppLanguage.allCases) { language in
@@ -344,7 +344,7 @@ struct SettingsView: View {
     }
 
     private var behaviorSettings: some View {
-        settingsPanel {
+        settingsPanel(compact: true) {
             toggleRow(
                 Localizer.text(.automaticPaste, language: settings.language),
                 isOn: accessibilityAwareBinding($settings.automaticPaste)
@@ -442,7 +442,7 @@ struct SettingsView: View {
     private var shortcutsSettings: some View {
         VStack(alignment: .leading, spacing: 20) {
             settingsSection(Localizer.text(.applicationShortcuts, language: settings.language)) {
-                settingsPanel {
+                settingsPanel(compact: true) {
                     shortcutRow(.togglePopover)
                     panelDivider
                     shortcutRow(.showHistory)
@@ -456,7 +456,7 @@ struct SettingsView: View {
             }
 
             settingsSection(Localizer.text(.historyShortcuts, language: settings.language)) {
-                settingsPanel {
+                settingsPanel(compact: true) {
                     shortcutRow(.toggleSelectedItemPin)
                     panelDivider
                     ForEach(Array(1...9), id: \.self) { number in
@@ -478,7 +478,7 @@ struct SettingsView: View {
     }
 
     private var startupSettings: some View {
-        settingsPanel {
+        settingsPanel(compact: true) {
             toggleRow(
                 Localizer.text(.launchAtLogin, language: settings.language),
                 isOn: Binding(
@@ -506,7 +506,7 @@ struct SettingsView: View {
     }
 
     private var storageSettings: some View {
-        settingsPanel {
+        settingsPanel(compact: true) {
             toggleRow(
                 Localizer.text(.persistHistory, language: settings.language),
                 isOn: Binding(
@@ -768,14 +768,18 @@ struct SettingsView: View {
         Rectangle()
             .fill(MacPalette.hairline)
             .frame(height: 1)
-            .padding(.vertical, 4)
+            .padding(.vertical, 2)
     }
 
-    private func settingsPanel<Content: View>(@ViewBuilder content: () -> Content) -> some View {
-        VStack(spacing: 12) {
+    private func settingsPanel<Content: View>(
+        compact: Bool = false,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(spacing: compact ? 4 : 12) {
             content()
         }
-        .padding(16)
+        .padding(.horizontal, 16)
+        .padding(.vertical, compact ? 10 : 16)
         .background(MacPalette.surfaceElevated, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: 10, style: .continuous)
@@ -806,10 +810,11 @@ struct SettingsView: View {
             Text(title)
                 .font(.system(size: 13))
                 .foregroundStyle(MacPalette.body)
+                .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 16)
             control()
         }
-        .frame(minHeight: 30)
+        .frame(minHeight: 26)
     }
 
     private func toggleRow(_ title: String, isOn: Binding<Bool>) -> some View {
@@ -823,7 +828,7 @@ struct SettingsView: View {
                 .toggleStyle(.switch)
                 .labelsHidden()
         }
-        .frame(minHeight: 30)
+        .frame(minHeight: 26)
     }
 
     private func numericInput(value: Binding<Int>, range: ClosedRange<Int>) -> some View {
