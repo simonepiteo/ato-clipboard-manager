@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.9.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v1.8.0...v1.9.0) (2026-10-16)
+
+### Features
+
+* Implement selection mode functionality with keyboard shortcuts and UI updates ([ba286b2](https://github.com/simonepiteo/ato-clipboard-manager/commit/ba286b242b5bcc6250b01212cd814aa3eb49df01))
+
 ## [1.8.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v1.7.0...v1.8.0) (2026-10-16)
 
 ### Features
