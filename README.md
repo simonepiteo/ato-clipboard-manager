@@ -30,7 +30,7 @@ ATO captures and displays:
 #### Item management
 
 - Move an item to the top of the history.
-- Pin or unpin an item from its context menu.
+- Pin or unpin an item from its context menu, or press `⌘P` after selecting it with the arrow keys.
 - Switch between **History** and **Pinned** directly from the popover.
 - Delete individual history items from their context menu. Pinned items must be unpinned before they can be deleted.
 
@@ -42,10 +42,11 @@ ATO can be opened from the macOS menu bar or controlled entirely with customizab
 | --- | --- |
 | Open ATO | `⌘⇧V` |
 | Select one of the first nine items | `⌘1`–`⌘9` |
+| Pin or unpin the keyboard-selected item | `⌘P` |
 | Switch to History | `⌘⇧H` |
 | Switch to Pinned | `⌘⇧F` |
 
-Shortcuts for item selection, Settings, Quit, and section navigation can all be reassigned. ATO prevents duplicate assignments and provides an option to restore the default configuration.
+Shortcuts for item selection, pinning, Settings, Quit, and section navigation can all be reassigned. ATO prevents duplicate assignments and provides an option to restore the default configuration.
 
 When automatic paste is enabled, selecting an item also pastes it into the previously active application. Otherwise, the item is only copied to the system clipboard.
 

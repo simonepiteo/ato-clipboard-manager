@@ -150,6 +150,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
 
             switch action {
+            case .toggleSelectedItemPin:
+                guard self.popover.isShown,
+                      NSApp.keyWindow == self.popover.contentViewController?.view.window
+                else { return event }
+                if !event.isARepeat {
+                    NotificationCenter.default.post(
+                        name: .navigateClipboardHistory,
+                        object: nil,
+                        userInfo: ["command": ClipboardKeyboardCommand.togglePin.rawValue]
+                    )
+                }
+                return nil
             case .showHistory, .showFavorites:
                 NotificationCenter.default.post(
                     name: .switchClipboardSection,
@@ -369,7 +381,7 @@ extension Notification.Name {
 }
 
 enum ClipboardKeyboardCommand: String {
-    case moveLeft, moveRight, moveUp, moveDown, select
+    case moveLeft, moveRight, moveUp, moveDown, select, togglePin
 
     init?(event: NSEvent) {
         switch event.keyCode {

@@ -247,11 +247,15 @@ struct PopoverView: View {
     private func handleKeyboardCommand(_ command: ClipboardKeyboardCommand) {
         guard !filteredItems.isEmpty else { return }
 
-        if command == .select {
+        if command == .select || command == .togglePin {
             guard let keyboardSelectedItemID,
                   let item = filteredItems.first(where: { $0.id == keyboardSelectedItemID })
             else { return }
-            select(item, settings.automaticPasteOnReturn, false)
+            if command == .togglePin {
+                favoritesStore.toggle(item)
+            } else {
+                select(item, settings.automaticPasteOnReturn, false)
+            }
             return
         }
 
@@ -272,7 +276,7 @@ struct PopoverView: View {
         case .moveRight: delta = 1
         case .moveUp: delta = -columnCount
         case .moveDown: delta = columnCount
-        case .select: return
+        case .select, .togglePin: return
         }
 
         let proposedIndex = currentIndex + delta

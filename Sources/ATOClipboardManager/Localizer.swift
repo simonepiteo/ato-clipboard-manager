@@ -11,6 +11,7 @@ enum LocalizedKey: String {
     case shortcuts, shortcutsSettingsDescription, applicationShortcuts, historyShortcuts
     case openPopoverShortcut, openSettingsShortcut, quitShortcut, selectItemShortcut
     case showHistoryShortcut, showFavoritesShortcut
+    case toggleSelectedItemPinShortcut
     case recordShortcut, resetShortcut, resetShortcuts, shortcutError, shortcutModifierRequired, shortcutDuplicate
     case startup, launchAtLogin, launchAtLoginApproval, openLoginItems
     case launchAtLoginPromptTitle, launchAtLoginPromptMessage, enable, notNow
@@ -54,6 +55,7 @@ enum Localizer {
         .openPopoverShortcut: "Open clipboard history", .openSettingsShortcut: "Open Settings",
         .quitShortcut: "Quit ATO", .selectItemShortcut: "Select item %d",
         .showHistoryShortcut: "Show History tab", .showFavoritesShortcut: "Show Pinned tab",
+        .toggleSelectedItemPinShortcut: "Pin or unpin selected item",
         .recordShortcut: "Press shortcut…", .resetShortcut: "Restore this shortcut",
         .resetShortcuts: "Restore Default Shortcuts",
         .shortcutError: "Invalid shortcut",
@@ -118,6 +120,7 @@ enum Localizer {
         .openPopoverShortcut: "Apri cronologia appunti", .openSettingsShortcut: "Apri Impostazioni",
         .quitShortcut: "Chiudi ATO", .selectItemShortcut: "Seleziona elemento %d",
         .showHistoryShortcut: "Mostra tab Cronologia", .showFavoritesShortcut: "Mostra tab Fissati",
+        .toggleSelectedItemPinShortcut: "Fissa o rimuovi il pin dall’elemento selezionato",
         .recordShortcut: "Premi scorciatoia…", .resetShortcut: "Ripristina questa scorciatoia",
         .resetShortcuts: "Ripristina scorciatoie predefinite",
         .shortcutError: "Scorciatoia non valida",

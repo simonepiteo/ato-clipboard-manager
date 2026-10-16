@@ -453,6 +453,8 @@ struct SettingsView: View {
 
             settingsSection(Localizer.text(.historyShortcuts, language: settings.language)) {
                 settingsPanel {
+                    shortcutRow(.toggleSelectedItemPin)
+                    panelDivider
                     ForEach(Array(1...9), id: \.self) { number in
                         if let action = ShortcutAction.selectItem(at: number - 1) {
                             shortcutRow(action)
@@ -704,6 +706,8 @@ struct SettingsView: View {
             Localizer.text(.showHistoryShortcut, language: settings.language)
         case .showFavorites:
             Localizer.text(.showFavoritesShortcut, language: settings.language)
+        case .toggleSelectedItemPin:
+            Localizer.text(.toggleSelectedItemPinShortcut, language: settings.language)
         default:
             String(
                 format: Localizer.text(.selectItemShortcut, language: settings.language),
