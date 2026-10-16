@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.6.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v1.5.0...v1.6.0) (2026-10-16)
+
+### Features
+
+* Add release pagination and related UI components ([60cc350](https://github.com/simonepiteo/ato-clipboard-manager/commit/60cc35032879e3fef1ae9e9969a582996bdc5a22))
+
 ## [1.5.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v1.4.0...v1.5.0) (2026-10-16)
 
 ### Features
