@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.5.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v1.4.0...v1.5.0) (2026-10-16)
+
+### Features
+
+* Add toggle pin shortcut and update related UI and tests ([d1896e3](https://github.com/simonepiteo/ato-clipboard-manager/commit/d1896e3f79267f162d18340dc55e5b3415c95f7d))
+
 ## [1.4.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v1.3.0...v1.4.0) (2026-10-14)
 
 ### Features
