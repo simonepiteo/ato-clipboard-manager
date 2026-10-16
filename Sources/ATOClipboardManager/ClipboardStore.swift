@@ -55,16 +55,27 @@ final class ClipboardStore: ObservableObject {
 
     @discardableResult
     func delete(_ item: ClipboardItem) -> Bool {
+        delete([item])
+    }
+
+    @discardableResult
+    func delete(_ selectedItems: [ClipboardItem]) -> Bool {
         let previousBuffer = buffer
         let previousPersistedBuffer = persistedBuffer
-        let removedFromVisibleHistory = buffer.remove(item)
+        var removedFromVisibleHistory = false
+        for item in selectedItems {
+            if buffer.remove(item) { removedFromVisibleHistory = true }
+        }
 
         guard settings.persistHistory else {
             items = buffer.items
             return removedFromVisibleHistory
         }
 
-        let removedFromSavedHistory = persistedBuffer.remove(item)
+        var removedFromSavedHistory = false
+        for item in selectedItems {
+            if persistedBuffer.remove(item) { removedFromSavedHistory = true }
+        }
         guard removedFromVisibleHistory || removedFromSavedHistory else { return false }
 
         do {

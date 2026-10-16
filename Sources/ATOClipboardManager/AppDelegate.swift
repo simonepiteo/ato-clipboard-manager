@@ -60,9 +60,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 self?.select(item, paste: paste, waitForClickCompletion: waitForClick)
             },
             openSettings: { [weak self] in self?.openSettings() },
-            quit: { NSApp.terminate(nil) }
+            quit: { NSApp.terminate(nil) },
+            resizePopover: { [weak self] size in self?.popover.contentSize = size }
         )
-        popover.contentSize = NSSize(width: 350, height: 440)
+        popover.contentSize = PopoverView.baseSize
         popover.contentViewController = NSHostingController(rootView: view)
         popover.behavior = .transient
         popover.animates = true
@@ -130,6 +131,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             let commandModifiers = event.modifierFlags.intersection([.command, .option, .control, .shift])
             if self.popover.isShown, commandModifiers.isEmpty,
                let command = ClipboardKeyboardCommand(event: event) {
+                if command == .select && event.isARepeat { return nil }
                 NotificationCenter.default.post(
                     name: .navigateClipboardHistory,
                     object: nil,
@@ -141,6 +143,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             guard let action = self.shortcutSettings.action(matching: event) else { return event }
 
             if let index = action.itemIndex {
+                if event.isARepeat { return nil }
                 NotificationCenter.default.post(
                     name: .selectClipboardHistoryItem,
                     object: nil,

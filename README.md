@@ -33,6 +33,9 @@ ATO captures and displays:
 - Pin or unpin an item from its context menu, or press `⌘P` after selecting it with the arrow keys.
 - Switch between **History** and **Pinned** directly from the popover.
 - Delete individual history items from their context menu. Pinned items must be unpinned before they can be deleted.
+- Choose **Select** from an item’s context menu to enter multiple selection. Click cards or use the arrow keys and Return to select or deselect them without copying.
+- In selection mode, use the toolbar below search to select or deselect all visible items, pin or unpin the selection, or delete it. Unpin all selected items before deleting; use the **×** button to leave selection mode.
+- The configured pin shortcut (default `⌘P`) also toggles the selected group: it pins all selected items when any are unpinned, and unpins them when all are pinned.
 
 ### Quick access and keyboard shortcuts
 

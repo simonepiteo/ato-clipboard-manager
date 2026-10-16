@@ -4,6 +4,104 @@ import XCTest
 
 final class HistoryPersistenceTests: XCTestCase {
     @MainActor
+    func testGroupPinTogglePinsMixedSelectionThenUnpinsOnlySelectedItems() throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("GroupPinToggleTests-\(UUID().uuidString)", isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let path = directory.appendingPathComponent("favorites.json").path
+        let first = ClipboardItem(content: .text("first"))
+        let second = ClipboardItem(content: .text("second"))
+        let other = ClipboardItem(content: .text("other"))
+        let store = FavoritesStore(filePath: path)
+        store.setPinned(true, for: [first, other])
+
+        XCTAssertTrue(store.toggle([first, second]))
+        XCTAssertTrue(store.contains(first))
+        XCTAssertTrue(store.contains(second))
+        XCTAssertTrue(store.contains(other))
+        XCTAssertEqual(FavoritesStore(filePath: path).items, store.items)
+
+        XCTAssertTrue(store.toggle([first, second]))
+        XCTAssertEqual(store.items, [other])
+        XCTAssertEqual(FavoritesStore(filePath: path).items, [other])
+        XCTAssertFalse(store.toggle([]))
+        XCTAssertEqual(store.items, [other])
+    }
+
+    @MainActor
+    func testBatchPinningAndUnpinningArePersistedWithoutDuplicates() throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("BatchFavoritesTests-\(UUID().uuidString)", isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let path = directory.appendingPathComponent("favorites.json").path
+        let first = ClipboardItem(content: .text("first"))
+        let second = ClipboardItem(content: .text("second"))
+        let third = ClipboardItem(content: .text("third"))
+        let store = FavoritesStore(filePath: path)
+        store.toggle(first)
+
+        XCTAssertTrue(store.setPinned(true, for: [first, second, second, third]))
+        XCTAssertEqual(store.items, [second, third, first])
+        XCTAssertEqual(FavoritesStore(filePath: path).items, store.items)
+
+        XCTAssertTrue(store.setPinned(false, for: [first, third]))
+        XCTAssertEqual(store.items, [second])
+        XCTAssertEqual(FavoritesStore(filePath: path).items, [second])
+    }
+
+    @MainActor
+    func testBatchPinFailureRestoresTheWholePreviousSelection() throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("BatchFavoritesFailureTests-\(UUID().uuidString)", isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let path = directory.appendingPathComponent("favorites.json").path
+        let first = ClipboardItem(content: .text("first"))
+        let store = FavoritesStore(filePath: path)
+        store.toggle(first)
+        try FileManager.default.removeItem(atPath: path)
+        try FileManager.default.removeItem(at: directory)
+        try Data().write(to: directory)
+
+        XCTAssertFalse(store.setPinned(false, for: [first]))
+        XCTAssertEqual(store.items, [first])
+        XCTAssertNotNil(store.persistenceError)
+        XCTAssertFalse(store.setPinned(true, for: [ClipboardItem(content: .text("second"))]))
+        XCTAssertEqual(store.items, [first])
+    }
+
+    @MainActor
+    func testBatchDeletionUpdatesPersistenceAndRollsBackOnSaveFailure() throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("BatchDeletionTests-\(UUID().uuidString)", isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let path = directory.appendingPathComponent("history.json").path
+        let suiteName = "BatchDeletionTests.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        defaults.set(true, forKey: "persistHistory")
+        let store = ClipboardStore(settings: AppSettings(defaults: defaults), historyFilePath: path)
+        let first = ClipboardItem(content: .text("first"))
+        let second = ClipboardItem(content: .text("second"))
+        let third = ClipboardItem(content: .text("third"))
+        store.promote(first)
+        store.promote(second)
+        store.promote(third)
+
+        XCTAssertTrue(store.delete([first, third]))
+        XCTAssertEqual(store.items, [second])
+        XCTAssertEqual(try HistoryPersistence().load(from: path), [second])
+
+        store.promote(first)
+        try FileManager.default.removeItem(atPath: path)
+        try FileManager.default.removeItem(at: directory)
+        try Data().write(to: directory)
+
+        XCTAssertFalse(store.delete([first, second]))
+        XCTAssertEqual(store.items, [first, second])
+        XCTAssertNotNil(store.persistenceError)
+    }
+
+    @MainActor
     func testFavoritesAreToggledAndRestored() throws {
         let directory = FileManager.default.temporaryDirectory
             .appendingPathComponent("FavoritesStoreTests-\(UUID().uuidString)", isDirectory: true)

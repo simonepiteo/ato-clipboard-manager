@@ -3,6 +3,10 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct PopoverView: View {
+    static let baseSize = NSSize(width: 350, height: 440)
+    static let selectionToolbarHeight: CGFloat = 36
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     @ObservedObject var store: ClipboardStore
     @ObservedObject var settings: AppSettings
     @ObservedObject var updateManager: UpdateManager
@@ -12,11 +16,13 @@ struct PopoverView: View {
     @State private var dismissedUpdateVersion: String?
     @State private var selectedSection: ClipboardSection = .history
     @State private var keyboardSelectedItemID: UUID?
+    @State private var selection = ClipboardSelection()
     @Namespace private var sectionSelectionNamespace
 
     let select: (ClipboardItem, Bool, Bool) -> Void
     let openSettings: () -> Void
     let quit: () -> Void
+    let resizePopover: (NSSize) -> Void
 
     private var filteredItems: [ClipboardItem] {
         let items = items(for: selectedSection)
@@ -34,6 +40,16 @@ struct PopoverView: View {
         VStack(spacing: 0) {
             searchBar
             Divider()
+            VStack(spacing: 0) {
+                selectionToolbar
+                Divider()
+                    .frame(height: 1)
+            }
+            .frame(height: selection.isActive ? Self.selectionToolbarHeight + 1 : 0, alignment: .top)
+            .opacity(selection.isActive ? 1 : 0)
+            .clipped()
+            .allowsHitTesting(selection.isActive)
+            .accessibilityHidden(!selection.isActive)
             if let release = visibleUpdate {
                 updateBanner(release)
                 Divider()
@@ -46,13 +62,18 @@ struct PopoverView: View {
             Divider()
             footerActions
         }
-        .frame(width: 350, height: 440)
+        .modifier(SelectionPopoverLayout(expansion: selection.isActive ? 1 : 0, resizePopover: resizePopover))
         .background(.ultraThinMaterial)
+        .animation(
+            reduceMotion ? .easeOut(duration: 0.12)
+                : .timingCurve(0.16, 1, 0.3, 1, duration: selection.isActive ? 0.28 : 0.22),
+            value: selection.isActive
+        )
         .onReceive(NotificationCenter.default.publisher(for: .selectClipboardHistoryItem)) { notification in
             guard let index = notification.userInfo?["index"] as? Int,
                   filteredItems.indices.contains(index)
             else { return }
-            select(filteredItems[index], settings.automaticPasteShortcut, false)
+            activateItem(filteredItems[index], paste: settings.automaticPasteShortcut, waitForClick: false)
         }
         .onReceive(NotificationCenter.default.publisher(for: .switchClipboardSection)) { notification in
             guard let rawValue = notification.userInfo?["section"] as? String,
@@ -70,10 +91,13 @@ struct PopoverView: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: .resetClipboardKeyboardSelection)) { _ in
             keyboardSelectedItemID = nil
+            selection.end()
         }
+        .onDisappear { selection.end() }
         .onChange(of: searchText) { _ in keyboardSelectedItemID = nil }
         .onChange(of: selectedSection) { _ in keyboardSelectedItemID = nil }
         .onChange(of: filteredItems.map(\.id)) { itemIDs in
+            selection.retain(Set(itemIDs))
             guard let keyboardSelectedItemID, itemIDs.contains(keyboardSelectedItemID) else {
                 self.keyboardSelectedItemID = nil
                 return
@@ -207,6 +231,16 @@ struct PopoverView: View {
                                 isList: settings.displayMode == .list,
                                 language: settings.language,
                                 isKeyboardSelected: keyboardSelectedItemID == item.id,
+                                isSelectionMode: selection.isActive,
+                                isBatchSelected: selection.itemIDs.contains(item.id),
+                                selectForBatch: {
+                                    keyboardSelectedItemID = item.id
+                                    if selection.itemIDs.contains(item.id) {
+                                        selection.toggle(item.id)
+                                    } else {
+                                        selection.begin(with: item.id)
+                                    }
+                                },
                                 showsFavoriteIndicator: selectedSection == .history && favoritesStore.contains(item),
                                 isFavorite: favoritesStore.contains(item),
                                 toggleFavorite: { favoritesStore.toggle(item) },
@@ -223,7 +257,7 @@ struct PopoverView: View {
                                     language: settings.language
                                 )
                             ) {
-                                select(item, settings.automaticPaste, true)
+                                activateItem(item, paste: settings.automaticPaste, waitForClick: true)
                             }
                             .id(item.id)
                         }
@@ -247,6 +281,11 @@ struct PopoverView: View {
     private func handleKeyboardCommand(_ command: ClipboardKeyboardCommand) {
         guard !filteredItems.isEmpty else { return }
 
+        if command == .togglePin, selection.isActive {
+            favoritesStore.toggle(selectedItems)
+            return
+        }
+
         if command == .select || command == .togglePin {
             guard let keyboardSelectedItemID,
                   let item = filteredItems.first(where: { $0.id == keyboardSelectedItemID })
@@ -254,7 +293,7 @@ struct PopoverView: View {
             if command == .togglePin {
                 favoritesStore.toggle(item)
             } else {
-                select(item, settings.automaticPasteOnReturn, false)
+                activateItem(item, paste: settings.automaticPasteOnReturn, waitForClick: false)
             }
             return
         }
@@ -282,6 +321,80 @@ struct PopoverView: View {
         let proposedIndex = currentIndex + delta
         let nextIndex = min(max(proposedIndex, 0), filteredItems.count - 1)
         keyboardSelectedItemID = filteredItems[nextIndex].id
+    }
+
+    private func activateItem(_ item: ClipboardItem, paste: Bool, waitForClick: Bool) {
+        if selection.isActive {
+            keyboardSelectedItemID = item.id
+            selection.toggle(item.id)
+        } else {
+            select(item, paste, waitForClick)
+        }
+    }
+
+    private var selectedItems: [ClipboardItem] {
+        filteredItems.filter { selection.itemIDs.contains($0.id) }
+    }
+
+    private var selectionToolbar: some View {
+        let selected = selectedItems
+        let allSelected = !filteredItems.isEmpty && selected.count == filteredItems.count
+        let containsPinned = selected.contains { favoritesStore.contains($0) }
+        let allPinned = !selected.isEmpty && selected.allSatisfy { favoritesStore.contains($0) }
+
+        return HStack(spacing: 6) {
+            Button(Localizer.text(allSelected ? .deselectAll : .selectAll, language: settings.language)) {
+                selection.toggleAll(Set(filteredItems.map(\.id)))
+            }
+            .disabled(filteredItems.isEmpty)
+
+            Spacer(minLength: 0)
+
+            selectionToolbarButton(
+                allPinned ? .unpinSelected : .pinSelected,
+                icon: allPinned ? "pin.slash.fill" : "pin.fill",
+                disabled: selected.isEmpty
+            ) {
+                favoritesStore.toggle(selected)
+            }
+            selectionToolbarButton(
+                containsPinned ? .unpinBeforeDeleting : .deleteSelected,
+                icon: "trash.fill",
+                disabled: selected.isEmpty || containsPinned
+            ) {
+                guard !selected.contains(where: { favoritesStore.contains($0) }) else { return }
+                store.delete(selected)
+            }
+            selectionToolbarButton(.exitSelectionMode, icon: "xmark.circle.fill") {
+                keyboardSelectedItemID = nil
+                selection.end()
+            }
+        }
+        .controlSize(.small)
+        .padding(.horizontal, 10)
+        .frame(height: Self.selectionToolbarHeight)
+        .background(Color.accentColor.opacity(0.08))
+    }
+
+    private func selectionToolbarButton(
+        _ title: LocalizedKey,
+        icon: String,
+        disabled: Bool = false,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Image(systemName: icon)
+                .resizable()
+                .scaledToFit()
+                .font(.system(size: 11, weight: .semibold))
+                .frame(width: 12, height: 12, alignment: .center)
+                .frame(width: 26, height: 26)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.borderless)
+        .accessibilityLabel(Localizer.text(title, language: settings.language))
+        .help(Localizer.text(title, language: settings.language))
+        .disabled(disabled)
     }
 
     private var emptyStateText: String {
@@ -410,12 +523,76 @@ struct PopoverView: View {
     }
 }
 
+private struct SelectionPopoverLayout: AnimatableModifier {
+    var expansion: CGFloat
+    let resizePopover: (NSSize) -> Void
+
+    var animatableData: CGFloat {
+        get { expansion }
+        set { expansion = newValue }
+    }
+
+    func body(content: Content) -> some View {
+        let size = NSSize(
+            width: PopoverView.baseSize.width,
+            height: PopoverView.baseSize.height + (PopoverView.selectionToolbarHeight + 1) * expansion
+        )
+        return content
+            .frame(width: size.width, height: size.height)
+            .background {
+                PopoverSizeReporter(size: size, resizePopover: resizePopover)
+                    .allowsHitTesting(false)
+                    .accessibilityHidden(true)
+            }
+    }
+}
+
+private struct PopoverSizeReporter: NSViewRepresentable {
+    let size: NSSize
+    let resizePopover: (NSSize) -> Void
+
+    func makeCoordinator() -> Coordinator { Coordinator() }
+
+    func makeNSView(context: Context) -> NSView { NSView() }
+
+    func updateNSView(_ nsView: NSView, context: Context) {
+        context.coordinator.resizePopover = resizePopover
+        context.coordinator.request(size)
+    }
+
+    final class Coordinator {
+        var resizePopover: ((NSSize) -> Void)?
+        private var pendingSize: NSSize?
+        private var lastSize: NSSize?
+        private var isScheduled = false
+
+        func request(_ size: NSSize) {
+            guard size != lastSize else { return }
+            lastSize = size
+            pendingSize = size
+            guard !isScheduled else { return }
+            isScheduled = true
+            // Resize outside SwiftUI's layout pass; coalesce to the latest animation frame.
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                self.isScheduled = false
+                guard let size = self.pendingSize else { return }
+                self.pendingSize = nil
+                self.resizePopover?(size)
+            }
+        }
+    }
+}
+
 private struct ClipboardCard: View {
     let item: ClipboardItem
     let shortcut: String?
     let isList: Bool
     let language: AppLanguage
     let isKeyboardSelected: Bool
+    let isSelectionMode: Bool
+    let isBatchSelected: Bool
+    let selectForBatch: () -> Void
     let showsFavoriteIndicator: Bool
     let isFavorite: Bool
     let toggleFavorite: () -> Void
@@ -446,11 +623,24 @@ private struct ClipboardCard: View {
                 }
                 .padding(6)
 
+                if isSelectionMode {
+                    Image(systemName: isBatchSelected ? "checkmark.circle.fill" : "circle")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(isBatchSelected ? Color.accentColor : Color.secondary)
+                        .background(.regularMaterial, in: Circle())
+                        .accessibilityHidden(true)
+                        .padding(5)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                }
+
                 if showsFavoriteIndicator {
                     Image(systemName: "pin.fill")
                         .font(.caption2.weight(.semibold))
                         .foregroundStyle(.white)
-                        .padding(6)
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 2)
+                        .background(.black.opacity(0.45), in: RoundedRectangle(cornerRadius: 4))
+                        .padding(5)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
                 }
 
@@ -468,17 +658,24 @@ private struct ClipboardCard: View {
             .frame(height: 98)
             .contentShape(Rectangle())
         }
-        .buttonStyle(CardButtonStyle(isKeyboardSelected: isKeyboardSelected))
-        .accessibilityAddTraits(isKeyboardSelected ? .isSelected : [])
+        .buttonStyle(CardButtonStyle(isKeyboardSelected: isKeyboardSelected, isBatchSelected: isBatchSelected))
+        .accessibilityAddTraits((isSelectionMode ? isBatchSelected : isKeyboardSelected) ? .isSelected : [])
         .contextMenu {
+            Button(action: selectForBatch) {
+                Label(
+                    Localizer.text(isBatchSelected ? .deselectCard : .selectCard, language: language),
+                    systemImage: isBatchSelected ? "minus.circle.fill" : "checkmark.circle.fill"
+                )
+            }
+
             Button(action: toggleFavorite) {
-                Label(favoriteActionTitle, systemImage: isFavorite ? "pin.slash" : "pin")
+                Label(favoriteActionTitle, systemImage: isFavorite ? "pin.slash.fill" : "pin.fill")
             }
 
             Divider()
 
             Button(role: .destructive, action: deleteFromHistory) {
-                Label(deleteActionTitle, systemImage: "trash")
+                Label(deleteActionTitle, systemImage: "trash.fill")
             }
             .disabled(isFavorite)
         }
@@ -572,18 +769,20 @@ private enum ClipboardSection: String {
 
 private struct CardButtonStyle: ButtonStyle {
     let isKeyboardSelected: Bool
+    let isBatchSelected: Bool
 
     func makeBody(configuration: Configuration) -> some View {
-        CardButton(configuration: configuration, isKeyboardSelected: isKeyboardSelected)
+        CardButton(configuration: configuration, isKeyboardSelected: isKeyboardSelected, isBatchSelected: isBatchSelected)
     }
 
     private struct CardButton: View {
         let configuration: Configuration
         let isKeyboardSelected: Bool
+        let isBatchSelected: Bool
         @State private var isHovered = false
 
         private var isHighlighted: Bool {
-            isHovered || configuration.isPressed || isKeyboardSelected
+            isHovered || configuration.isPressed || isKeyboardSelected || isBatchSelected
         }
 
         var body: some View {
@@ -591,7 +790,7 @@ private struct CardButtonStyle: ButtonStyle {
                 .background(
                     configuration.isPressed
                         ? Color.accentColor.opacity(0.35)
-                        : isKeyboardSelected ? Color.accentColor.opacity(0.22) : Color.black.opacity(0.10)
+                        : (isKeyboardSelected || isBatchSelected) ? Color.accentColor.opacity(0.22) : Color.black.opacity(0.10)
                 )
                 .overlay {
                     RoundedRectangle(cornerRadius: 6)

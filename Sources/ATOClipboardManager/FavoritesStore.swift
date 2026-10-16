@@ -25,19 +25,37 @@ final class FavoritesStore: ObservableObject {
     }
 
     func toggle(_ item: ClipboardItem) {
+        toggle([item])
+    }
+
+    @discardableResult
+    func toggle(_ selectedItems: [ClipboardItem]) -> Bool {
+        guard !selectedItems.isEmpty else { return false }
+        let allPinned = selectedItems.allSatisfy { contains($0) }
+        return setPinned(!allPinned, for: selectedItems)
+    }
+
+    @discardableResult
+    func setPinned(_ pinned: Bool, for selectedItems: [ClipboardItem]) -> Bool {
         let previous = items
-        if let index = items.firstIndex(of: item) {
-            items.remove(at: index)
+        if pinned {
+            var seen = Set(items)
+            let additions = selectedItems.filter { seen.insert($0).inserted }
+            items.insert(contentsOf: additions, at: 0)
         } else {
-            items.insert(item, at: 0)
+            let removed = Set(selectedItems)
+            items.removeAll { removed.contains($0) }
         }
+        guard items != previous else { return true }
 
         do {
             try persistence.save(items, to: filePath)
             persistenceError = nil
+            return true
         } catch {
             items = previous
             persistenceError = error.localizedDescription
+            return false
         }
     }
 
