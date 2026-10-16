@@ -10,6 +10,9 @@ APP_BUNDLE="$PROJECT_ROOT/dist/$APP_NAME.app"
 DMG_PATH="$PROJECT_ROOT/dist/$DMG_NAME"
 DMG_STAGE="$PROJECT_ROOT/.build/dmg-stage"
 
+source "$PROJECT_ROOT/scripts/code-signing.sh"
+ato_resolve_signing_identity
+
 "$PROJECT_ROOT/scripts/build-app.sh"
 
 rm -rf "$DMG_STAGE" "$DMG_PATH"
@@ -19,8 +22,8 @@ ln -s /Applications "$DMG_STAGE/Applications"
 
 hdiutil create -volname "$APP_NAME" -srcfolder "$DMG_STAGE" -ov -format UDZO "$DMG_PATH"
 
-if [[ -n "${CODE_SIGN_IDENTITY:-}" ]]; then
-  codesign --force --timestamp --sign "$CODE_SIGN_IDENTITY" "$DMG_PATH"
+if [[ "$CODE_SIGN_IDENTITY" != "-" ]]; then
+  codesign --force "$ATO_SIGNING_TIMESTAMP" --sign "$CODE_SIGN_IDENTITY" "$DMG_PATH"
 fi
 
 if [[ -n "${APPLE_ID:-}" && -n "${APPLE_TEAM_ID:-}" && -n "${APP_SPECIFIC_PASSWORD:-}" ]]; then

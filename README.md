@@ -137,6 +137,7 @@ ATO appears in the menu bar with a clipboard icon. Copy some text, an image, or 
 ### Build the app bundle
 
 ```sh
+./scripts/setup-local-signing.sh
 ./scripts/build-app.sh
 ```
 

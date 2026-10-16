@@ -50,6 +50,8 @@ if [[ "$(git branch --show-current)" != "develop" ]]; then
 fi
 
 if [[ "$DRY_RUN" == false ]]; then
+  source "$PROJECT_ROOT/scripts/code-signing.sh"
+  ato_resolve_signing_identity
   git fetch origin develop main --tags
 
   if ! git merge-base --is-ancestor origin/develop HEAD; then
@@ -91,10 +93,6 @@ else
 fi
 
 DMG_PATH="$PROJECT_ROOT/dist/ATO-Clipboard-Manager-$CURRENT_VERSION.dmg"
-
-if [[ -z "${CODE_SIGN_IDENTITY:-}" ]]; then
-  print "Warning: CODE_SIGN_IDENTITY is not set; the app will use an ad-hoc signature."
-fi
 
 "$PROJECT_ROOT/scripts/build-dmg.sh"
 

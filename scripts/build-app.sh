@@ -11,6 +11,9 @@ CONTENTS="$APP_BUNDLE/Contents"
 ICON_SOURCE="$PROJECT_ROOT/macos/atoClipboardManager-macOS/Assets.xcassets/AppIcon.appiconset/ATO_1024.png"
 CACHE_ROOT="$PROJECT_ROOT/.build/caches"
 
+source "$PROJECT_ROOT/scripts/code-signing.sh"
+ato_resolve_signing_identity
+
 if [[ ! "$VERSION" =~ '^[0-9]+\.[0-9]+\.[0-9]+$' ]]; then
   print -u2 "Invalid version in VERSION: $VERSION"
   exit 1
@@ -55,10 +58,14 @@ cat > "$CONTENTS/Info.plist" <<PLIST
 </dict></plist>
 PLIST
 
-if [[ -n "${CODE_SIGN_IDENTITY:-}" ]]; then
-  codesign --force --options runtime --timestamp --sign "$CODE_SIGN_IDENTITY" "$APP_BUNDLE"
+if [[ "$ATO_LOCAL_SIGNING" == true ]]; then
+  codesign --force --options runtime "$ATO_SIGNING_TIMESTAMP" --sign "$CODE_SIGN_IDENTITY" \
+    --requirements "=designated => identifier \"$BUNDLE_IDENTIFIER\" and anchor H\"$CODE_SIGN_IDENTITY\"" \
+    "$APP_BUNDLE"
+elif [[ "$CODE_SIGN_IDENTITY" != "-" ]]; then
+  codesign --force --options runtime "$ATO_SIGNING_TIMESTAMP" --sign "$CODE_SIGN_IDENTITY" "$APP_BUNDLE"
 else
-  codesign --force --sign - "$APP_BUNDLE"
+  codesign --force --timestamp=none --sign - "$APP_BUNDLE"
 fi
 codesign --verify --deep --strict --verbose=2 "$APP_BUNDLE"
 
