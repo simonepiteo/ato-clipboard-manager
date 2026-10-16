@@ -23,6 +23,7 @@ enum LocalizedKey: String {
     case updates, checkForUpdates, updateAvailable, upToDate, lastChecked
     case downloadAndInstall, downloadAndRestartHint, previousVersions, noVersionsLoaded
     case installed, releaseNotes, updateError
+    case releasePage, previousReleasePage, nextReleasePage
     case updateNow, installingUpdate, updateBadgeHint, later
     case accessibilityPermissionRequired, accessibilityPermissionExplanation
     case openAccessibilitySettings, automaticPastePermissionTitle, automaticPastePermissionMessage
@@ -79,6 +80,7 @@ enum Localizer {
         .downloadAndRestartHint: "ATO will restart after installing the update.",
         .previousVersions: "Previous versions", .noVersionsLoaded: "No release information loaded yet.",
         .installed: "Installed", .releaseNotes: "Open release notes", .updateError: "Couldn’t update ATO",
+        .releasePage: "Page %d of %d", .previousReleasePage: "Previous", .nextReleasePage: "Next",
         .updateNow: "Update Now",
         .installingUpdate: "Downloading and installing…", .updateBadgeHint: "An ATO update is available",
         .later: "Later",
@@ -144,6 +146,7 @@ enum Localizer {
         .downloadAndRestartHint: "ATO verrà riavviato dopo l’installazione.",
         .previousVersions: "Versioni precedenti", .noVersionsLoaded: "Nessuna informazione sulle release caricata.",
         .installed: "Installata", .releaseNotes: "Apri note di rilascio", .updateError: "Impossibile aggiornare ATO",
+        .releasePage: "Pagina %d di %d", .previousReleasePage: "Precedente", .nextReleasePage: "Successiva",
         .updateNow: "Aggiorna ora",
         .installingUpdate: "Download e installazione…", .updateBadgeHint: "È disponibile un aggiornamento di ATO",
         .later: "Più tardi",

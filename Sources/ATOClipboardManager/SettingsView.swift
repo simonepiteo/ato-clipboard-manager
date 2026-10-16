@@ -10,6 +10,7 @@ struct SettingsView: View {
     @ObservedObject var accessibilityPermission: AccessibilityPermissionManager
     @State private var selectedTab: SettingsTab = .general
     @State private var showDeleteHistoryAfterDisabling = false
+    @State private var releasePageIndex = 0
 
     var body: some View {
         HStack(spacing: 0) {
@@ -27,6 +28,9 @@ struct SettingsView: View {
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
             launchAtLogin.refresh()
             accessibilityPermission.refresh()
+        }
+        .onChange(of: updateManager.releases.count) { _ in
+            releasePageIndex = releasePagination.pageIndex
         }
         .alert(
             Localizer.text(.launchAtLoginError, language: settings.language),
@@ -605,15 +609,16 @@ struct SettingsView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                     } else {
                         LazyVStack(spacing: 0) {
-                            ForEach(updateManager.releases) { release in
+                            ForEach(visibleReleases) { release in
                                 HStack(spacing: 10) {
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text("v\(release.version)")
-                                            .font(.callout.weight(.medium))
-                                        Text(release.publishedAt.formatted(date: .abbreviated, time: .omitted))
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
-                                    }
+                                    Text("v\(release.version)")
+                                        .font(.callout.weight(.medium))
+                                        .frame(minWidth: 72, alignment: .leading)
+                                        .help("v\(release.version)")
+                                    Text(release.publishedAt.formatted(date: .abbreviated, time: .omitted))
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                        .fixedSize()
                                     Spacer()
                                     if VersionNumber(release.version) == VersionNumber(updateManager.currentVersion) {
                                         Text(Localizer.text(.installed, language: settings.language))
@@ -623,16 +628,59 @@ struct SettingsView: View {
                                     Link(destination: release.pageURL) {
                                         Image(systemName: "arrow.up.right.square")
                                     }
+                                    .accessibilityLabel(Localizer.text(.releaseNotes, language: settings.language))
                                     .help(Localizer.text(.releaseNotes, language: settings.language))
                                 }
-                                .padding(.vertical, 8)
-                                if release.id != updateManager.releases.last?.id { Divider() }
+                                .lineLimit(1)
+                                .frame(minHeight: 26)
+                                if release.id != visibleReleases.last?.id { Divider() }
                             }
+                        }
+                        if releasePagination.pageCount > 1 {
+                            releasePaginationControls
                         }
                     }
                 }
             }
         }
+    }
+
+    private var releasePagination: ReleasePagination {
+        ReleasePagination(itemCount: updateManager.releases.count, pageIndex: releasePageIndex)
+    }
+
+    private var visibleReleases: [AppRelease] {
+        Array(updateManager.releases[releasePagination.itemRange])
+    }
+
+    private var releasePaginationControls: some View {
+        HStack(spacing: 12) {
+            Text(String(
+                format: Localizer.text(.releasePage, language: settings.language),
+                releasePagination.pageIndex + 1,
+                releasePagination.pageCount
+            ))
+            .font(.caption)
+            .monospacedDigit()
+            .foregroundStyle(.secondary)
+
+            Spacer()
+
+            Button {
+                releasePageIndex = releasePagination.pageIndex - 1
+            } label: {
+                Label(Localizer.text(.previousReleasePage, language: settings.language), systemImage: "chevron.left")
+            }
+            .disabled(releasePagination.pageIndex == 0)
+
+            Button {
+                releasePageIndex = releasePagination.pageIndex + 1
+            } label: {
+                Label(Localizer.text(.nextReleasePage, language: settings.language), systemImage: "chevron.right")
+            }
+            .disabled(releasePagination.pageIndex == releasePagination.pageCount - 1)
+        }
+        .controlSize(.small)
     }
 
     private var footer: some View {
