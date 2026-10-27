@@ -1,6 +1,7 @@
 # ATO - Clipboard Manager
 
 [![Version](https://img.shields.io/github/v/release/simonepiteo/ato-clipboard-manager?sort=semver)](https://github.com/simonepiteo/ato-clipboard-manager/releases/latest)
+[![Tests](https://github.com/simonepiteo/ato-clipboard-manager/actions/workflows/tests.yml/badge.svg)](https://github.com/simonepiteo/ato-clipboard-manager/actions/workflows/tests.yml)
 
 ATO Clipboard Manager is a modern, open-source clipboard manager for macOS, built natively with Swift, SwiftUI, and AppKit. It keeps text, image, and file clipboard history available, lets you quickly reuse previous items, and requires no third-party dependencies.
 

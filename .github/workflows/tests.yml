@@ -1,0 +1,23 @@
+name: Tests
+
+on:
+  pull_request:
+    branches: [main]
+    types: [closed]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    if: github.event.pull_request.merged == true
+    name: Swift tests
+    runs-on: macos-15
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+      - name: Run tests
+        run: swift test --disable-sandbox
