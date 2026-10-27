@@ -728,7 +728,9 @@ private struct FileClipboardPreview: View {
 
     var body: some View {
         Group {
-            if expanded {
+            if expanded, files.count == 1, let file = files.first {
+                SingleFileClipboardPreview(file: file, language: language, icon: icon(for: file))
+            } else if expanded {
                 expandedContents
             } else {
                 compactContents
