@@ -3,7 +3,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct PopoverView: View {
-    static let baseSize = NSSize(width: 350, height: 440)
+    static let baseSize = NSSize(width: 350, height: 450)
     static let selectionToolbarHeight: CGFloat = 36
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -598,7 +598,7 @@ private struct PopoverSizeReporter: NSViewRepresentable {
     }
 }
 
-private struct ClipboardCard: View {
+struct ClipboardCard: View {
     let item: ClipboardItem
     let shortcut: String?
     let isList: Bool
@@ -615,14 +615,15 @@ private struct ClipboardCard: View {
     let deleteActionTitle: String
     let action: () -> Void
 
-    var body: some View {
+    private func cardButton(expanded: Bool = false) -> some View {
         Button(action: action) {
             ZStack {
                 Group {
                     switch item.content {
                     case let .text(text):
                         Text(text.trimmingCharacters(in: .whitespacesAndNewlines))
-                            .lineLimit(isList ? 4 : 6).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                            .lineLimit(expanded ? nil : (isList ? 4 : 6))
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                     case let .image(data):
                         if let image = NSImage(data: data) {
                             Image(nsImage: image).resizable().scaledToFit().frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -631,7 +632,8 @@ private struct ClipboardCard: View {
                         FileClipboardPreview(
                             files: files,
                             isList: isList,
-                            language: language
+                            language: language,
+                            expanded: expanded
                         )
                     }
                 }
@@ -669,10 +671,19 @@ private struct ClipboardCard: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                 }
             }
-            .frame(height: 98)
+            .frame(height: expanded ? nil : 98)
             .contentShape(Rectangle())
         }
         .buttonStyle(CardButtonStyle(isKeyboardSelected: isKeyboardSelected, isBatchSelected: isBatchSelected))
+    }
+
+    var hoverPreview: CardHoverPreview {
+        CardHoverPreview(content: AnyView(cardButton(expanded: true)))
+    }
+
+    var body: some View {
+        cardButton()
+        .modifier(CardHoverZoom(preview: hoverPreview))
         .accessibilityAddTraits((isSelectionMode ? isBatchSelected : isKeyboardSelected) ? .isSelected : [])
         .contextMenu {
             Button(action: selectForBatch) {
@@ -700,8 +711,66 @@ private struct FileClipboardPreview: View {
     let files: [ClipboardFile]
     let isList: Bool
     let language: AppLanguage
+    var expanded = false
 
     var body: some View {
+        Group {
+            if expanded {
+                expandedContents
+            } else {
+                compactContents
+            }
+        }
+        .padding(.horizontal, 2)
+        .padding(.bottom, 13)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(files.map(\.name).joined(separator: ", "))
+    }
+
+    private var expandedContents: some View {
+        GeometryReader { geometry in
+            let capacity = min(4, max(1, Int((geometry.size.height - 28) / 29)))
+            let visibleFiles = Array(files.prefix(capacity))
+            VStack(alignment: .leading, spacing: 3) {
+                Text(fileCountLabel)
+                    .font(.caption.weight(.semibold))
+                    .lineLimit(1)
+                ForEach(visibleFiles) { file in
+                    HStack(spacing: 6) {
+                        fileIcon(for: file, size: 22)
+                        VStack(alignment: .leading, spacing: 1) {
+                            Text(file.name)
+                                .font(.caption.weight(.medium))
+                                .lineLimit(1)
+                                .truncationMode(.middle)
+                            Text(file.url.deletingLastPathComponent().path)
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                                .truncationMode(.middle)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .frame(height: 26)
+                }
+                if files.count > visibleFiles.count {
+                    Text(String(
+                        format: Localizer.text(
+                            files.count - visibleFiles.count == 1 ? .additionalFileSingular : .additionalFilePlural,
+                            language: language
+                        ),
+                        files.count - visibleFiles.count
+                    ))
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .topLeading)
+        }
+    }
+
+    private var compactContents: some View {
         VStack(spacing: files.count == 1 ? 5 : 2) {
             if let file = files.first, files.count == 1 {
                 fileIcon(for: file, size: 38)
@@ -722,11 +791,6 @@ private struct FileClipboardPreview: View {
                     .truncationMode(.middle)
             }
         }
-        .padding(.horizontal, 2)
-        .padding(.bottom, 13)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(files.map(\.name).joined(separator: ", "))
     }
 
     private var overlappingIcons: some View {

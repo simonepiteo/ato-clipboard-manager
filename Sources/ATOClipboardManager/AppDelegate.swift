@@ -415,6 +415,10 @@ extension AppDelegate: NSWindowDelegate {
 }
 
 extension AppDelegate: NSPopoverDelegate {
+    func popoverWillClose(_ notification: Notification) {
+        CardHoverZoomController.shared.cancel(animated: false)
+    }
+
     func popoverDidClose(_ notification: Notification) {
         if restorePopoverAnimationAfterClose {
             popover.animates = true

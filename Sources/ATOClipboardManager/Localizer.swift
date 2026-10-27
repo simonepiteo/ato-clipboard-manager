@@ -33,6 +33,7 @@ enum LocalizedKey: String {
     case addToFavorites, removeFromFavorites, favoritesPersistenceError
     case deleteFromHistory, unpinBeforeDeleting
     case fileCountSingular, fileCountPlural
+    case additionalFileSingular, additionalFilePlural
     case selectCard, deselectCard, selectAll, deselectAll
     case pinSelected, unpinSelected, deleteSelected, exitSelectionMode
 }
@@ -103,6 +104,7 @@ enum Localizer {
         .favoritesPersistenceError: "Couldn’t update Pinned items",
         .deleteFromHistory: "Delete from History", .unpinBeforeDeleting: "Unpin Before Deleting",
         .fileCountSingular: "%d file", .fileCountPlural: "%d files",
+        .additionalFileSingular: "+%d File", .additionalFilePlural: "+%d Files",
         .selectCard: "Select", .deselectCard: "Deselect",
         .selectAll: "Select all", .deselectAll: "Deselect all",
         .pinSelected: "Pin selected items", .unpinSelected: "Unpin selected items",
@@ -174,6 +176,7 @@ enum Localizer {
         .favoritesPersistenceError: "Impossibile aggiornare gli elementi fissati",
         .deleteFromHistory: "Elimina dalla cronologia", .unpinBeforeDeleting: "Rimuovi il pin prima di eliminare",
         .fileCountSingular: "%d file", .fileCountPlural: "%d file",
+        .additionalFileSingular: "+%d File", .additionalFilePlural: "+%d File",
         .selectCard: "Seleziona", .deselectCard: "Deseleziona",
         .selectAll: "Seleziona tutto", .deselectAll: "Deseleziona tutto",
         .pinSelected: "Fissa i selezionati", .unpinSelected: "Rimuovi il pin dai selezionati",
