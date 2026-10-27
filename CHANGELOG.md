@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.10.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v1.9.0...v1.10.0) (2026-10-27)
+
+### Features
+
+* Implement keyboard zoom functionality with shortcuts and escape handling ([2b9c0a4](https://github.com/simonepiteo/ato-clipboard-manager/commit/2b9c0a44a240604c870c88de06729e41a10c9b2f))
+* Add single file clipboard preview with metadata display and localization ([7a18f03](https://github.com/simonepiteo/ato-clipboard-manager/commit/7a18f03c3f13a5d53e5d06a46fb213ded2fad638))
+* Enhance card hover functionality with pinch gesture support and localized text ([e19860f](https://github.com/simonepiteo/ato-clipboard-manager/commit/e19860f67f3a51949445a219a65c8968bb259110))
+* Add card hover zoom functionality with customizable delay and settings ([5531b97](https://github.com/simonepiteo/ato-clipboard-manager/commit/5531b970eb65ba282c2558d8f77ecad6b6a1f756))
+* Implement card hover zoom functionality with preview and interaction improvements ([8985567](https://github.com/simonepiteo/ato-clipboard-manager/commit/89855672bc0755ef5246e07f9c919cc8ecb145d9))
+* Add GitHub Actions workflow for automated testing ([feec676](https://github.com/simonepiteo/ato-clipboard-manager/commit/feec676988e471da251c17a61430bd8d3b2d167a))
+
 ## [1.9.0](https://github.com/simonepiteo/ato-clipboard-manager/compare/v1.8.0...v1.9.0) (2026-10-16)
 
 ### Features
