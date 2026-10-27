@@ -132,6 +132,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             if self.popover.isShown, commandModifiers.isEmpty, event.keyCode == 53,
                NSApp.keyWindow == self.popover.contentViewController?.view.window {
                 if event.isARepeat { return nil }
+                if CardHoverZoomController.shared.dismissZoomForEscape() { return nil }
                 let request = ClipboardSelectionExitRequest()
                 NotificationCenter.default.post(name: .exitClipboardSelection, object: request)
                 return request.wasHandled ? nil : event
@@ -160,17 +161,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
 
             switch action {
-            case .toggleSelectedItemPin, .enterSelectionMode:
+            case .toggleSelectedItemPin, .enterSelectionMode, .zoomSelectedItem:
                 guard self.popover.isShown,
                       NSApp.keyWindow == self.popover.contentViewController?.view.window
                 else { return event }
                 if !event.isARepeat {
+                    let command: ClipboardKeyboardCommand
+                    switch action {
+                    case .enterSelectionMode: command = .beginSelection
+                    case .zoomSelectedItem: command = .zoom
+                    default: command = .togglePin
+                    }
                     NotificationCenter.default.post(
                         name: .navigateClipboardHistory,
                         object: nil,
-                        userInfo: ["command": (action == .enterSelectionMode
-                            ? ClipboardKeyboardCommand.beginSelection
-                            : ClipboardKeyboardCommand.togglePin).rawValue]
+                        userInfo: ["command": command.rawValue]
                     )
                 }
                 return nil
@@ -394,7 +399,7 @@ extension Notification.Name {
 }
 
 enum ClipboardKeyboardCommand: String {
-    case moveLeft, moveRight, moveUp, moveDown, select, togglePin, beginSelection
+    case moveLeft, moveRight, moveUp, moveDown, select, togglePin, beginSelection, zoom
 
     init?(event: NSEvent) {
         switch event.keyCode {

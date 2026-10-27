@@ -99,8 +99,14 @@ struct PopoverView: View {
             exitSelectionMode()
         }
         .onDisappear { exitSelectionMode() }
-        .onChange(of: searchText) { _ in keyboardSelectedItemID = nil }
-        .onChange(of: selectedSection) { _ in keyboardSelectedItemID = nil }
+        .onChange(of: searchText) { _ in
+            keyboardSelectedItemID = nil
+            CardHoverZoomController.shared.cancel(animated: false)
+        }
+        .onChange(of: selectedSection) { _ in
+            keyboardSelectedItemID = nil
+            CardHoverZoomController.shared.cancel(animated: false)
+        }
         .onChange(of: filteredItems.map(\.id)) { itemIDs in
             selection.retain(Set(itemIDs))
             guard let keyboardSelectedItemID, itemIDs.contains(keyboardSelectedItemID) else {
@@ -275,6 +281,7 @@ struct PopoverView: View {
                 }
             }
             .onChange(of: keyboardSelectedItemID) { itemID in
+                CardHoverZoomController.shared.followKeyboardSelection(itemID)
                 guard let itemID else { return }
                 withAnimation(.easeOut(duration: 0.12)) {
                     proxy.scrollTo(itemID, anchor: .center)
@@ -286,6 +293,11 @@ struct PopoverView: View {
     }
 
     private func handleKeyboardCommand(_ command: ClipboardKeyboardCommand) {
+        if command == .zoom {
+            guard settings.hoverZoomEnabled, let keyboardSelectedItemID else { return }
+            CardHoverZoomController.shared.toggleKeyboardZoom(itemID: keyboardSelectedItemID)
+            return
+        }
         if command == .beginSelection {
             guard !selection.isActive else { return }
             selection.begin(with: keyboardSelectedItemID)
@@ -327,7 +339,7 @@ struct PopoverView: View {
         case .moveRight: delta = 1
         case .moveUp: delta = -columnCount
         case .moveDown: delta = columnCount
-        case .select, .togglePin, .beginSelection: return
+        case .select, .togglePin, .beginSelection, .zoom: return
         }
 
         let proposedIndex = currentIndex + delta

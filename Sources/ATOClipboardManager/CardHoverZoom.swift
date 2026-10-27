@@ -220,6 +220,61 @@ final class CardHoverZoomController {
     private var isManualPreview = false
     private var clickGuard = CardGestureClickGuard()
     private var pendingActivation: DispatchWorkItem?
+    private(set) var keyboardZoomItemID: UUID?
+    private var keyboardCandidateFrame: NSRect?
+    private var keyboardFrameStableSince: TimeInterval = 0
+
+    func toggleKeyboardZoom(itemID: UUID) {
+        if keyboardZoomItemID == itemID {
+            cancel()
+        } else {
+            setKeyboardZoomTarget(itemID)
+        }
+    }
+
+    func followKeyboardSelection(_ itemID: UUID?) {
+        guard keyboardZoomItemID != nil || panel != nil else { return }
+        guard let itemID else { cancel(); return }
+        guard keyboardZoomItemID != itemID else { return }
+        setKeyboardZoomTarget(itemID)
+    }
+
+    private func setKeyboardZoomTarget(_ itemID: UUID) {
+        cancel(animated: false)
+        keyboardZoomItemID = itemID
+        startTimerIfNeeded()
+        checkKeyboardZoom()
+    }
+
+    /// Consume Escape even while waiting for a lazy card to scroll into view.
+    @discardableResult
+    func dismissZoomForEscape() -> Bool {
+        guard panel != nil || keyboardZoomItemID != nil else { return false }
+        cancel()
+        return true
+    }
+
+    private func checkKeyboardZoom() {
+        guard let itemID = keyboardZoomItemID, let view = anchors[itemID]?.view else { return }
+        guard view.isHoverEnabled else { cancel(); return }
+        guard let frame = view.screenFrame, !view.visibleRect.isEmpty else { return }
+        if panel != nil {
+            if frame != sourceFrame { cancel(animated: false, preserveKeyboardZoom: true) }
+            return
+        }
+        let now = ProcessInfo.processInfo.systemUptime
+        if keyboardCandidateFrame != frame {
+            keyboardCandidateFrame = frame
+            keyboardFrameStableSince = now
+            return
+        }
+        // Wait for scrollTo's animation to settle rather than opening at stale coordinates.
+        guard now - keyboardFrameStableSince >= 0.08 else { return }
+        source = view
+        isManualPreview = true
+        if eventMonitor == nil { installEventMonitor() }
+        show(view)
+    }
 
     func activateCard(itemID: UUID, action: @escaping () -> Void) {
         guard NSApp.currentEvent?.type != .keyDown,
@@ -280,6 +335,7 @@ final class CardHoverZoomController {
 
     fileprivate func hover(_ view: CardHoverZoomTrackingView) {
         guard view.isHoverEnabled, view.containsMouse else { return }
+        guard keyboardZoomItemID == nil else { return }
         guard !clickGuard.isGesturing else { return }
         // The enlarged preview may cover neighboring cards; keep its source stable.
         guard !isManualPreview || panel == nil else { return }
@@ -309,6 +365,17 @@ final class CardHoverZoomController {
             matching: [.beginGesture, .endGesture, .magnify, .scrollWheel, .keyDown, .leftMouseDown, .leftMouseUp, .rightMouseDown, .otherMouseDown, .mouseMoved, .leftMouseDragged]
         ) { [weak self] event in
             guard let self else { return event }
+            if event.type == .keyDown {
+                guard !(NSApp.keyWindow?.firstResponder is ShortcutRecorderButton) else { return event }
+                let modifiers = event.modifierFlags.intersection([.command, .option, .control, .shift])
+                if event.keyCode == 53, modifiers.isEmpty, event.window == self.source?.window {
+                    if event.isARepeat { return nil }
+                    if self.dismissZoomForEscape() { return nil }
+                }
+                // AppDelegate owns keyboard navigation and shortcut dispatch. Do not
+                // tear down the preview before that monitor can handle the key.
+                return event
+            }
             if event.type == .beginGesture, let source = self.source,
                source.isHoverEnabled, source.containsMouse || self.containsPreviewMouse {
                 self.beginTrackpadGesture()
@@ -347,7 +414,7 @@ final class CardHoverZoomController {
                 return event
             }
             if event.type == .mouseMoved, self.isManualPreview {
-                if !self.containsPreviewMouse { self.cancel() }
+                if self.keyboardZoomItemID == nil, !self.containsPreviewMouse { self.cancel() }
             } else if event.type == .mouseMoved, let source = self.source, source.containsMouse {
                 self.hover(source)
             } else {
@@ -366,6 +433,10 @@ final class CardHoverZoomController {
     }
 
     private func checkHover() {
+        if keyboardZoomItemID != nil {
+            checkKeyboardZoom()
+            return
+        }
         guard let source, source.isHoverEnabled, source.screenFrame != nil,
               isManualPreview || source.containsMouse else {
             cancel()
@@ -423,16 +494,17 @@ final class CardHoverZoomController {
     }
 
     fileprivate func mouseExited(_ view: CardHoverZoomTrackingView) {
+        guard keyboardZoomItemID == nil else { return }
         if source === view, !isManualPreview, !clickGuard.isGesturing {
             cancel(preservePendingActivation: true)
         }
     }
 
     fileprivate func cancel(for view: CardHoverZoomTrackingView) {
-        if source === view { cancel() }
+        if source === view { cancel(preserveKeyboardZoom: keyboardZoomItemID != nil) }
     }
 
-    func cancel(animated: Bool = true, preservePendingActivation: Bool = false) {
+    func cancel(animated: Bool = true, preservePendingActivation: Bool = false, preserveKeyboardZoom: Bool = false) {
         if !preservePendingActivation {
             pendingActivation?.cancel()
             pendingActivation = nil
@@ -446,6 +518,10 @@ final class CardHoverZoomController {
         isManualPreview = false
         magnificationIntent = CardMagnificationIntent()
         intent = CardHoverIntent()
+        if !preserveKeyboardZoom { keyboardZoomItemID = nil }
+        keyboardCandidateFrame = nil
+        keyboardFrameStableSince = 0
+        if keyboardZoomItemID != nil { startTimerIfNeeded() }
         guard let panel else { return }
         let frame = sourceFrame
         self.panel = nil

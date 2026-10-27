@@ -13,6 +13,7 @@ enum LocalizedKey: String {
     case showHistoryShortcut, showFavoritesShortcut
     case toggleSelectedItemPinShortcut
     case enterSelectionModeShortcut
+    case zoomSelectedItemShortcut
     case recordShortcut, resetShortcut, resetShortcuts, shortcutError, shortcutModifierRequired, shortcutDuplicate
     case startup, launchAtLogin, launchAtLoginApproval, openLoginItems
     case launchAtLoginPromptTitle, launchAtLoginPromptMessage, enable, notNow
@@ -65,6 +66,7 @@ enum Localizer {
         .showHistoryShortcut: "Show History tab", .showFavoritesShortcut: "Show Pinned tab",
         .toggleSelectedItemPinShortcut: "Pin or unpin selected item",
         .enterSelectionModeShortcut: "Enter selection mode",
+        .zoomSelectedItemShortcut: "Zoom selected card",
         .recordShortcut: "Press shortcut…", .resetShortcut: "Restore this shortcut",
         .resetShortcuts: "Restore Default Shortcuts",
         .shortcutError: "Invalid shortcut",
@@ -142,6 +144,7 @@ enum Localizer {
         .showHistoryShortcut: "Mostra tab Cronologia", .showFavoritesShortcut: "Mostra tab Fissati",
         .toggleSelectedItemPinShortcut: "Fissa o rimuovi il pin dall’elemento selezionato",
         .enterSelectionModeShortcut: "Entra in modalità selezione",
+        .zoomSelectedItemShortcut: "Ingrandisci la card selezionata",
         .recordShortcut: "Premi scorciatoia…", .resetShortcut: "Ripristina questa scorciatoia",
         .resetShortcuts: "Ripristina scorciatoie predefinite",
         .shortcutError: "Scorciatoia non valida",

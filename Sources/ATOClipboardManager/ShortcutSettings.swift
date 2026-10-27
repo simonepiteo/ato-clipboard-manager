@@ -8,6 +8,7 @@ enum ShortcutAction: String, Codable, CaseIterable, Identifiable {
     case showFavorites
     case toggleSelectedItemPin
     case enterSelectionMode
+    case zoomSelectedItem
     case openSettings
     case quit
     case selectItem1, selectItem2, selectItem3, selectItem4, selectItem5
@@ -195,6 +196,7 @@ final class ShortcutSettings: ObservableObject {
         .showFavorites: AppShortcut(keyCode: UInt16(kVK_ANSI_F), key: "F", modifiers: [.command, .shift]),
         .toggleSelectedItemPin: AppShortcut(keyCode: UInt16(kVK_ANSI_P), key: "P", modifiers: [.command]),
         .enterSelectionMode: AppShortcut(keyCode: UInt16(kVK_ANSI_M), key: "M", modifiers: [.command, .shift]),
+        .zoomSelectedItem: AppShortcut(keyCode: UInt16(kVK_ANSI_Z), key: "Z", modifiers: [.command, .option]),
         .openSettings: AppShortcut(keyCode: UInt16(kVK_ANSI_S), key: "S", modifiers: [.command, .option]),
         .quit: AppShortcut(keyCode: UInt16(kVK_ANSI_Q), key: "Q", modifiers: [.command]),
         .selectItem1: AppShortcut(keyCode: UInt16(kVK_ANSI_1), key: "1", modifiers: [.command]),
@@ -217,7 +219,30 @@ final class ShortcutSettings: ObservableObject {
         self.persistence = persistence
         do {
             let loaded = try persistence.load() ?? [:]
-            let merged = Self.defaultShortcuts.merging(loaded) { _, saved in saved }
+            var merged = Self.defaultShortcuts.merging(loaded) { _, saved in saved }
+            if loaded[.zoomSelectedItem] == nil,
+               let standardZoom = Self.defaultShortcuts[.zoomSelectedItem] {
+                let occupied = Set(merged.filter { $0.key != .zoomSelectedItem }.map(\.value))
+                if occupied.contains(standardZoom) {
+                    // Adding the new command must not reset a user's existing bindings.
+                    let preferred: [Set<ShortcutModifier>] = [
+                        [.command, .option, .shift], [.command, .option, .control],
+                        [.command, .option, .control, .shift]
+                    ]
+                    let modifiers = ShortcutModifier.allCases
+                    let remaining = (1..<(1 << modifiers.count)).map { mask in
+                        Set(modifiers.enumerated().compactMap { index, modifier in
+                            mask & (1 << index) == 0 ? nil : modifier
+                        })
+                    }
+                    guard let replacement = (preferred + remaining).map({
+                        AppShortcut(keyCode: standardZoom.keyCode, key: standardZoom.key, modifiers: $0)
+                    }).first(where: { !occupied.contains($0) }) else {
+                        throw ShortcutPersistence.PersistenceError.invalidDocument
+                    }
+                    merged[.zoomSelectedItem] = replacement
+                }
+            }
             guard Set(merged.values).count == merged.count else {
                 throw ShortcutPersistence.PersistenceError.invalidDocument
             }

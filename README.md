@@ -48,10 +48,13 @@ ATO can be opened from the macOS menu bar or controlled entirely with customizab
 | Select one of the first nine items | `⌘1`–`⌘9` |
 | Pin or unpin the keyboard-selected item | `⌘P` |
 | Enter selection mode | `⌘⇧M` |
+| Zoom the keyboard-selected card | `⌘⌥Z` |
 | Switch to History | `⌘⇧H` |
 | Switch to Pinned | `⌘⇧F` |
 
-Shortcuts for item selection, pinning, Settings, Quit, and section navigation can all be reassigned. ATO prevents duplicate assignments and provides an option to restore the default configuration.
+Shortcuts for item selection, pinning, zoom, Settings, Quit, and section navigation can all be reassigned. ATO prevents duplicate assignments and provides an option to restore the default configuration.
+
+While a card is zoomed, arrow-key navigation moves the preview to the newly selected card. Escape closes the zoom first, then exits selection mode on a subsequent press, and finally closes the popover.
 
 When automatic paste is enabled, selecting an item also pastes it into the previously active application. Otherwise, the item is only copied to the system clipboard.
 

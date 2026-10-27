@@ -477,6 +477,8 @@ struct SettingsView: View {
                     panelDivider
                     shortcutRow(.toggleSelectedItemPin)
                     panelDivider
+                    shortcutRow(.zoomSelectedItem)
+                    panelDivider
                     ForEach(Array(1...9), id: \.self) { number in
                         if let action = ShortcutAction.selectItem(at: number - 1) {
                             shortcutRow(action)
@@ -776,6 +778,8 @@ struct SettingsView: View {
             Localizer.text(.toggleSelectedItemPinShortcut, language: settings.language)
         case .enterSelectionMode:
             Localizer.text(.enterSelectionModeShortcut, language: settings.language)
+        case .zoomSelectedItem:
+            Localizer.text(.zoomSelectedItemShortcut, language: settings.language)
         default:
             String(
                 format: Localizer.text(.selectItemShortcut, language: settings.language),

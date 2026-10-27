@@ -5,6 +5,50 @@ import XCTest
 
 final class ShortcutSettingsTests: XCTestCase {
     @MainActor
+    func testZoomShortcutCanBeCustomizedRestoredAndRejectsDuplicates() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let persistence = ShortcutPersistence(fileURL: directory.appendingPathComponent("shortcut.json"))
+        let settings = ShortcutSettings(persistence: persistence)
+        let standard = AppShortcut(keyCode: UInt16(kVK_ANSI_Z), key: "Z", modifiers: [.command, .option])
+        XCTAssertEqual(settings.shortcut(for: .zoomSelectedItem), standard)
+        let custom = AppShortcut(keyCode: UInt16(kVK_ANSI_B), key: "B", modifiers: [.command, .shift])
+        settings.set(custom, for: .zoomSelectedItem)
+        let restored = ShortcutSettings(persistence: persistence)
+        let event = try XCTUnwrap(NSEvent.keyEvent(
+            with: .keyDown, location: .zero, modifierFlags: [.command, .shift],
+            timestamp: 0, windowNumber: 0, context: nil, characters: "b",
+            charactersIgnoringModifiers: "b", isARepeat: false, keyCode: UInt16(kVK_ANSI_B)
+        ))
+        XCTAssertEqual(restored.action(matching: event), .zoomSelectedItem)
+        restored.set(custom, for: .quit)
+        XCTAssertEqual(restored.issue, .duplicate(.zoomSelectedItem))
+        restored.reset(.zoomSelectedItem)
+        XCTAssertEqual(restored.shortcut(for: .zoomSelectedItem), standard)
+    }
+
+    @MainActor
+    func testNewZoomShortcutPreservesExistingBindingsEvenWhenItsDefaultIsTaken() throws {
+        for takesZoomDefault in [false, true] {
+            let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+            defer { try? FileManager.default.removeItem(at: directory) }
+            let persistence = ShortcutPersistence(fileURL: directory.appendingPathComponent("shortcut.json"))
+            var saved = ShortcutSettings.defaultShortcuts
+            saved.removeValue(forKey: .zoomSelectedItem)
+            let customPin = takesZoomDefault
+                ? ShortcutSettings.defaultShortcuts[.zoomSelectedItem]!
+                : AppShortcut(keyCode: UInt16(kVK_ANSI_B), key: "B", modifiers: [.command, .option])
+            saved[.toggleSelectedItemPin] = customPin
+            try persistence.save(saved)
+            let settings = ShortcutSettings(persistence: persistence)
+            XCTAssertNil(settings.issue)
+            for (action, shortcut) in saved { XCTAssertEqual(settings.shortcut(for: action), shortcut) }
+            XCTAssertNotEqual(settings.shortcut(for: .zoomSelectedItem), customPin)
+            XCTAssertEqual(Set(settings.shortcuts.values).count, settings.shortcuts.count)
+        }
+    }
+
+    @MainActor
     func testSelectionModeShortcutMatchesCustomizedAssignmentAfterRelaunch() throws {
         let directory = FileManager.default.temporaryDirectory
             .appendingPathComponent("SelectionShortcutTests-\(UUID().uuidString)", isDirectory: true)
