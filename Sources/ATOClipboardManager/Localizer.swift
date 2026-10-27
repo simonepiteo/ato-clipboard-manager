@@ -35,6 +35,7 @@ enum LocalizedKey: String {
     case fileCountSingular, fileCountPlural
     case additionalFileSingular, additionalFilePlural
     case cardPreviews, hoverZoom, hoverZoomDelay
+    case enlargeCard
     case selectCard, deselectCard, selectAll, deselectAll
     case pinSelected, unpinSelected, deleteSelected, exitSelectionMode
 }
@@ -108,6 +109,7 @@ enum Localizer {
         .additionalFileSingular: "+%d File", .additionalFilePlural: "+%d Files",
         .cardPreviews: "Card previews", .hoverZoom: "Enlarge cards on hover",
         .hoverZoomDelay: "Delay (seconds)",
+        .enlargeCard: "Zoom",
         .selectCard: "Select", .deselectCard: "Deselect",
         .selectAll: "Select all", .deselectAll: "Deselect all",
         .pinSelected: "Pin selected items", .unpinSelected: "Unpin selected items",
@@ -182,6 +184,7 @@ enum Localizer {
         .additionalFileSingular: "+%d File", .additionalFilePlural: "+%d File",
         .cardPreviews: "Anteprime delle card", .hoverZoom: "Ingrandisci le card al passaggio del mouse",
         .hoverZoomDelay: "Attesa (secondi)",
+        .enlargeCard: "Ingrandisci",
         .selectCard: "Seleziona", .deselectCard: "Deseleziona",
         .selectAll: "Seleziona tutto", .deselectAll: "Deseleziona tutto",
         .pinSelected: "Fissa i selezionati", .unpinSelected: "Rimuovi il pin dai selezionati",

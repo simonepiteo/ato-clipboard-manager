@@ -8,13 +8,14 @@ struct CardHoverPreview {
 }
 
 struct CardHoverZoom: ViewModifier {
+    let itemID: UUID
     let preview: CardHoverPreview
     let enabled: Bool
     let delay: TimeInterval
 
     func body(content: Content) -> some View {
         content.background {
-            CardHoverZoomAnchor(preview: preview, enabled: enabled, delay: delay)
+            CardHoverZoomAnchor(itemID: itemID, preview: preview, enabled: enabled, delay: delay)
                 .accessibilityHidden(true)
         }
     }
@@ -36,36 +37,42 @@ struct CardHoverZoomPreview: View {
 }
 
 private struct CardHoverZoomAnchor: NSViewRepresentable {
+    let itemID: UUID
     let preview: CardHoverPreview
     let enabled: Bool
     let delay: TimeInterval
 
     func makeNSView(context: Context) -> CardHoverZoomTrackingView {
-        CardHoverZoomTrackingView(preview: preview, enabled: enabled, delay: delay)
+        let view = CardHoverZoomTrackingView(itemID: itemID, preview: preview, enabled: enabled, delay: delay)
+        CardHoverZoomController.shared.register(view)
+        return view
     }
 
     func updateNSView(_ nsView: CardHoverZoomTrackingView, context: Context) {
         nsView.preview = preview
-        CardHoverZoomController.shared.invalidatePreview(for: nsView)
         if nsView.isHoverEnabled != enabled || nsView.hoverDelay != delay {
+            CardHoverZoomController.shared.cancel(for: nsView)
             nsView.isHoverEnabled = enabled
             nsView.hoverDelay = delay
             nsView.updateTrackingAreas()
         }
+        CardHoverZoomController.shared.invalidatePreview(for: nsView)
     }
 
     static func dismantleNSView(_ nsView: CardHoverZoomTrackingView, coordinator: ()) {
-        CardHoverZoomController.shared.cancel(for: nsView)
+        CardHoverZoomController.shared.unregister(nsView)
     }
 }
 
 private final class CardHoverZoomTrackingView: NSView {
+    let itemID: UUID
     var preview: CardHoverPreview
     var isHoverEnabled: Bool
     var hoverDelay: TimeInterval
     private var hoverArea: NSTrackingArea?
 
-    init(preview: CardHoverPreview, enabled: Bool, delay: TimeInterval) {
+    init(itemID: UUID, preview: CardHoverPreview, enabled: Bool, delay: TimeInterval) {
+        self.itemID = itemID
         self.preview = preview
         isHoverEnabled = enabled
         hoverDelay = delay
@@ -100,7 +107,7 @@ private final class CardHoverZoomTrackingView: NSView {
     }
 
     override func mouseExited(with event: NSEvent) {
-        CardHoverZoomController.shared.cancel(for: self)
+        CardHoverZoomController.shared.mouseExited(self)
     }
 
     override func viewWillMove(toWindow newWindow: NSWindow?) {
@@ -118,6 +125,57 @@ private final class CardHoverZoomTrackingView: NSView {
         guard let window, screenFrame != nil else { return false }
         let point = convert(window.convertPoint(fromScreen: NSEvent.mouseLocation), from: nil)
         return visibleRect.contains(point)
+    }
+}
+
+/// Ignore inward pinches and small movements; open once per outward gesture.
+struct CardMagnificationIntent {
+    private var accumulated: CGFloat = 0
+    private var triggered = false
+
+    mutating func update(delta: CGFloat, phase: NSEvent.Phase) -> Bool {
+        if phase.contains(.began) { self = Self() }
+        accumulated += delta
+        let shouldOpen = !phase.contains(.cancelled) && !triggered && accumulated >= 0.05
+        if shouldOpen { triggered = true }
+        if phase.contains(.ended) || phase.contains(.cancelled) { self = Self() }
+        return shouldOpen
+    }
+}
+
+/// A trackpad press may arrive just before magnification, or as the fingers lift.
+/// Defer pointer activation briefly so that the gesture can cancel it.
+struct CardGestureClickGuard {
+    static let activationDelay: TimeInterval = 0.18
+    private(set) var isGesturing = false
+    private var suppressUntil: TimeInterval = 0
+    private var swallowedMouseDown = false
+
+    mutating func beginGesture() { isGesturing = true }
+
+    mutating func endGesture(at time: TimeInterval) {
+        isGesturing = false
+        suppressUntil = time + 0.3
+    }
+
+    func suppressesActivation(at time: TimeInterval) -> Bool {
+        isGesturing || time < suppressUntil
+    }
+
+    mutating func mouseDown(at time: TimeInterval) -> Bool {
+        swallowedMouseDown = suppressesActivation(at: time)
+        return swallowedMouseDown
+    }
+
+    mutating func mouseUp() -> Bool {
+        let swallowed = swallowedMouseDown
+        swallowedMouseDown = false
+        return swallowed
+    }
+
+    mutating func cancel(at time: TimeInterval) {
+        if isGesturing { endGesture(at: time) }
+        swallowedMouseDown = false
     }
 }
 
@@ -145,24 +203,98 @@ struct CardHoverIntent {
 
 @MainActor
 final class CardHoverZoomController {
+    private final class WeakTrackingView {
+        weak var view: CardHoverZoomTrackingView?
+        init(_ view: CardHoverZoomTrackingView) { self.view = view }
+    }
+
     static let shared = CardHoverZoomController()
+    private var anchors: [UUID: WeakTrackingView] = [:]
     private weak var source: CardHoverZoomTrackingView?
     private var intent = CardHoverIntent()
     private var timer: Timer?
     private var panel: NSPanel?
     private var sourceFrame: NSRect?
     private var eventMonitor: Any?
+    private var magnificationIntent = CardMagnificationIntent()
+    private var isManualPreview = false
+    private var clickGuard = CardGestureClickGuard()
+    private var pendingActivation: DispatchWorkItem?
+
+    func activateCard(itemID: UUID, action: @escaping () -> Void) {
+        guard NSApp.currentEvent?.type != .keyDown,
+              let view = anchors[itemID]?.view, view.isHoverEnabled else {
+            action()
+            return
+        }
+        guard !clickGuard.suppressesActivation(at: ProcessInfo.processInfo.systemUptime) else { return }
+        pendingActivation?.cancel()
+        // Keep listening after mouseDown: the next event may begin a pinch.
+        if source !== view { hover(view) }
+        timer?.invalidate()
+        timer = nil
+        let activation = DispatchWorkItem { [weak self, weak view] in
+            guard let self, let view, view.screenFrame != nil,
+                  !self.clickGuard.suppressesActivation(at: ProcessInfo.processInfo.systemUptime) else { return }
+            self.pendingActivation = nil
+            self.cancel(animated: false)
+            action()
+        }
+        pendingActivation = activation
+        DispatchQueue.main.asyncAfter(deadline: .now() + CardGestureClickGuard.activationDelay, execute: activation)
+    }
+
+    private func beginTrackpadGesture() {
+        clickGuard.beginGesture()
+        pendingActivation?.cancel()
+        pendingActivation = nil
+        timer?.invalidate()
+        timer = nil
+    }
+
+    fileprivate func register(_ view: CardHoverZoomTrackingView) {
+        anchors[view.itemID] = WeakTrackingView(view)
+    }
+
+    fileprivate func unregister(_ view: CardHoverZoomTrackingView) {
+        cancel(for: view)
+        if anchors[view.itemID]?.view === view { anchors.removeValue(forKey: view.itemID) }
+    }
+
+    func enlarge(itemID: UUID) {
+        guard let view = anchors[itemID]?.view else { return }
+        enlarge(view)
+    }
+
+    private func enlarge(_ view: CardHoverZoomTrackingView) {
+        guard view.isHoverEnabled, view.screenFrame != nil else { return }
+        if source !== view {
+            cancel(animated: false)
+            source = view
+            installEventMonitor()
+        }
+        isManualPreview = true
+        if panel == nil { show(view) }
+        startTimerIfNeeded()
+    }
 
     fileprivate func hover(_ view: CardHoverZoomTrackingView) {
         guard view.isHoverEnabled, view.containsMouse else { return }
+        guard !clickGuard.isGesturing else { return }
+        // The enlarged preview may cover neighboring cards; keep its source stable.
+        guard !isManualPreview || panel == nil else { return }
         if source !== view {
-            cancel(animated: false)
+            cancel(animated: false, preservePendingActivation: true)
             source = view
             intent = CardHoverIntent(delay: view.hoverDelay)
             installEventMonitor()
         }
         guard panel == nil else { return }
         intent.move(to: NSEvent.mouseLocation, at: ProcessInfo.processInfo.systemUptime)
+        startTimerIfNeeded()
+    }
+
+    private func startTimerIfNeeded() {
         if timer == nil {
             let timer = Timer(timeInterval: 0.05, repeats: true) { [weak self] _ in
                 Task { @MainActor [weak self] in self?.checkHover() }
@@ -174,20 +306,68 @@ final class CardHoverZoomController {
 
     private func installEventMonitor() {
         eventMonitor = NSEvent.addLocalMonitorForEvents(
-            matching: [.scrollWheel, .keyDown, .leftMouseDown, .rightMouseDown, .otherMouseDown, .mouseMoved, .leftMouseDragged]
+            matching: [.beginGesture, .endGesture, .magnify, .scrollWheel, .keyDown, .leftMouseDown, .leftMouseUp, .rightMouseDown, .otherMouseDown, .mouseMoved, .leftMouseDragged]
         ) { [weak self] event in
             guard let self else { return event }
-            if event.type == .mouseMoved, let source = self.source, source.containsMouse {
+            if event.type == .beginGesture, let source = self.source,
+               source.isHoverEnabled, source.containsMouse || self.containsPreviewMouse {
+                self.beginTrackpadGesture()
+                return event
+            }
+            if event.type == .endGesture {
+                self.clickGuard.endGesture(at: ProcessInfo.processInfo.systemUptime)
+                self.startTimerIfNeeded()
+                return event
+            }
+            if event.type == .magnify, let source = self.source,
+               source.isHoverEnabled, source.containsMouse || self.containsPreviewMouse || self.clickGuard.isGesturing {
+                if !self.clickGuard.isGesturing { self.beginTrackpadGesture() }
+                if self.magnificationIntent.update(delta: event.magnification, phase: event.phase) {
+                    self.enlarge(source)
+                }
+                if event.phase.contains(.ended) || event.phase.contains(.cancelled) {
+                    self.clickGuard.endGesture(at: ProcessInfo.processInfo.systemUptime)
+                    self.startTimerIfNeeded()
+                }
+                return nil
+            }
+            if event.type == .leftMouseDown, let source = self.source,
+               source.containsMouse || self.containsPreviewMouse || self.clickGuard.isGesturing {
+                let swallowed = self.clickGuard.mouseDown(at: ProcessInfo.processInfo.systemUptime)
+                self.timer?.invalidate()
+                self.timer = nil
+                return swallowed ? nil : event
+            }
+            if event.type == .leftMouseUp {
+                let swallowed = self.clickGuard.mouseUp()
+                self.startTimerIfNeeded()
+                return swallowed ? nil : event
+            }
+            if self.clickGuard.isGesturing, event.type == .mouseMoved || event.type == .leftMouseDragged {
+                return event
+            }
+            if event.type == .mouseMoved, self.isManualPreview {
+                if !self.containsPreviewMouse { self.cancel() }
+            } else if event.type == .mouseMoved, let source = self.source, source.containsMouse {
                 self.hover(source)
             } else {
-                self.cancel(animated: event.type == .mouseMoved)
+                self.cancel(
+                    animated: event.type == .mouseMoved,
+                    preservePendingActivation: event.type == .mouseMoved
+                )
             }
             return event
         }
     }
 
+    private var containsPreviewMouse: Bool {
+        guard let sourceFrame, panel != nil else { return false }
+        return CardHoverIntent.expandedFrame(from: sourceFrame).contains(NSEvent.mouseLocation)
+    }
+
     private func checkHover() {
-        guard let source, source.isHoverEnabled, source.containsMouse else {
+        guard let source, source.isHoverEnabled, source.screenFrame != nil,
+              isManualPreview || source.containsMouse else {
             cancel()
             return
         }
@@ -238,19 +418,33 @@ final class CardHoverZoomController {
     }
 
     fileprivate func invalidatePreview(for view: CardHoverZoomTrackingView) {
-        if source === view { cancel(animated: false) }
+        guard source === view, let host = panel?.contentView as? NSHostingView<CardHoverZoomPreview> else { return }
+        host.rootView = CardHoverZoomPreview(preview: view.preview)
+    }
+
+    fileprivate func mouseExited(_ view: CardHoverZoomTrackingView) {
+        if source === view, !isManualPreview, !clickGuard.isGesturing {
+            cancel(preservePendingActivation: true)
+        }
     }
 
     fileprivate func cancel(for view: CardHoverZoomTrackingView) {
         if source === view { cancel() }
     }
 
-    func cancel(animated: Bool = true) {
+    func cancel(animated: Bool = true, preservePendingActivation: Bool = false) {
+        if !preservePendingActivation {
+            pendingActivation?.cancel()
+            pendingActivation = nil
+        }
+        clickGuard.cancel(at: ProcessInfo.processInfo.systemUptime)
         timer?.invalidate()
         timer = nil
         if let eventMonitor { NSEvent.removeMonitor(eventMonitor) }
         eventMonitor = nil
         source = nil
+        isManualPreview = false
+        magnificationIntent = CardMagnificationIntent()
         intent = CardHoverIntent()
         guard let panel else { return }
         let frame = sourceFrame

@@ -620,7 +620,9 @@ struct ClipboardCard: View {
     let action: () -> Void
 
     private func cardButton(expanded: Bool = false) -> some View {
-        Button(action: action) {
+        Button {
+            CardHoverZoomController.shared.activateCard(itemID: item.id, action: action)
+        } label: {
             ZStack {
                 Group {
                     switch item.content {
@@ -687,7 +689,7 @@ struct ClipboardCard: View {
 
     var body: some View {
         cardButton()
-        .modifier(CardHoverZoom(preview: hoverPreview, enabled: hoverZoomEnabled, delay: hoverZoomDelay))
+        .modifier(CardHoverZoom(itemID: item.id, preview: hoverPreview, enabled: hoverZoomEnabled, delay: hoverZoomDelay))
         .accessibilityAddTraits((isSelectionMode ? isBatchSelected : isKeyboardSelected) ? .isSelected : [])
         .contextMenu {
             Button(action: selectForBatch) {
@@ -700,6 +702,13 @@ struct ClipboardCard: View {
             Button(action: toggleFavorite) {
                 Label(favoriteActionTitle, systemImage: isFavorite ? "pin.slash.fill" : "pin.fill")
             }
+
+            Button {
+                CardHoverZoomController.shared.enlarge(itemID: item.id)
+            } label: {
+                Label(Localizer.text(.enlargeCard, language: language), systemImage: "arrow.up.left.and.arrow.down.right")
+            }
+            .disabled(!hoverZoomEnabled)
 
             Divider()
 
