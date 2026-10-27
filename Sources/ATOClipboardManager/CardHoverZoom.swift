@@ -9,10 +9,12 @@ struct CardHoverPreview {
 
 struct CardHoverZoom: ViewModifier {
     let preview: CardHoverPreview
+    let enabled: Bool
+    let delay: TimeInterval
 
     func body(content: Content) -> some View {
         content.background {
-            CardHoverZoomAnchor(preview: preview)
+            CardHoverZoomAnchor(preview: preview, enabled: enabled, delay: delay)
                 .accessibilityHidden(true)
         }
     }
@@ -35,14 +37,21 @@ struct CardHoverZoomPreview: View {
 
 private struct CardHoverZoomAnchor: NSViewRepresentable {
     let preview: CardHoverPreview
+    let enabled: Bool
+    let delay: TimeInterval
 
     func makeNSView(context: Context) -> CardHoverZoomTrackingView {
-        CardHoverZoomTrackingView(preview: preview)
+        CardHoverZoomTrackingView(preview: preview, enabled: enabled, delay: delay)
     }
 
     func updateNSView(_ nsView: CardHoverZoomTrackingView, context: Context) {
         nsView.preview = preview
         CardHoverZoomController.shared.invalidatePreview(for: nsView)
+        if nsView.isHoverEnabled != enabled || nsView.hoverDelay != delay {
+            nsView.isHoverEnabled = enabled
+            nsView.hoverDelay = delay
+            nsView.updateTrackingAreas()
+        }
     }
 
     static func dismantleNSView(_ nsView: CardHoverZoomTrackingView, coordinator: ()) {
@@ -52,10 +61,14 @@ private struct CardHoverZoomAnchor: NSViewRepresentable {
 
 private final class CardHoverZoomTrackingView: NSView {
     var preview: CardHoverPreview
+    var isHoverEnabled: Bool
+    var hoverDelay: TimeInterval
     private var hoverArea: NSTrackingArea?
 
-    init(preview: CardHoverPreview) {
+    init(preview: CardHoverPreview, enabled: Bool, delay: TimeInterval) {
         self.preview = preview
+        isHoverEnabled = enabled
+        hoverDelay = delay
         super.init(frame: .zero)
     }
 
@@ -67,6 +80,8 @@ private final class CardHoverZoomTrackingView: NSView {
     override func updateTrackingAreas() {
         super.updateTrackingAreas()
         if let hoverArea { removeTrackingArea(hoverArea) }
+        hoverArea = nil
+        guard isHoverEnabled else { return }
         let area = NSTrackingArea(
             rect: .zero,
             options: [.mouseEnteredAndExited, .mouseMoved, .activeAlways, .inVisibleRect],
@@ -106,9 +121,9 @@ private final class CardHoverZoomTrackingView: NSView {
     }
 }
 
-/// Clock-based intent is independent of animation and can be tested without waiting three seconds.
+/// Clock-based intent is independent of animation and can be tested without real-time waits.
 struct CardHoverIntent {
-    static let delay: TimeInterval = 3
+    var delay: TimeInterval = TimeInterval(AppSettings.defaultHoverZoomDelay)
     private(set) var position: NSPoint?
     private(set) var stationarySince: TimeInterval?
 
@@ -120,7 +135,7 @@ struct CardHoverIntent {
 
     func isReady(at time: TimeInterval) -> Bool {
         guard let stationarySince else { return false }
-        return time - stationarySince >= Self.delay
+        return time - stationarySince >= delay
     }
 
     static func expandedFrame(from frame: NSRect, scale: CGFloat = 1.8) -> NSRect {
@@ -139,10 +154,11 @@ final class CardHoverZoomController {
     private var eventMonitor: Any?
 
     fileprivate func hover(_ view: CardHoverZoomTrackingView) {
-        guard view.containsMouse else { return }
+        guard view.isHoverEnabled, view.containsMouse else { return }
         if source !== view {
             cancel(animated: false)
             source = view
+            intent = CardHoverIntent(delay: view.hoverDelay)
             installEventMonitor()
         }
         guard panel == nil else { return }
@@ -171,7 +187,7 @@ final class CardHoverZoomController {
     }
 
     private func checkHover() {
-        guard let source, source.containsMouse else {
+        guard let source, source.isHoverEnabled, source.containsMouse else {
             cancel()
             return
         }

@@ -34,6 +34,7 @@ enum LocalizedKey: String {
     case deleteFromHistory, unpinBeforeDeleting
     case fileCountSingular, fileCountPlural
     case additionalFileSingular, additionalFilePlural
+    case cardPreviews, hoverZoom, hoverZoomDelay
     case selectCard, deselectCard, selectAll, deselectAll
     case pinSelected, unpinSelected, deleteSelected, exitSelectionMode
 }
@@ -105,6 +106,8 @@ enum Localizer {
         .deleteFromHistory: "Delete from History", .unpinBeforeDeleting: "Unpin Before Deleting",
         .fileCountSingular: "%d file", .fileCountPlural: "%d files",
         .additionalFileSingular: "+%d File", .additionalFilePlural: "+%d Files",
+        .cardPreviews: "Card previews", .hoverZoom: "Enlarge cards on hover",
+        .hoverZoomDelay: "Delay (seconds)",
         .selectCard: "Select", .deselectCard: "Deselect",
         .selectAll: "Select all", .deselectAll: "Deselect all",
         .pinSelected: "Pin selected items", .unpinSelected: "Unpin selected items",
@@ -177,6 +180,8 @@ enum Localizer {
         .deleteFromHistory: "Elimina dalla cronologia", .unpinBeforeDeleting: "Rimuovi il pin prima di eliminare",
         .fileCountSingular: "%d file", .fileCountPlural: "%d file",
         .additionalFileSingular: "+%d File", .additionalFilePlural: "+%d File",
+        .cardPreviews: "Anteprime delle card", .hoverZoom: "Ingrandisci le card al passaggio del mouse",
+        .hoverZoomDelay: "Attesa (secondi)",
         .selectCard: "Seleziona", .deselectCard: "Deseleziona",
         .selectAll: "Seleziona tutto", .deselectAll: "Deseleziona tutto",
         .pinSelected: "Fissa i selezionati", .unpinSelected: "Rimuovi il pin dai selezionati",

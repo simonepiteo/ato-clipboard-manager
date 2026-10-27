@@ -62,6 +62,7 @@ The following options are available from Settings:
 - **Appearance:** follow the macOS system appearance or use a persistent light or dark theme.
 - **Language:** use ATO in English or Italian.
 - **Layout:** choose between grid and list display modes.
+- **Card previews:** enable or disable enlarged hover previews and set the delay from 1 to 30 seconds (default: 3 seconds).
 - **History:** configure visible and saved history limits, and optionally enable persistent history.
 - **Paste behavior:** independently enable automatic paste for clicks, item shortcuts, and Return after keyboard navigation.
 - **Startup:** launch ATO automatically when logging in to macOS.

@@ -333,6 +333,22 @@ struct SettingsView: View {
                 }
             }
 
+            settingsSection(Localizer.text(.cardPreviews, language: settings.language)) {
+                settingsPanel(compact: true) {
+                    toggleRow(
+                        Localizer.text(.hoverZoom, language: settings.language),
+                        isOn: $settings.hoverZoomEnabled
+                    )
+                    if settings.hoverZoomEnabled {
+                        panelDivider
+                        settingRow(Localizer.text(.hoverZoomDelay, language: settings.language)) {
+                            numericInput(value: $settings.hoverZoomDelay, range: AppSettings.hoverZoomDelayRange)
+                                .accessibilityLabel(Localizer.text(.hoverZoomDelay, language: settings.language))
+                        }
+                    }
+                }
+            }
+
             settingsSection(Localizer.text(.startup, language: settings.language)) {
                 startupSettings
             }
@@ -828,7 +844,7 @@ struct SettingsView: View {
                 .foregroundStyle(MacPalette.body)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 16)
-            Toggle("", isOn: isOn)
+            Toggle(title, isOn: isOn)
                 .toggleStyle(.switch)
                 .labelsHidden()
         }

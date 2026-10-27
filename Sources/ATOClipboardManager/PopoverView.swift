@@ -260,7 +260,9 @@ struct PopoverView: View {
                                 deleteActionTitle: Localizer.text(
                                     favoritesStore.contains(item) ? .unpinBeforeDeleting : .deleteFromHistory,
                                     language: settings.language
-                                )
+                                ),
+                                hoverZoomEnabled: settings.hoverZoomEnabled,
+                                hoverZoomDelay: TimeInterval(settings.hoverZoomDelay)
                             ) {
                                 activateItem(item, paste: settings.automaticPaste, waitForClick: true)
                             }
@@ -613,6 +615,8 @@ struct ClipboardCard: View {
     let favoriteActionTitle: String
     let deleteFromHistory: () -> Void
     let deleteActionTitle: String
+    var hoverZoomEnabled = true
+    var hoverZoomDelay: TimeInterval = TimeInterval(AppSettings.defaultHoverZoomDelay)
     let action: () -> Void
 
     private func cardButton(expanded: Bool = false) -> some View {
@@ -683,7 +687,7 @@ struct ClipboardCard: View {
 
     var body: some View {
         cardButton()
-        .modifier(CardHoverZoom(preview: hoverPreview))
+        .modifier(CardHoverZoom(preview: hoverPreview, enabled: hoverZoomEnabled, delay: hoverZoomDelay))
         .accessibilityAddTraits((isSelectionMode ? isBatchSelected : isKeyboardSelected) ? .isSelected : [])
         .contextMenu {
             Button(action: selectForBatch) {

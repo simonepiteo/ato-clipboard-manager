@@ -30,4 +30,16 @@ final class CardHoverIntentTests: XCTestCase {
             XCTAssertEqual(expanded.height / source.height, 1.8, accuracy: 0.001)
         }
     }
+
+    func testUsesConfiguredDelayAndRestartsItAfterMovement() {
+        for delay: TimeInterval in [1, 7, 30] {
+            var intent = CardHoverIntent(delay: delay)
+            intent.move(to: NSPoint(x: 10, y: 20), at: 100)
+            XCTAssertFalse(intent.isReady(at: 100 + delay - 0.01))
+            XCTAssertTrue(intent.isReady(at: 100 + delay))
+            intent.move(to: NSPoint(x: 11, y: 20), at: 200)
+            XCTAssertFalse(intent.isReady(at: 200 + delay - 0.01))
+            XCTAssertTrue(intent.isReady(at: 200 + delay))
+        }
+    }
 }

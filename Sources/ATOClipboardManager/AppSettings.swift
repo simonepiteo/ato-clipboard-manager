@@ -13,9 +13,13 @@ final class AppSettings: ObservableObject {
         static let launchAtLoginPromptShown = "launchAtLoginPromptShown"
         static let persistHistory = "persistHistory"
         static let maxPersistedHistoryItems = "maxPersistedHistoryItems"
+        static let hoverZoomEnabled = "hoverZoomEnabled"
+        static let hoverZoomDelay = "hoverZoomDelay"
     }
 
     static let defaultMaxHistoryItems = 20
+    nonisolated static let defaultHoverZoomDelay = 3
+    nonisolated static let hoverZoomDelayRange = 1...30
     nonisolated static let defaultHistoryFilePath = "~/.ato/history.json"
     nonisolated static let maximumPersistedHistoryItems = 10_000
     private let defaults: UserDefaults
@@ -23,6 +27,14 @@ final class AppSettings: ObservableObject {
     @Published var language: AppLanguage { didSet { defaults.set(language.rawValue, forKey: Key.language) } }
     @Published var theme: AppTheme { didSet { defaults.set(theme.rawValue, forKey: Key.theme) } }
     @Published var displayMode: DisplayMode { didSet { defaults.set(displayMode.rawValue, forKey: Key.displayMode) } }
+    @Published var hoverZoomEnabled: Bool { didSet { defaults.set(hoverZoomEnabled, forKey: Key.hoverZoomEnabled) } }
+    @Published var hoverZoomDelay: Int {
+        didSet {
+            let validValue = Self.clampHoverZoomDelay(hoverZoomDelay)
+            if hoverZoomDelay != validValue { hoverZoomDelay = validValue }
+            defaults.set(validValue, forKey: Key.hoverZoomDelay)
+        }
+    }
     @Published var maxHistoryItems: Int {
         didSet {
             let validValue = Self.clampHistoryLimit(maxHistoryItems)
@@ -58,6 +70,10 @@ final class AppSettings: ObservableObject {
         language = AppLanguage(rawValue: defaults.string(forKey: Key.language) ?? "") ?? .english
         theme = AppTheme(rawValue: defaults.string(forKey: Key.theme) ?? "") ?? .system
         displayMode = DisplayMode(rawValue: defaults.string(forKey: Key.displayMode) ?? "") ?? .grid
+        hoverZoomEnabled = defaults.object(forKey: Key.hoverZoomEnabled) as? Bool ?? true
+        hoverZoomDelay = Self.clampHoverZoomDelay(
+            defaults.object(forKey: Key.hoverZoomDelay) as? Int ?? Self.defaultHoverZoomDelay
+        )
         let savedLimit = defaults.object(forKey: Key.maxHistoryItems) as? Int
         let historyLimit = Self.clampHistoryLimit(savedLimit ?? Self.defaultMaxHistoryItems)
         maxHistoryItems = historyLimit
@@ -76,6 +92,10 @@ final class AppSettings: ObservableObject {
         min(max(value, 1), 100)
     }
 
+    nonisolated static func clampHoverZoomDelay(_ value: Int) -> Int {
+        min(max(value, hoverZoomDelayRange.lowerBound), hoverZoomDelayRange.upperBound)
+    }
+
     nonisolated static func clampPersistedHistoryLimit(_ value: Int, minimum: Int) -> Int {
         min(max(value, minimum), maximumPersistedHistoryItems)
     }
@@ -92,6 +112,8 @@ final class AppSettings: ObservableObject {
         language = .english
         theme = .system
         displayMode = .grid
+        hoverZoomEnabled = true
+        hoverZoomDelay = Self.defaultHoverZoomDelay
         maxHistoryItems = Self.defaultMaxHistoryItems
         automaticPaste = false
         automaticPasteShortcut = true
